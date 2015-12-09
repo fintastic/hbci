@@ -20,7 +20,7 @@ module Bankster
 
         # Random security control reference. MUST be the same
         # as in the signature footer
-        element :security_reference, default: ->(el) { byebug && el.message.sec_ref }
+        element :security_reference
 
         element :area_of_security_application, default: 1
         element :role_of_security_supplier, default: 1
@@ -61,7 +61,7 @@ module Bankster
         end
 
         def after_build
-          # self.security_reference = message.sec_ref
+          self.security_reference = message.sec_ref
           self.security_identification_details.party_identification = dialog.system_id
           self.key.bank_code = dialog.credentials.bank_code
           self.key.user_id = dialog.credentials.user_id
