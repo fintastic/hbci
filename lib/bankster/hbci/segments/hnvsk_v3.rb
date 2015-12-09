@@ -1,14 +1,10 @@
 module Bankster
   module Hbci
     module Segments
-      # Signature Head Segment
-      #
-      # Top of the signature and counterpart of HNSHA
-      # https://www.hbci-zka.de/dokumente/spezifikation_deutsch/fintsv3/FinTS_3.0_Security_Sicherheitsverfahren_HBCI_Rel_20130718_final_version.pdf#page=63
-      class HNSHKv4 < Bankster::Hbci::Segment
+      class HNVSKv3 < Bankster::Hbci::Segment
 
         element_group :head, type: ElementGroups::SegmentHead do
-          element :position, default: 2
+          element :position, default: 998
         end
 
         element_group :security_profile do
@@ -16,21 +12,15 @@ module Bankster
           element :version, default: 1
         end
 
-        element :security_function_code, default: 999
+        element :security_function_code, default: 998
 
-        # Random security control reference. MUST be the same
-        # as in the signature footer
-        element :security_reference, default: ->(el) { byebug && el.message.sec_ref }
-
-        element :area_of_security_application, default: 1
         element :role_of_security_supplier, default: 1
+
         element_group :security_identification_details do
           element :type, default: 1
           element :cid 
           element :party_identification # system_id
         end
-
-        element :security_reference_number, default: 1
 
         element_group :secured_at do
           element :identifier, default: 1
@@ -38,30 +28,28 @@ module Bankster
           element :time , default: ->(eg) { Time.now.strftime('%H%m%S') }
         end
 
-        element_group :hash_alg do
-          element :usage, default: 1
-          element :code, default: 999
-          element :param_code, default: 1
-          element :param_value
-        end
-
-        element_group :sig_alg do
-          element :usage, default: 6
-          element :code, default: 10
-          element :operation_mode, default: 16
+        element_group :enc_alg do
+          element :usage, default: 2
+          element :operation_mode, default: 2
+          element :code, default: 13
+          element :key, default: "@8@00000000"
+          element :type, default: 5
+          element :additional_name, default: 1
+          element :additional_value
         end
 
         element_group :key do
           element :bank_country_code, default: 280
           element :bank_code # blz
           element :user_id # login id
-          element :type, default: 'S'
+          element :type, default: 'V'
           element :number, default: 0
           element :version, default: 0
         end
 
+        element :compression_method, default: 0
+
         def after_build
-          # self.security_reference = message.sec_ref
           self.security_identification_details.party_identification = dialog.system_id
           self.key.bank_code = dialog.credentials.bank_code
           self.key.user_id = dialog.credentials.user_id

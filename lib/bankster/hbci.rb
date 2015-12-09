@@ -9,6 +9,7 @@ require 'bankster/hbci/segment'
 require 'bankster/hbci/segments/hnshk_v4'
 require 'bankster/hbci/segments/hnsha_v2'
 require 'bankster/hbci/segments/hnhbk_v3'
+require 'bankster/hbci/segments/hnvsk_v3'
 
 require 'bankster/hbci/segment_parser'
 
@@ -170,11 +171,11 @@ module Bankster
       end
 
       def enc_head
-        Segments::HNVSK.new(dialog: dialog)
+        Segments::HNVSKv3.build(dialog: dialog)
       end
 
       def sig_head
-        Segments::HNSHK.new(dialog: dialog, message: self)
+        Segments::HNSHKv4.build(dialog: dialog, message: self)
       end
 
       def sig_tail

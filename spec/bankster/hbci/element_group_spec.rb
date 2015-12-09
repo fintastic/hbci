@@ -74,5 +74,23 @@ describe Bankster::Hbci::ElementGroup do
         expect(subject[0]).to eql('my_default_value')
       end
     end
+
+    context 'given a default value as a block' do
+      let(:time_1) { Time.new(2015,1,1) }
+      let(:time_2) { Time.new(2015,2,1) }
+      let(:time_3) { Time.new(2015,3,1) }
+
+      it 'sets a default value' do
+        Timecop.freeze(time_1)
+        clazz = Class.new(Bankster::Hbci::ElementGroup) do
+          element :test1, default: ->(eg) { Time.now }
+        end
+        Timecop.freeze(time_2)
+        instance = clazz.new
+        Timecop.freeze(time_3)
+        expect(instance.test1).to eql(time_2)
+        Timecop.return
+      end
+    end
   end
 end
