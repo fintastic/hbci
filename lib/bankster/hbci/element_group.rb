@@ -51,16 +51,26 @@ module Bankster
         self.elements_to_be_defined = [] unless elements_to_be_defined.is_a?(Array)
       end
 
-      def self.element(name, definition = nil)
+      def self.element(name, definition = {})
         ensure_setup_of_elements_to_be_defined
-        elements_to_be_defined << name
+        elements_to_be_defined << definition.merge(name: name)
       end
 
       def index_for_element(name)
         defined_elements.index(name)
       end
 
-      def define_element(name)
+      def element(*args)
+        define_element(*args)
+      end
+
+      def define_element(params)
+        if params.is_a?(Symbol)
+          name = params
+        else
+          name = params[:name]
+        end
+
         defined_elements << name
 
         define_singleton_method("#{name}") do
@@ -69,6 +79,10 @@ module Bankster
 
         define_singleton_method("#{name}=") do |value|
           elements[index_for_element(name)] = value
+        end
+
+        if params.is_a?(Hash) && params[:default]
+          elements[index_for_element(params[:name])] = params[:default]
         end
       end
 

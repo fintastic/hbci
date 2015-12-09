@@ -28,35 +28,51 @@ describe Bankster::Hbci::ElementGroup do
   end
 
   describe '.element' do
-    subject do 
-      class MyGroup < Bankster::Hbci::ElementGroup
-        element :test1
-        element :test2
+    context 'without any args' do
+      subject do 
+        class MyGroup < Bankster::Hbci::ElementGroup
+          element :test1
+          element :test2
+        end
+        MyGroup.new
       end
-      MyGroup.new
+
+      it 'can save and return an element value' do
+        subject[0] = 'test'
+        expect(subject[0]).to eql('test')
+      end
+
+      it 'has a reader for its element' do
+        subject[0] = 'test'
+        expect(subject).to  respond_to(:test1)
+        expect(subject.test1).to eql("test")
+      end
+
+      it 'has a writer for its element' do
+        subject.test1 = "bla"
+        expect(subject.test1).to eql("bla")
+      end
+
+      it 'works with multiple elements' do
+        subject.test1 = "bla"
+        subject.test2 = "blubb"
+        expect(subject[0]).to eql("bla")
+        expect(subject[1]).to eql("blubb")
+      end
     end
 
-    it 'can save and return an element value' do
-      subject[0] = 'test'
-      expect(subject[0]).to eql('test')
-    end
+    context 'given a default value' do
+      subject do 
+        class MyGroup < Bankster::Hbci::ElementGroup
+          element :test1, default: "my_default_value"
+          element :test2
+        end
+        MyGroup.new
+      end
 
-    it 'has a reader for its element' do
-      subject[0] = 'test'
-      expect(subject).to  respond_to(:test1)
-      expect(subject.test1).to eql("test")
-    end
-
-    it 'has a writer for its element' do
-      subject.test1 = "bla"
-      expect(subject.test1).to eql("bla")
-    end
-
-    it 'works with multiple elements' do
-      subject.test1 = "bla"
-      subject.test2 = "blubb"
-      expect(subject[0]).to eql("bla")
-      expect(subject[1]).to eql("blubb")
+      it 'sets a default value' do
+        expect(subject[0]).to eql('my_default_value')
+      end
     end
   end
 end

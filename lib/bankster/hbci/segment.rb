@@ -46,26 +46,22 @@ module Bankster
         end
       end
 
-      def initiate_element_group(name, elements, block)
-        element_group = Bankster::Hbci::ElementGroup.new do
-          block.call if block
-        end
-        unless elements.nil? 
-          elements.each { |el| element_group.define_element(el) }
-        end
+      def initiate_element_group(name, elements, block, type = nil)
+        element_group_class = type ? type : Bankster::Hbci::ElementGroup
+        element_group = element_group_class.new
+        element_group.instance_eval(&block) if block 
+        elements.to_a.each { |el| element_group.define_element(el) }
         self.element_groups[index_of_element_group(name)] = element_group
       end
 
       def define_element_group(definition)
         defined_element_groups << definition[:name]
-        initiate_element_group(definition[:name], definition[:elements], definition[:block])
-        if definition[:elements].is_a?(Array) && definition[:elements].count > 1 || definition[:block]
-          define_element_group_reader(definition[:name])
-          define_element_group_writer(definition[:name])
-        else
-          define_element_group_reader(definition[:name], true)
-          define_element_group_writer(definition[:name], true)
-        end
+
+        initiate_element_group(definition[:name], definition[:elements], definition[:block], definition[:type])
+
+        byepass = definition[:elements].is_a?(Array) && definition[:elements].count == 1
+        define_element_group_reader(definition[:name], byepass)
+        define_element_group_writer(definition[:name], byepass)
       end
 
       # Adds the element group to the list of EGs that need to be defined
@@ -75,9 +71,9 @@ module Bankster
         element_groups_to_be_defined << definition.merge({name: name, block: block})
       end
 
-      def self.element(name)
+      def self.element(name, definition = {})
         ensure_setup_element_group_definitions
-        element_groups_to_be_defined << {elements: [name], name: name}
+        element_groups_to_be_defined << {elements: [definition.merge({name: name})], name: name}
       end
 
       def define_element_groups_from_class

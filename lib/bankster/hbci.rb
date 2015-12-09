@@ -1,11 +1,17 @@
 require 'httparty'
 require "bankster/hbci/version"
 
-require 'bankster/hbci/segment'
+
 require 'bankster/hbci/element_group'
+require 'bankster/hbci/element_groups/segment_head'
+
+require 'bankster/hbci/segment'
+require 'bankster/hbci/segments/hnshk_v4'
+require 'bankster/hbci/segments/hnsha_v2'
+require 'bankster/hbci/segments/hnhbk_v3'
+
 require 'bankster/hbci/segment_parser'
 
-require 'bankster/hbci/segments/hnhbk_v3'
 
 module Bankster
   module Hbci
@@ -107,19 +113,6 @@ module Bankster
           tan_mechanism = 999
           system_id = 0
           "#{head}+PIN:1+#{tan_mechanism}+#{message.sec_ref}+1+1+1::#{system_id}+1+1:#{Time.now.strftime("%Y%m%d")}:#{Time.now.strftime("%H%m%S")}+1:999:1+6:10:16+280:#{dialog.credentials.bank_code}:#{dialog.credentials.user_id}:S:0:0'"
-        end
-      end
-
-      class HNSHAv2 < Bankster::Hbci::Segment
-        element_group :head,               elements: [:type, :position, :version]
-        element :security_reference
-        element :security_vaidation_result
-        element_group :pin_tan,            elements: [:pin, :tan]
-
-        def after_build
-          self.head.position      = message.payload.size + 3
-          self.security_reference = message.sec_ref
-          self.pin_tan.pin        = dialog.credentials.pin
         end
       end
 
@@ -283,7 +276,6 @@ module Bankster
         req = HTTParty.post(dialog.credentials.url, body: Base64.encode64(request.raw))
         response = Base64.decode64(req.response.body).split('\'')
         puts response
-        # byebug
       end
     end
 
