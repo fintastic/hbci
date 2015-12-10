@@ -81,6 +81,9 @@ module Bankster
           define_element_group(element_group)
         end
       end
+      
+      def after_build
+      end
 
       def initialize
         @defined_element_groups = []
