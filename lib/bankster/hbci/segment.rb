@@ -97,7 +97,7 @@ module Bankster
         self.name.split('::').last.split('v').last
       end
 
-      def self.build(dialog: nil, message: nil)
+      def self.build(dialog: nil, message: nil, **)
         segment = self.new
         segment.dialog = dialog
         segment.message = message

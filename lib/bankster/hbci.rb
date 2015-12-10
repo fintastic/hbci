@@ -1,7 +1,6 @@
 require 'httparty'
 require "bankster/hbci/version"
 
-
 require 'bankster/hbci/element_group'
 require 'bankster/hbci/element_groups/segment_head'
 
@@ -10,6 +9,8 @@ require 'bankster/hbci/segments/hnshk_v4'
 require 'bankster/hbci/segments/hnsha_v2'
 require 'bankster/hbci/segments/hnhbk_v3'
 require 'bankster/hbci/segments/hnvsk_v3'
+require 'bankster/hbci/segments/hnhbs_v1'
+require 'bankster/hbci/segments/hnvsd_v1'
 
 require 'bankster/hbci/segment_parser'
 
@@ -162,7 +163,6 @@ module Bankster
     end
 
     class Message
-      # attr_reader :payload
       attr_reader :dialog
       attr_reader :sec_ref
 
@@ -183,11 +183,11 @@ module Bankster
       end
 
       def head
-        Segments::HNHBK.new(dialog: dialog, message: self)
+        Segments::HNHBKv3.build(dialog: dialog, message: self)
       end
 
       def tail
-        Segments::HNHBS.new(dialog: dialog, message: self)
+        Segments::HNHBSv1.build(dialog: dialog, message: self)
       end
 
       def raw
@@ -199,7 +199,7 @@ module Bankster
       end
 
       def encrypted_payload
-        Segments::HNVSD.new(signed_payload: signed_payload)
+        Segments::HNVSDv1.build(message: self)
       end
 
       def signed_payload
