@@ -81,7 +81,7 @@ module Bankster
           define_element_group(element_group)
         end
       end
-      
+
       def after_build
       end
 
@@ -93,11 +93,11 @@ module Bankster
       end
 
       def self.type
-        self.name.split('::').last.split('v').first
+        self.name.split('::').last.split('v').first rescue "EmptySegment"
       end
 
       def self.version
-        self.name.split('::').last.split('v').last
+        self.name.split('::').last.split('v').last rescue "0"
       end
 
       def self.build(dialog: nil, message: nil, **)
@@ -114,6 +114,31 @@ module Bankster
 
       def to_s
         element_groups.map{ |eg| eg.elements.join(':') }.join('+') << '\''
+      end
+
+      def self.inherited(subclass)
+        SegmentParser.register_segment(type: subclass.type, version: subclass.version, class: subclass)
+        super
+      end
+
+      def self.parse(string)
+        string.chomp!('\'')
+        segment_data = string.split('+').map{ |deg| deg.split(':') }
+        segment = self.new
+        
+        segment_data.each_with_index do |element_group_data, element_group_index|
+          unless segment[element_group_index].is_a?(ElementGroup)
+            raise "Failed to add a parsed element group to segment #{segment.class.type}v#{segment.class.version} at index #{element_group_index}"
+          end
+          element_group_data.each_with_index do |element_data, element_index|
+            if element_index > segment[element_group_index].elements.size 
+              raise "Failed to add a parsed element to element_group #{segment.class.type}v#{segment.class.version} at element_group #{element_group_index} index #{element_index}"
+            end
+            segment[element_group_index][element_index] = element_data 
+          end
+        end
+
+        segment
       end
     end
   end

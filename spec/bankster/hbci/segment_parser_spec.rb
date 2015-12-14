@@ -1,13 +1,16 @@
 require 'spec_helper'
 describe Bankster::Hbci::SegmentParser do
 
+  before(:each) do
+    described_class.cleanup
+  end
   after(:each) do
     described_class.cleanup
   end
 
   describe '.register_segment' do
-    let(:class_1) { Class.new(Bankster::Hbci::Segment) }
-    let(:class_2) { Class.new(Bankster::Hbci::Segment) }
+    let(:class_1) { Class.new }
+    let(:class_2) { Class.new }
 
     it 'adds the segment to the list of registered segments' do
       described_class.register_segment(type: 'HNHBK', version: 1, class: class_1)

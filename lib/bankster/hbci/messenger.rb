@@ -7,7 +7,7 @@ module Bankster
 
       def initialize(dialog:)
         @dialog = dialog
-        @request = Message.new(dialog: dialog)
+        @request = Request.new(dialog: dialog)
         @response = nil
       end
 
@@ -17,8 +17,8 @@ module Bankster
 
       def request!
         req = HTTParty.post(dialog.credentials.url, body: Base64.encode64(request.raw))
-        response = Base64.decode64(req.response.body).split('\'')
-        puts response
+        raw_response = Base64.decode64(req.response.body)
+        @response = Response.parse(dialog: dialog, raw_response: raw_response)
       end
     end
   end

@@ -8,36 +8,12 @@ module Bankster
         @payload.index(segment) || 0
       end
 
-      def enc_head
-        Segments::HNVSKv3.build(dialog: dialog)
-      end
-
-      def sig_head
-        Segments::HNSHKv4.build(dialog: dialog, message: self)
-      end
-
-      def sig_tail
-        Segments::HNSHAv2.build(dialog: dialog, message: self)
-      end
-
-      def head
-        Segments::HNHBKv3.build(dialog: dialog, message: self)
-      end
-
-      def tail
-        Segments::HNHBSv1.build(dialog: dialog, message: self)
-      end
-
       def raw
         enveloped.join('')
       end
 
       def enveloped
         [head, enc_head, encrypted_payload, tail]
-      end
-
-      def encrypted_payload
-        Segments::HNVSDv1.build(message: self)
       end
 
       def signed_payload
@@ -60,12 +36,6 @@ module Bankster
 
       def add_payload(segment)
         @payload << segment
-      end
-
-      def inspect_payload
-        string = "Message Payload #{payload.count} segments: \n"
-        payload.each { |segment| string << "#{segment.to_s} \n" }
-        string
       end
     end
   end

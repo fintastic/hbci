@@ -21,6 +21,7 @@ module Bankster
 
       def initiate
         messenger = Messenger.new(dialog: self)
+
         messenger.add_request_payload(Segments::HKIDNv2.build(message: messenger.request, dialog: self))
         messenger.add_request_payload(Segments::HKVVBv3.build(message: messenger.request))
         messenger.request!

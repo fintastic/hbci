@@ -7,6 +7,11 @@ module Bankster
         element :hbci_version, default: 300
         element :dialog_id
         element :message_number
+        element_group :referenced_message do
+          element :dialog_id
+          element :message_number
+        end
+
 
         def after_build
           self.head.position = 1

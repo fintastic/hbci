@@ -21,17 +21,14 @@ module Bankster
         type = segment_data[0][0]
         version = segment_data[0][2]
 
-        segment_class = registered_segments.select{ |segment| segment[:type] == type && segment[:version].to_s == version }.first[:class]
-
-        segment = segment_class.new
+        segment_class_matches = registered_segments.select{ |segment| segment[:type] == type && segment[:version].to_s == version }
         
-        segment_data.each_with_index do |element_group_data, element_group_index|
-          element_group_data.each_with_index do |element_data, element_index|
-            segment[element_group_index][element_index] = element_data
-          end
-        end
+        raise "No registered segment class for #{type} in version #{version}" if segment_class_matches.count == 0
 
-        segment
+        raise "Multiple registered segment classes for #{type} in version #{version}" if segment_class_matches.count > 1
+
+        segment_class = segment_class_matches.first[:class]
+        segment_class.parse(string)
       end
     end
   end
