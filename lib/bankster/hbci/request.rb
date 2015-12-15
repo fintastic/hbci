@@ -6,27 +6,27 @@ module Bankster
 
 
       def head
-        Segments::HNHBKv3.build(dialog: dialog, message: self)
+        @head ||= Segments::HNHBKv3.build(dialog: dialog, message: self)
       end
 
       def enc_head
-        Segments::HNVSKv3.build(dialog: dialog)
+        @enc_head ||= Segments::HNVSKv3.build(dialog: dialog)
       end
 
       def sig_head
-        Segments::HNSHKv4.build(dialog: dialog, message: self)
+        @sig_head ||= Segments::HNSHKv4.build(dialog: dialog, message: self)
       end
 
       def encrypted_payload
-        Segments::HNVSDv1.build(message: self)
+        @encrypted_payload ||= Segments::HNVSDv1.build(message: self)
       end
 
       def sig_tail
-        Segments::HNSHAv2.build(dialog: dialog, message: self)
+        @sig_tail ||= Segments::HNSHAv2.build(dialog: dialog, message: self)
       end
 
       def tail
-        Segments::HNHBSv1.build(dialog: dialog, message: self)
+        @tail ||= Segments::HNHBSv1.build(dialog: dialog, message: self)
       end
     end
   end

@@ -5,6 +5,7 @@ module Bankster
       attr_reader :hbci_version
       attr_reader :system_id
       attr_reader :sent_messages
+      attr_reader :tan_mechanism
       attr_reader :id
 
       def next_sent_message_number
@@ -16,15 +17,25 @@ module Bankster
         @hbci_version = '3.0'
         @system_id = 0
         @sent_messages = []
+        @tan_mechanism = nil
         @id = 0
       end
 
       def initiate
         messenger = Messenger.new(dialog: self)
 
-        messenger.add_request_payload(Segments::HKIDNv2.build(message: messenger.request, dialog: self))
-        messenger.add_request_payload(Segments::HKVVBv3.build(message: messenger.request))
+        identification_seg = Segments::HKIDNv2.build(message: messenger.request, dialog: self)
+        preparation_seg = Segments::HKVVBv3.build(message: messenger.request)
+
+        messenger.add_request_payload(identification_seg)
+        messenger.add_request_payload(preparation_seg)
+
         messenger.request!
+
+        if messenger.response && messenger.response.success?
+          @tan_mechanism = messenger.response.payload.select{ |s| s.head.type == "HIRMS"  }.first.allowed_tan_mechanism
+          @id = messenger.response.head.dialog_id
+        end
       end
     end
   end

@@ -13,6 +13,11 @@ module Bankster
 
       attr_accessor :payload
 
+      def success?
+        true
+      end
+
+
       def self.parse(dialog:, raw_response:)
         regex = /((?-:HNVSD:\d{1,3}:\d{1,3}.*\'\')|(?-:[A-Z]{4,6}:\d{1,3}:\d{1,3}.*?\'))/
         message = self.new(dialog: dialog)

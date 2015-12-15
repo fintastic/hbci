@@ -16,7 +16,7 @@ module Bankster
           element :version, default: 1
         end
 
-        element :security_function_code, default: 999
+        element :tan_mechanism, default: 999
 
         # Random security control reference. MUST be the same
         # as in the signature footer
@@ -65,6 +65,8 @@ module Bankster
           self.security_identification_details.party_identification = dialog.system_id
           self.key.bank_code = dialog.credentials.bank_code
           self.key.user_id = dialog.credentials.user_id
+
+          self.tan_mechanism = dialog.tan_mechanism if dialog.tan_mechanism
         end
       end
     end

@@ -1,4 +1,5 @@
 require 'httparty'
+require 'money'
 require "bankster/hbci/version"
 
 require 'bankster/hbci/message'
@@ -27,8 +28,10 @@ require 'bankster/hbci/segments/hnhbs_v1'
 require 'bankster/hbci/segments/hnvsd_v1'
 require 'bankster/hbci/segments/hkidn_v2'
 require 'bankster/hbci/segments/hkvvb_v3'
+require 'bankster/hbci/segments/hksal_v4'
+require 'bankster/hbci/segments/segment_additions'
 
-
+I18n.enforce_available_locales = false if I18n.available_locales.none?
 
 module Bankster
   module Hbci
