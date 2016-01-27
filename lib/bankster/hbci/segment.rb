@@ -50,7 +50,13 @@ module Bankster
         element_group_class = type ? type : Bankster::Hbci::ElementGroup
         element_group = element_group_class.new
         element_group.instance_eval(&block) if block 
-        elements.to_a.each { |el| element_group.define_element(el) }
+        elements.to_a.each do |el| 
+          if el.is_a?(Symbol)
+            element_group.define_element(name: el)
+          else
+            element_group.define_element(el)
+          end
+        end
         self.element_groups[index_of_element_group(name)] = element_group
       end
 
@@ -113,7 +119,7 @@ module Bankster
       end
 
       def to_s
-        element_groups.map{ |eg| eg.elements.join(':') }.join('+') << '\''
+        element_groups.join('+').gsub(/\+*$/,'') << '\''
       end
 
       def self.inherited(subclass)

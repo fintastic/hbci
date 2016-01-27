@@ -2,8 +2,12 @@ module Bankster
   module Hbci
     class Client
       attr_reader :credentials
+      attr_reader :dialog
       def initialize(credentials)
-        @credentials  = credentials
+        unless credentials.is_a?(Bankster::BankCredentials::Hbci)
+          fail ArgumentError.new("#{self.class.name}#initialize expects a Bankster::BankCredentials::Hbci object") 
+        end
+        @credentials = credentials
         credentials.validate!
       end
 
@@ -34,6 +38,19 @@ module Bankster
         raise "could not receive balance for account #{account_number}" if received[account_number].nil?
 
         received[account_number]
+      end
+
+      def dump_messages
+        puts "Messages:"
+        dialog.sent_messages.each_with_index do |m, i|
+          puts
+          puts "Sent message #{i}"
+          puts m.request.raw
+          puts
+          return unless m.response
+          puts "Received response #{i}"
+          puts m.response.raw
+        end
       end
     end
   end

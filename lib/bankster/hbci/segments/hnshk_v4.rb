@@ -54,7 +54,7 @@ module Bankster
         element_group :key do
           element :bank_country_code, default: 280
           element :bank_code # blz
-          element :user_id # login id
+          element :user_id # login id  # "Benutzerkennung"
           element :type, default: 'S'
           element :number, default: 0
           element :version, default: 0

@@ -26,11 +26,14 @@ describe Bankster::Hbci::SegmentParser do
   describe '.parse' do
     let(:sample) { "HNHBK:1:1+xxx'" }
     let(:segment_class) do 
-      class MySegment < Bankster::Hbci::Segment
-        element_group :head, elements: [:type, :position, :version]
+      Class.new(Bankster::Hbci::Segment) do
+        element_group :head do 
+          element :type 
+          element :position
+          element :version
+        end
         element :text
       end
-      MySegment
     end
 
     before do
@@ -48,7 +51,7 @@ describe Bankster::Hbci::SegmentParser do
     end
 
     it 'returns a segment class' do
-      expect(subject).to be_a(MySegment)
+      expect(subject).to be_a(Bankster::Hbci::Segment)
     end
 
     it 'has 2 element groups' do

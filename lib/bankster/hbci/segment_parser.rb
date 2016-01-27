@@ -23,7 +23,13 @@ module Bankster
 
         segment_class_matches = registered_segments.select{ |segment| segment[:type] == type && segment[:version].to_s == version }
         
-        raise "No registered segment class for #{type} in version #{version}" if segment_class_matches.count == 0
+        # raise "No registered segment class for #{type} in version #{version}" if segment_class_matches.count == 0
+        if segment_class_matches.none?
+          return []
+        end
+
+
+
 
         raise "Multiple registered segment classes for #{type} in version #{version}" if segment_class_matches.count > 1
 

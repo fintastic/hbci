@@ -1,28 +1,118 @@
 require 'spec_helper'
 
 describe Bankster::Hbci::ElementGroup do
-  describe '#define_element' do
-    subject { Bankster::Hbci::ElementGroup.new }
-    context 'when called with a name' do
-      before do
-        subject.define_element(:test)
-      end
-      it 'hast a getter' do
-        expect(subject).to respond_to(:test)
-      end
-
-      it 'has a setter' do
-        expect(subject).to respond_to(:test=)
+  describe '#to_s' do
+    context 'with multi elements' do
+      let(:clazz) do
+        Class.new(described_class) do
+          element :test
+          elements :entries
+        end
       end
 
-      it 'can save and return with the accessors' do
-        subject.test = "bla"
-        expect(subject.test).to eql("bla")
+      context 'when the multi elements have content' do
+        subject do
+          eg = clazz.new
+          eg.test = 'test'
+          eg.entries.push('entry_1')
+          eg.entries.push('entry_2')
+          eg.entries.push('entry_3')
+          eg.to_s
+        end
+        it { is_expected.to eql('test:entry_1:entry_2:entry_3') }
+      end
+    end
+
+    context 'without multi elements' do
+      let(:clazz) do
+        Class.new(described_class) do
+          element :a
+          element :b
+          element :c
+        end
+      end
+      context 'when all elements have content' do
+        subject do
+          eg = clazz.new
+          eg.a = "a"
+          eg.b = "b"
+          eg.c = "c"
+          eg.to_s
+        end
+        it { is_expected.to eql('a:b:c') }
       end
 
-      it 'has an array accessor' do
-        subject[0] = "xy"
-        expect(subject.test).to eql("xy")
+      context 'when the first element is empty' do
+        subject do
+          eg = clazz.new
+          eg.a = nil
+          eg.b = "b"
+          eg.c = "c"
+          eg.to_s
+        end
+        it { is_expected.to eql(':b:c') }
+      end
+
+      context 'when the first and last element is empty' do
+        subject do
+          eg = clazz.new
+          eg.a = nil
+          eg.b = "b"
+          eg.c = nil
+          eg.to_s
+        end
+        it { is_expected.to eql(':b') }
+      end
+
+      context 'when the last element is empty' do
+        subject do
+          eg = clazz.new
+          eg.a = "a"
+          eg.b = "b"
+          eg.c = nil
+          eg.to_s
+        end
+        it { is_expected.to eql('a:b') }
+      end
+
+      context 'when the last 2 elements are empty' do
+        subject do
+          eg = clazz.new
+          eg.a = "a"
+          eg.b = nil
+          eg.c = nil
+          eg.to_s
+        end
+        it { is_expected.to eql('a') }
+      end
+
+      context 'when all are empty' do
+        subject do
+          eg = clazz.new
+          eg.a = nil
+          eg.b = nil
+          eg.c = nil
+          eg.to_s
+        end
+        it { is_expected.to eql('') }
+      end
+    end
+  end
+
+  describe '.elements' do
+    context 'given a count' do
+      let(:element_group_class) do
+        Class.new(described_class) do
+          elements :entries
+        end
+      end
+
+      subject{ element_group_class.new }
+
+      it 'enables the accessing of multiple elements as an array' do
+        expect(subject).to respond_to(:entries)
+        subject.entries.push(:test)
+        expect(subject.entries.first).to eql(:test)
       end
     end
   end
@@ -30,11 +120,10 @@ describe Bankster::Hbci::ElementGroup do
   describe '.element' do
     context 'without any args' do
       subject do 
-        class MyGroup < Bankster::Hbci::ElementGroup
+        Class.new(described_class) do
           element :test1
           element :test2
-        end
-        MyGroup.new
+        end.new
       end
 
       it 'can save and return an element value' do

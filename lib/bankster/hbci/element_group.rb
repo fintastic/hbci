@@ -56,8 +56,9 @@ module Bankster
         elements_to_be_defined << definition.merge(name: name)
       end
 
-      def index_for_element(name)
-        defined_elements.index(name)
+      def self.elements(name, definition = {})
+        ensure_setup_of_elements_to_be_defined
+        elements_to_be_defined << definition.merge(name: name, multi: true)
       end
 
       def element(name, definition = {})
@@ -65,24 +66,15 @@ module Bankster
       end
 
       def define_element(definition)
-        name  = definition.is_a?(Symbol) ? definition : definition[:name]
-        defined_elements << name
-        index = index_for_element(name)
+        defined_elements << definition
 
-        define_singleton_method("#{name}") do
-          elements[index]
-        end
+        define_element_reader(definition)
+        define_element_writer(definition)
+        set_element_default(definition)
+      end
 
-        define_singleton_method("#{name}=") do |value|
-          elements[index] = value
-        end
-        if definition.is_a?(Hash)
-          if definition[:default].is_a?(Proc)
-            elements[index] = definition[:default].call(self)
-          else
-            elements[index] = definition[:default]
-          end
-        end
+      def to_s
+        elements.join(':').gsub(/:*$/,'')
       end
 
       def initialize
@@ -94,10 +86,37 @@ module Bankster
 
       private
 
-      def define_elements_from_class
-        self.class.elements_to_be_defined.each do |element|
-          define_element(element)
+      def define_element_reader(definition)
+        define_singleton_method("#{definition[:name]}") do 
+          elements[index_for_element(definition[:name])]
         end
+      end
+
+      def define_element_writer(definition)
+        define_singleton_method("#{definition[:name]}=") do |value| 
+          elements[index_for_element(definition[:name])] = value
+        end
+      end
+
+      def set_element_default(definition)
+        name = definition[:name]
+        index = index_for_element(name)
+
+        if definition[:multi]
+          elements[index] = []           
+        elsif definition[:default].is_a?(Proc)
+          elements[index] = definition[:default].call(self)
+        else
+          elements[index] = definition[:default]
+        end
+      end
+
+      def define_elements_from_class
+        self.class.elements_to_be_defined.each{ |el| define_element(el) }
+      end
+
+      def index_for_element(name)
+        defined_elements.index{ |el| el[:name] == name }
       end
     end
   end

@@ -114,7 +114,10 @@ describe Bankster::Hbci::Segment do
     context 'given an element group with a block of elements' do
       subject do
         segment_class = Class.new(Bankster::Hbci::Segment) do
-          element_group :asd, elements: [:x, :y]
+          element_group :asd do
+            element :x
+            element :y
+          end
           element_group :my_test1 do
             element :a
             element :b

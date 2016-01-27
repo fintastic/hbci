@@ -18,6 +18,7 @@ module Bankster
       def request!
         req = HTTParty.post(dialog.credentials.url, body: Base64.encode64(request.raw))
         dialog.sent_messages << self
+        raise "Error in https communication with bank: #{req.response.inspect}" unless req.success?
         raw_response = Base64.decode64(req.response.body)
         @response = Response.parse(dialog: dialog, raw_response: raw_response)
       end

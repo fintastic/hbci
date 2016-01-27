@@ -7,7 +7,7 @@ module Bankster
           element :country_code, default: 280
           element :code # blz
         end
-        element :user_id
+        element :user_id  # "kunden_id"
         element :system_id, default: 0
         element :state, default: 1
 

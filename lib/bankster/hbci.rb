@@ -1,6 +1,7 @@
 require 'httparty'
 require 'money'
 require "bankster/hbci/version"
+require 'bankster/bank_credentials'
 
 require 'bankster/hbci/message'
 require 'bankster/hbci/request'

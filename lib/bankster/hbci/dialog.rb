@@ -33,7 +33,7 @@ module Bankster
         messenger.request!
 
         if messenger.response && messenger.response.success?
-          @tan_mechanism = messenger.response.payload.select{ |s| s.head.type == "HIRMS"  }.first.allowed_tan_mechanism
+          @tan_mechanism = messenger.response.payload.select{ |s| s.respond_to?(:head) && s.head.type == "HIRMS"  }.first.allowed_tan_mechanism
           @id = messenger.response.head.dialog_id
         end
       end
