@@ -11,16 +11,22 @@ module Bankster
         credentials.validate!
       end
 
-      def balances(account_number)
+      def all_balances
         @dialog = Dialog.new(credentials)
         @dialog.initiate
 
+        @dialog.accounts.each_with_object({}) do |account, output|
+          output.merge!(balance(account.number))
+        end
+      end
+
+      def balance(account_number)
         messenger = Messenger.new(dialog: @dialog)
 
         balance_request_segment = Segments::HKSALv4.build(dialog: @dialog)
-        balance_request_segment.account.code = @dialog.credentials.bank_code
+        balance_request_segment.account.code = @dialog.accounts.first.kik_blz
         balance_request_segment.account.number = account_number
-        balance_request_segment.all_accounts = "J"
+        balance_request_segment.all_accounts = "N"
 
         messenger.add_request_payload(balance_request_segment)
         messenger.request!
@@ -30,14 +36,6 @@ module Bankster
         }.each_with_object({}) { |seg, output|
           output[seg.ktv.number] = seg.booked_amount
         }
-      end
-
-      def balance(account_number)
-        received = balances(account_number)
-
-        raise "could not receive balance for account #{account_number}" if received[account_number].nil?
-
-        received[account_number]
       end
 
       def dump_messages

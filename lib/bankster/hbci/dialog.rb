@@ -35,7 +35,7 @@ module Bankster
 
         if messenger.response && messenger.response.success?
           @tan_mechanism = messenger.response.payload.select{ |s| s.respond_to?(:head) && s.head.type == "HIRMS"  }.first.allowed_tan_mechanism
-          @accounts = messenger.response.payload.select{ |s| s.head.type == "HIUPD"  }.map(&:ktv)
+          @accounts = messenger.response.payload.select{ |s| s.respond_to?(:head) && s.head.type == "HIUPD"  }.map(&:ktv)
           @id = messenger.response.head.dialog_id
         end
       end

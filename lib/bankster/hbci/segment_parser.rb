@@ -28,9 +28,6 @@ module Bankster
           return []
         end
 
-
-
-
         raise "Multiple registered segment classes for #{type} in version #{version}" if segment_class_matches.count > 1
 
         segment_class = segment_class_matches.first[:class]
