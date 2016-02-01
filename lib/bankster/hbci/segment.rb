@@ -1,7 +1,6 @@
 module Bankster
   module Hbci
     class Segment
-
       extend Forwardable
       def_delegator :@element_groups, :[]
       def_delegator :@element_groups, :[]=
@@ -46,16 +45,13 @@ module Bankster
         end
       end
 
-      def initiate_element_group(name, elements, block, type = nil)
+      def initiate_element_group(name, element_definitions, block, type = nil)
         element_group_class = type ? type : Bankster::Hbci::ElementGroup
         element_group = element_group_class.new
         element_group.instance_eval(&block) if block 
-        elements.to_a.each do |el| 
-          if el.is_a?(Symbol)
-            element_group.define_element(name: el)
-          else
-            element_group.define_element(el)
-          end
+        element_definitions.to_a.each do |element_definition| 
+          element_definition = {name: element_definition} if element_definition.is_a?(Symbol)
+          element_group.define_element(element_definition)
         end
         self.element_groups[index_of_element_group(name)] = element_group
       end
@@ -75,6 +71,11 @@ module Bankster
       def self.element_group(name, definition = {}, &block)
         ensure_setup_element_group_definitions
         element_groups_to_be_defined << definition.merge({name: name, block: block})
+      end
+
+      def self.element_groups(name, definition = {}, &block)
+        ensure_setup_element_group_definitions
+        element_groups_to_be_defined << definition.merge({name: name, block: block, multi: true})
       end
 
       def self.element(name, definition = {})

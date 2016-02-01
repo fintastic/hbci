@@ -8,9 +8,11 @@ describe Bankster::Hbci::Segment do
         clazz.element(:my_element)
         clazz.element_groups_to_be_defined
       end
+
       it 'adds the element group to the definition list' do
         expect(subject).to be_a(Array)
       end
+
       it 'adds the element group to the definition list' do
         expect(subject).to be_a(Array)
         expect(subject.count).to eql(1)
@@ -25,6 +27,7 @@ describe Bankster::Hbci::Segment do
         clazz.element(:my_element)
         clazz.new
       end
+
       it 'enables a direct reader for the element in the element group' do
         subject.element_groups[0].elements[0] = "asdasd"
         expect(subject.my_element).to eql("asdasd")
@@ -60,11 +63,11 @@ describe Bankster::Hbci::Segment do
           element :b
         end
 
-        clazz = Class.new(described_class) do
+        Class.new(described_class) do
           element_group :head, type: element_group_class
-        end
-        clazz.new
+        end.new
       end
+
       it 'has a defined head with accessors' do
         expect(subject).to respond_to(:head)
         expect(subject.element_groups[0]).to respond_to(:a)
@@ -144,7 +147,7 @@ describe Bankster::Hbci::Segment do
       end
     end
 
-    context 'given element groups' do
+    context 'given single element groups' do
       subject do
         segment_class = Class.new(Bankster::Hbci::Segment) do
           element_group :my_test1, elements: [{name: :a, default: "asd"}, :b, :c]
@@ -171,6 +174,24 @@ describe Bankster::Hbci::Segment do
 
       it 'has a default value' do
         expect(subject.my_test1.a).to eql("asd")
+      end
+    end
+
+    context 'given multi element groups' do
+      subject do
+        segment_class = Class.new(Bankster::Hbci::Segment) do
+          element_group :my_test1, elements: [:x, :y, :c]
+          element_groups :entries, elements: [{name: :a, default: "asd"}, :b, :c]
+        end
+        segment_class.new
+      end
+
+      it 'can save and return element groups' do
+        expect(subject).to respond_to(:my_test1)
+      end
+
+      it 'returns an array' do
+        expect(subject.entries).to be_a(Array)
       end
     end
   end
