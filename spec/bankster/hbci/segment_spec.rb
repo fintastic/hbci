@@ -177,22 +177,22 @@ describe Bankster::Hbci::Segment do
       end
     end
 
-    context 'given multi element groups' do
-      subject do
-        segment_class = Class.new(Bankster::Hbci::Segment) do
-          element_group :my_test1, elements: [:x, :y, :c]
-          element_groups :entries, elements: [{name: :a, default: "asd"}, :b, :c]
-        end
-        segment_class.new
-      end
-
-      it 'can save and return element groups' do
-        expect(subject).to respond_to(:my_test1)
-      end
-
-      it 'returns an array' do
-        expect(subject.entries).to be_a(Array)
-      end
-    end
+    # context 'given multi element groups' do
+    #   subject do
+    #     segment_class = Class.new(Bankster::Hbci::Segment) do
+    #       element_group :my_test1, elements: [:x, :y, :c]
+    #       element_groups :entries, elements: [{name: :a, default: "asd"}, :b, :c]
+    #     end
+    #     segment_class.new
+    #   end
+    #
+    #   it 'can save and return element groups' do
+    #     expect(subject).to respond_to(:my_test1)
+    #   end
+    #
+    #   it 'returns an array' do
+    #     expect(subject.entries).to be_a(Array)
+    #   end
+    # end
   end
 end
