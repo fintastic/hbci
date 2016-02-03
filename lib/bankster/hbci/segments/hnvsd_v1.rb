@@ -3,7 +3,7 @@ module Bankster
     module Segments
       class HNVSDv1 < Segment
         element_group :head, type: ElementGroups::SegmentHead
-        element :content
+        element :content, type: :binary
 
         def after_build
           self.head.position = 999

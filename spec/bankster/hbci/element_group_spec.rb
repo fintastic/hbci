@@ -97,6 +97,52 @@ describe Bankster::Hbci::ElementGroup do
         it { is_expected.to eql('') }
       end
     end
+
+    describe 'escaping of special chars' do
+      context 'when given regular elements' do
+        let(:clazz) do
+          Class.new(described_class) do
+            element :a
+            element :b
+            element :c
+            element :d
+          end
+        end
+        context 'when all elements have content' do
+          subject do
+            eg = clazz.new
+            eg.a = "te+st"
+            eg.b = "te'st"
+            eg.c = "te?st"
+            eg.d = "te:st"
+            eg.to_s
+          end
+          it { is_expected.to eql('te?+st:te?\'st:te??st:te?:st') }
+        end
+      end
+
+      context 'when given binary elements' do
+        let(:clazz) do
+          Class.new(described_class) do
+            element :a
+            element :b, type: :binary
+            element :c
+            element :d
+          end
+        end
+        context 'when all elements have content' do
+          subject do
+            eg = clazz.new
+            eg.a = "te+st"
+            eg.b = "a+sd"
+            eg.c = "te?st"
+            eg.d = "te:st"
+            eg.to_s
+          end
+          it { is_expected.to eql('te?+st:a+sd:te??st:te?:st') }
+        end
+      end
+    end
   end
 
   describe '.elements' do

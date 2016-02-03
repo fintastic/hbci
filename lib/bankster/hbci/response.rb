@@ -10,6 +10,7 @@ module Bankster
       attr_accessor :encrypted_payload
       attr_accessor :sig_tail
       attr_accessor :tail
+      attr_accessor :raw
 
       attr_accessor :payload
 
@@ -21,9 +22,12 @@ module Bankster
       def self.parse(dialog:, raw_response:)
         regex = /((?-:HNVSD:\d{1,3}:\d{1,3}.*\'\')|(?-:[A-Z]{4,6}:\d{1,3}:\d{1,3}.*?\'))/
         message = self.new(dialog: dialog)
+        message.raw = raw_response
 
         raw_response.scan(regex).each do |segment_matches|
           segment = SegmentParser.parse(segment_matches[0])
+
+          next unless segment.respond_to?(:head)
 
           case segment.head.type
             when 'HNHBK' then message.head = segment

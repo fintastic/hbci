@@ -130,7 +130,7 @@ module Bankster
 
       def self.parse(string)
         string.chomp!('\'')
-        segment_data = string.split('+').map{ |deg| deg.split(':') }
+        segment_data = string.split(/(?<!\?)\+(?![^@]*')/).map{ |deg| deg.split(/(?<!(?<!\?)\?)\:(?![^@]*')/) }
         segment = self.new
         
         segment_data.each_with_index do |element_group_data, element_group_index|
@@ -141,6 +141,10 @@ module Bankster
             if element_index > segment[element_group_index].elements.size 
               raise "Failed to add a parsed element to element_group #{segment.class.type}v#{segment.class.version} at element_group #{element_group_index} index #{element_index}"
             end
+            element_data.gsub!('??','?')
+            element_data.gsub!('?:',':')
+            element_data.gsub!("?'","'")
+            element_data.gsub!("?+","+")
             segment[element_group_index][element_index] = element_data 
           end
         end

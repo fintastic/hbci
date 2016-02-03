@@ -74,7 +74,25 @@ module Bankster
       end
 
       def to_s
-        elements.join(':').gsub(/:*$/,'')
+        elements.each_with_index.map { |element, index|
+          if element.is_a?(Array)
+            element.map do |entry| 
+              case defined_elements[index][:type]
+              when :binary
+                entry.to_s
+              else
+                entry.to_s.gsub('?','??').gsub('+','?+').gsub(':','?:').gsub('\'','?\'')
+              end
+            end
+          else
+            case defined_elements[index][:type]
+            when :binary
+              element.to_s
+            else
+              element.to_s.gsub('?','??').gsub('+','?+').gsub(':','?:').gsub('\'','?\'')
+            end
+          end
+        }.join(':').gsub(/:*$/,'')
       end
 
       def initialize

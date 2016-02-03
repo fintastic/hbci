@@ -195,4 +195,49 @@ describe Bankster::Hbci::Segment do
     #   end
     # end
   end
+
+  describe '.parse(string)' do
+    let(:segment_class) do
+      Class.new(described_class) do
+        element_group :head do
+          element :element_1
+          element :element_2
+        end
+        element_group :body do
+          element :element_3
+        end
+      end
+    end
+
+    context 'given a valid string' do
+      let(:string) { 'element_1:element_2+element_3' }
+      it 'fills the elements' do
+        segment = segment_class.parse(string)
+
+        expect(segment.head.element_1).to eql('element_1')
+        expect(segment.head.element_2).to eql('element_2')
+        expect(segment.body.element_3).to eql('element_3')
+      end
+    end
+
+    context 'given a valid string with special characters' do
+      let(:segment_class) do
+        Class.new(described_class) do
+          element_group :head do
+            element :element_1
+            element :element_2, type: :binary
+            element :element_3
+          end
+        end
+      end
+      let(:string) { 'e?\'le?+m?:ent_1??:e232@l+eme:nt_2\':element_3' }
+      it 'fills the elements and escapes special characters for regular elements' do
+        segment = segment_class.parse(string)
+
+        expect(segment.head.element_1).to eql('e\'le+m:ent_1?')
+        expect(segment.head.element_2).to eql('e232@l+eme:nt_2\'')
+        expect(segment.head.element_3).to eql('element_3')
+      end
+    end
+  end
 end

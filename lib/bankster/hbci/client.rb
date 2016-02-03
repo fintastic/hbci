@@ -1,8 +1,9 @@
 module Bankster
   module Hbci
     class Client
+
       attr_reader :credentials
-      attr_reader :dialog
+
       def initialize(credentials)
         unless credentials.is_a?(Bankster::BankCredentials::Hbci)
           fail ArgumentError.new("#{self.class.name}#initialize expects a Bankster::BankCredentials::Hbci object") 
@@ -11,20 +12,23 @@ module Bankster
         credentials.validate!
       end
 
-      def all_balances
-        @dialog = Dialog.new(credentials)
-        @dialog.initiate
+      def dialog
+        @dialog ||= Dialog.new(credentials)
+        @dialog.initiate unless @dialog.initiated?
+        @dialog
+      end
 
-        @dialog.accounts.each_with_object({}) do |account, output|
+      def all_balances
+        dialog.accounts.each_with_object({}) do |account, output|
           output.merge!(balance(account.number))
         end
       end
 
       def balance(account_number)
-        messenger = Messenger.new(dialog: @dialog)
+        messenger = Messenger.new(dialog: dialog)
 
         balance_request_segment = Segments::HKSALv4.build(dialog: @dialog)
-        balance_request_segment.account.code = @dialog.accounts.first.kik_blz
+        balance_request_segment.account.code = @credentials.bank_code
         balance_request_segment.account.number = account_number
         balance_request_segment.all_accounts = "N"
 
