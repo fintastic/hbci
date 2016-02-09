@@ -11,6 +11,7 @@ require 'bankster/hbci/element_group'
 require 'bankster/hbci/segment_parser'
 require 'bankster/hbci/dialog'
 require 'bankster/hbci/client'
+require 'bankster/hbci/parser'
 
 require 'bankster/hbci/element_groups/segment_head'
 require 'bankster/hbci/element_groups/generated_element_groups'
@@ -30,6 +31,8 @@ require 'bankster/hbci/segments/hnvsd_v1'
 require 'bankster/hbci/segments/hkidn_v2'
 require 'bankster/hbci/segments/hkvvb_v3'
 require 'bankster/hbci/segments/hksal_v4'
+require 'bankster/hbci/segments/hkkaz_v6'
+require 'bankster/hbci/segments/hikaz_v6'
 require 'bankster/hbci/segments/segment_additions'
 
 I18n.enforce_available_locales = false if I18n.available_locales.none?

@@ -220,7 +220,7 @@ module Bankster
       class KTV2 < ElementGroup
         element :number
         element :subnumber
-        element :kik_country
+        element :kik_country, default: 280
         element :kik_blz
       end
 

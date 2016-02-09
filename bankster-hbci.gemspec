@@ -30,6 +30,8 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'httparty'
   spec.add_runtime_dependency 'bankster-bank_credentials'
   spec.add_runtime_dependency 'money'
+  spec.add_runtime_dependency 'citrus'
+  spec.add_runtime_dependency 'parslet'
 
   spec.add_development_dependency 'bundler', "~> 1.10"
   spec.add_development_dependency 'rake', "~> 10.0"

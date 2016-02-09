@@ -24,6 +24,28 @@ module Bankster
         end
       end
 
+      def transactions(account_number)
+        messenger = Messenger.new(dialog: dialog)
+
+        transactions_request_segment = Segments::HKKAZv6.build(dialog: @dialog)
+        transactions_request_segment.account.number = account_number
+        transactions_request_segment.account.kik_blz = @credentials.bank_code
+        transactions_request_segment.account.kik_country = 280
+        transactions_request_segment.all_accounts = "N"
+        transactions_request_segment.from = Date.new(2016,2,2).strftime('%Y%m%d')
+        transactions_request_segment.to = Date.new(2016,2,3).strftime('%Y%m%d')
+
+        messenger.add_request_payload(transactions_request_segment)
+        messenger.request!
+        byebug
+
+        messenger.response.payload.select { |seg| 
+          seg.head.type == "HIKAZ" 
+        }.each_with_object({}) { |seg, output|
+          output[seg.ktv.number] = seg.booked_amount
+        }
+      end
+
       def balance(account_number)
         messenger = Messenger.new(dialog: dialog)
 
