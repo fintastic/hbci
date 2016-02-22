@@ -29,25 +29,45 @@ describe Bankster::Hbci::Client do
     let(:credentials) do
       Bankster::BankCredentials::Hbci.new({
         url:        'https://hbci11.fiducia.de/cgi-bin/hbciservlet',
-        bank_code:  '0000',
-        user_id:    '1111',
-        pin:        'pin'
+        bank_code:  '22222222',
+        user_id:    '11111111',
+        pin:        '12345'
       })
     end
 
     let(:client) { described_class.new(credentials) }
-    let(:dialog) { Bankster::Hbci::Dialog.new(credentials) }
-    let(:messenger) { Bankster::Hbci::Messenger.new(dialog: dialog) }
 
     before do
-      allow_any_instance_of(Bankster::Hbci::Messenger).to receive(:new).and_return(messenger)
-      allow(client).to receive(:dialog).and_return(dialog)
+      Timecop.freeze
+      allow(Bankster::Hbci::Message).to receive(:generate_security_reference).and_return("10999990")
+
+      stub_request(:post, credentials.url).
+        with(body: Base64.encode64(stub_dialog_init_request(credentials))).
+        to_return(status: 200, body: Base64.encode64(stub_dialog_init_response(credentials)))
+
+      stub_request(:post, credentials.url).
+        with(body: Base64.encode64(stub_balance_request(credentials, account_number: '11111111'))).
+        to_return(status: 200, body: Base64.encode64(stub_balance_response(credentials, account_number: '11111111')))
+    end
+
+    after do
+      Timecop.return
     end
 
     it 'initiates the dialog' do
-      # expect_any_instance_of(Bankster::Hbci::Dialog).to receive(:initiate).once
+      expect(client.balance('11111111')).to eql(
+        { "11111111" => Money.eur(420283) }
+      )
 
-      # client.balance('123')
+      expect(
+        a_request(:post, credentials.url).
+        with(body: Base64.encode64(stub_dialog_init_request(credentials)))
+      ).to have_been_made.once
+
+      expect(
+        a_request(:post, credentials.url).
+        with(body: Base64.encode64(stub_balance_request(credentials, account_number: '11111111')))
+      ).to have_been_made.once
     end
   end
 end

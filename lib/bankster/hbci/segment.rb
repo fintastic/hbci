@@ -123,14 +123,15 @@ module Bankster
         element_groups.join('+').gsub(/\+*$/,'') << '\''
       end
 
-      def self.inherited(subclass)
-        SegmentParser.register_segment(type: subclass.type, version: subclass.version, class: subclass)
-        super
+      def self.descendants
+        ObjectSpace.each_object(Class).select { |klass| klass < self  }
       end
 
-      def self.parse(string)
-        string.chomp!('\'')
-        segment_data = string.split(/(?<!\?)\+(?![^@]*')/).map{ |deg| deg.split(/(?<!(?<!\?)\?)\:(?![^@]*')/) }
+      def self.register
+        SegmentParser.register_segment(type: self.type, version: self.version, class: self)
+      end
+
+      def self.parse(segment_data)
         segment = self.new
         
         segment_data.each_with_index do |element_group_data, element_group_index|
@@ -141,10 +142,12 @@ module Bankster
             if element_index > segment[element_group_index].elements.size 
               raise "Failed to add a parsed element to element_group #{segment.class.type}v#{segment.class.version} at element_group #{element_group_index} index #{element_index}"
             end
-            element_data.gsub!('??','?')
-            element_data.gsub!('?:',':')
-            element_data.gsub!("?'","'")
-            element_data.gsub!("?+","+")
+            if element_data.is_a?(String)
+              element_data.gsub!('??','?')
+              element_data.gsub!('?:',':')
+              element_data.gsub!("?'","'")
+              element_data.gsub!("?+","+")
+            end
             segment[element_group_index][element_index] = element_data 
           end
         end

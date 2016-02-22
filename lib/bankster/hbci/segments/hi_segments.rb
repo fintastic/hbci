@@ -955,11 +955,11 @@ module Bankster
         element_group :ParKUmsZeit, type: ParKUmsZeit2
       end
 
-      class HIKAZv6 < Segment
-        element_group :SegHead, type: SegHeadInst
-        element :booked
-        element :notbooked
-      end
+      # class HIKAZv6 < Segment
+      #   element_group :SegHead, type: SegHeadInst
+      #   element :booked
+      #   element :notbooked
+      # end
 
       class HIKAZSv6 < Segment
         element_group :SegHead, type: SegHeadInst
@@ -1813,12 +1813,12 @@ module Bankster
         element_group :ParUeb, type: ParUeb
       end
 
-      class HICCSSv1 < Segment
-        element_group :SegHead, type: SegHeadInst
-        element :maxnum
-        element :minsigs
-        element :secclass
-      end
+      # class HICCSSv1 < Segment
+      #   element_group :SegHead, type: SegHeadInst
+      #   element :maxnum
+      #   element :minsigs
+      #   element :secclass
+      # end
 
       class HICUMSv1 < Segment
         element_group :SegHead, type: SegHeadInst
@@ -1947,12 +1947,12 @@ module Bankster
         element_group :ParDauerSEPAEdit, type: ParDauerSEPAEdit
       end
 
-      class HICDLSv1 < Segment
-        element_group :SegHead, type: SegHeadInst
-        element :maxnum
-        element :minsigs
-        element :secclass
-        element_group :ParDauerSEPADel, type: ParDauerSEPADel
+      # class HICDLSv1 < Segment
+      #   element_group :SegHead, type: SegHeadInst
+      #   element :maxnum
+      #   element :minsigs
+      #   element :secclass
+      #   element_group :ParDauerSEPADel, type: ParDauerSEPADel
       end
 
       class HICDBv1 < Segment

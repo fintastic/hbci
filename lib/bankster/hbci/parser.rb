@@ -2,24 +2,6 @@ require 'parslet'
 
 module Bankster
   module Hbci
-    class Transform < Parslet::Transform
-      rule(:element_content => simple(:element_content)) do |element|
-        element[:element_content].to_s
-      end
-
-      rule(:element_group_content => sequence(:element_group_content)) do |c|
-        c[:element_group_content]
-      end
-
-      rule(:element_group_content => simple(:element_group_content)) do |c|
-        [c[:element_group_content]]
-      end
-
-      rule((:segment) => subtree(:segment)) do |s|
-        s[:segment]
-      end
-    end
-
     class Parser < Parslet::Parser
       root :segments
 
@@ -30,30 +12,31 @@ module Bankster
       end
 
       rule(:segment_content) do
-        element_group >> (element_group_delimiter >> element_group).repeat
+        element_group.as(:element_group) >> (element_group_delimiter >> element_group.repeat(0,1).as(:element_group)).repeat
       end
 
       rule(:element_group) do
-        (element >> (element_delimiter >> element).repeat).as(:element_group_content)
+        element.as(:element) >> (element_delimiter >> element.maybe.as(:element)).repeat
       end
 
-      rule(:regular_element_content) do
-        binary_length.absent? >> ((end_of_element.absent? >> element_content_char).repeat(1)).as(:element_content)
+      rule(:regular_element) do
+        (end_of_element.absent? >> element_char).repeat(1)
       end
 
-      rule(:binary_element_content) do
+      rule(:binary_element) do
         binary_length >> dynamic do |_, context|
-          any.repeat(context.captures[:length].to_i, context.captures[:length].to_i).as(:element_content)
+          any.repeat(context.captures[:length].to_i, context.captures[:length].to_i)
         end
       end
 
-      rule(:element)                 { regular_element_content | binary_element_content }
+      rule(:element)                 { (binary_length.absent? >> regular_element ) | binary_element }
       rule(:binary_length)           { str('@') >> integer.capture(:length) >> str('@') }
       rule(:escaped_reserved)        { escaper >> reserved }
       rule(:reserved)                { delimiter | escaper }
       rule(:end_of_element)          { delimiter }
       rule(:delimiter)               { segment_delimiter | element_group_delimiter | element_delimiter }
-      rule(:element_content_char)    { escaped_reserved | any }
+      # rule(:element_char)            { escaped_reserved | match('[a-zA-Z0-9]') }
+      rule(:element_char)            { escaped_reserved | any }
       rule(:segment_delimiter)       { str('\'') }
       rule(:element_group_delimiter) { str('+') }
       rule(:element_delimiter)       { str(':') }

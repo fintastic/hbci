@@ -209,8 +209,8 @@ describe Bankster::Hbci::Segment do
       end
     end
 
-    context 'given a valid string' do
-      let(:string) { 'element_1:element_2+element_3' }
+    context 'given valid elements' do
+      let(:string) { [['element_1','element_2'], ['element_3']] }
       it 'fills the elements' do
         segment = segment_class.parse(string)
 
@@ -230,7 +230,8 @@ describe Bankster::Hbci::Segment do
           end
         end
       end
-      let(:string) { 'e?\'le?+m?:ent_1??:e232@l+eme:nt_2\':element_3' }
+      # let(:string) { 'e?\'le?+m?:ent_1??:e232@l+eme:nt_2\':element_3' }
+      let(:string) { [['e?\'le?+m?:ent_1??', 'e232@l+eme:nt_2\'', 'element_3']] }
       it 'fills the elements and escapes special characters for regular elements' do
         segment = segment_class.parse(string)
 

@@ -2001,13 +2001,13 @@ module Bankster
         element_group :par_dauer_sepa_edit, type: ElementGroups::ParDauerSEPAEdit
       end
 
-      class HICDLSv1 < Segment
-        element_group :head, type: ElementGroups::SegmentHead
-        element :maxnum
-        element :minsigs
-        element :secclass
-        element_group :par_dauer_sepa_del, type: ElementGroups::ParDauerSEPADel
-      end
+      # class HICDLSv1 < Segment
+      #   element_group :head, type: ElementGroups::SegmentHead
+      #   element :maxnum
+      #   element :minsigs
+      #   element :secclass
+      #   element_group :par_dauer_sepa_del, type: ElementGroups::ParDauerSEPADel
+      # end
 
       class HICDBv1 < Segment
         element_group :head, type: ElementGroups::SegmentHead

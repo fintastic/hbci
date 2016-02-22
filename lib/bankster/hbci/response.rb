@@ -20,12 +20,17 @@ module Bankster
 
 
       def self.parse(dialog:, raw_response:)
+        # byebug
+        raw_response = raw_response.force_encoding('iso-8859-1').encode('utf-8')
+        parsing_tree = Parser.new.parse(raw_response)
+        raw_segments = Transformer.new.apply(parsing_tree)
         regex = /((?-:HNVSD:\d{1,3}:\d{1,3}.*\'\')|(?-:[A-Z]{4,6}:\d{1,3}:\d{1,3}.*?\'))/
         message = self.new(dialog: dialog)
         message.raw = raw_response
 
-        raw_response.scan(regex).each do |segment_matches|
-          segment = SegmentParser.parse(segment_matches[0])
+
+        raw_segments.each do |raw_segment|
+          segment = SegmentParser.parse(raw_segment)
 
           next unless segment.respond_to?(:head)
 
@@ -41,10 +46,14 @@ module Bankster
 
         if message.encrypted_payload
           raw_payload = message.encrypted_payload.to_s.split('@',3)[2]
+          # TODO: remove the following line. That last apostrophe should not be here. 
           raw_payload.chomp!('\'')
 
-          message.payload = raw_payload.scan(regex).map do |segment_matches|
-            segment = SegmentParser.parse(segment_matches[0])
+          parsing_tree = Parser.new.parse(raw_payload)
+          raw_segments = Transformer.new.apply(parsing_tree)
+
+          message.payload = raw_segments.map do |raw_segment|
+            SegmentParser.parse(raw_segment)
           end
 
         end

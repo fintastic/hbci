@@ -15,9 +15,12 @@ module Bankster
         registered_segments << segment
       end
 
-      def self.parse(string)
-        string.chomp!('\'')
-        segment_data = string.split('+').map{ |deg| deg.split(':') }
+      def self.parse(segment_data)
+        if self.registered_segments == [] 
+          Segment.descendants.each { |s| s.register }
+        end
+        # string.chomp!('\'')
+        # segment_data = string.split('+').map{ |deg| deg.split(':') }
         type = segment_data[0][0]
         version = segment_data[0][2]
 
@@ -31,7 +34,7 @@ module Bankster
         raise "Multiple registered segment classes for #{type} in version #{version}" if segment_class_matches.count > 1
 
         segment_class = segment_class_matches.first[:class]
-        segment_class.parse(string)
+        segment_class.parse(segment_data)
       end
     end
   end

@@ -16,12 +16,12 @@ describe Bankster::Hbci::Parser do
     end
   end
 
-  describe '#element_content_char' do
+  describe '#element_char' do
     it 'parses the element content' do
-      expect(parser.element_content_char).to parse('a')
-      expect(parser.element_content_char).to parse('x')
-      expect(parser.element_content_char).to parse('z')
-      expect(parser.element_content_char).to parse('Z')
+      expect(parser.element_char).to parse('a')
+      expect(parser.element_char).to parse('x')
+      expect(parser.element_char).to parse('z')
+      expect(parser.element_char).to parse('Z')
     end
   end
 
@@ -50,6 +50,7 @@ describe Bankster::Hbci::Parser do
   describe '#element_group' do
     it 'parses an element_group' do
       expect(parser.element_group).to parse('ab')
+      expect(parser.element_group).to parse('ab::')
       expect(parser.element_group).to parse('adsa')
       expect(parser.element_group).to parse('asd:asd')
     end
@@ -57,6 +58,9 @@ describe Bankster::Hbci::Parser do
 
   describe '#segment' do
     it 'parses a segment' do
+      expect(parser.segment).to parse("a:b++c'")
+      expect(parser.segment).to parse("asd:asd+asd::+asd'")
+      expect(parser.segment).to parse("asd:asd++asd::+asd'")
       expect(parser.segment).to parse("asd'")
       expect(parser.segment).to parse('aa+aa\'')
       expect(parser.segment).to parse('el1:el2+el3:el4+el5\'')
@@ -70,71 +74,4 @@ describe Bankster::Hbci::Parser do
       expect(parser.segments).to parse("a:a+a:s'b:sd+s:x'")
     end
   end
-
-  describe 'transforming' do
-    let(:tree) { parser.segments.parse(message) }
-    let(:result) { Bankster::Hbci::Transform.new.apply(tree) }
-
-    context 'when two segments are given' do
-      let(:message) { "a:a+a:s'b:sd+s:x'" }
-
-      it 'contains the correct elements' do
-        expect(result).to eql([
-          [['a','a'], ['a', 's']], 
-          [['b', 'sd'], ['s', 'x']],
-        ])
-      end
-    end
-
-    context 'when one segment is given' do
-      let(:message) { "a:a+a:s'" }
-
-      it 'contains the correct elements' do
-        expect(result).to eql([
-          [['a','a'], ['a', 's']]
-        ])
-      end
-    end
-
-    context 'when one segment with standalone elements is given' do
-      let(:message) { "a:a+s'" }
-
-      it 'contains the correct elements' do
-        expect(result).to eql([
-          [['a','a'], ['s']]
-        ])
-      end
-    end
-
-    context 'when a segment with escaped special chars is given' do
-      let(:message) { "hello?::what?'s+your:na?+me??'" }
-
-      it 'contains the correct elements' do
-        expect(result).to eql([
-          [['hello?:','what?\'s'], ['your', 'na?+me??']]
-        ])
-      end
-    end
-
-    context 'when a segment with binary data is given' do
-      let(:message) { "this:is:binary+data:@3@asd'" }
-
-      it 'contains the correct elements' do
-        expect(result).to eql([
-          [['this', 'is', 'binary'], ['data','asd']]
-        ])
-      end
-    end
-
-    context 'when a segment with standalone binary data is given' do
-      let(:message) { "this:is:binary+@3@asd'" }
-
-      it 'contains the correct elements' do
-        expect(result).to eql([
-          [['this', 'is', 'binary'], ['asd']]
-        ])
-      end
-    end
-  end
 end
-

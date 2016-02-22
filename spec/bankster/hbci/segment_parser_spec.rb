@@ -24,7 +24,7 @@ describe Bankster::Hbci::SegmentParser do
   end
 
   describe '.parse' do
-    let(:sample) { "HNHBK:1:1+xxx'" }
+    let(:sample) { [['HNHBK', '1', '1'],['xxx']] }
     let(:segment_class) do 
       Class.new(Bankster::Hbci::Segment) do
         element_group :head do 

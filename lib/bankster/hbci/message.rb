@@ -28,10 +28,13 @@ module Bankster
       end
 
       def initialize(dialog:)
-        @sec_ref = rand(1..23) * 999999 + 1000000
-
+        @sec_ref = self.class.generate_security_reference
         @dialog = dialog
         @payload = []
+      end
+
+      def self.generate_security_reference
+        rand(1..23) * 999999 + 1000000
       end
 
       def add_payload(segment)

@@ -24,6 +24,12 @@ module Bankster
         end
       end
 
+      def all_transactions
+        dialog.accounts.each_with_object({}) do |account, output|
+          output[account.number] = transactions(account.number)
+        end
+      end
+
       def transactions(account_number)
         messenger = Messenger.new(dialog: dialog)
 
@@ -32,18 +38,16 @@ module Bankster
         transactions_request_segment.account.kik_blz = @credentials.bank_code
         transactions_request_segment.account.kik_country = 280
         transactions_request_segment.all_accounts = "N"
-        transactions_request_segment.from = Date.new(2016,2,2).strftime('%Y%m%d')
-        transactions_request_segment.to = Date.new(2016,2,3).strftime('%Y%m%d')
+        transactions_request_segment.from = Date.new(2016,1,20).strftime('%Y%m%d')
+        transactions_request_segment.to = Date.new(2016,2,20).strftime('%Y%m%d')
 
         messenger.add_request_payload(transactions_request_segment)
         messenger.request!
-        byebug
 
-        messenger.response.payload.select { |seg| 
+        mt940 = messenger.response.payload.select { |seg| 
           seg.head.type == "HIKAZ" 
-        }.each_with_object({}) { |seg, output|
-          output[seg.ktv.number] = seg.booked_amount
-        }
+        }.first.booked.split('@',3)[2]
+        Cmxl.parse(mt940).first.transactions.map(&:to_h)
       end
 
       def balance(account_number)
