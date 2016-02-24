@@ -25,6 +25,43 @@ describe Bankster::Hbci::Client do
     end
   end
 
+  describe '#transactions(account_number)' do
+    let(:credentials) do
+      Bankster::BankCredentials::Hbci.new({
+        url:        'https://hbci11.fiducia.de/cgi-bin/hbciservlet',
+        bank_code:  '11111111',
+        user_id:    '22222222',
+        pin:        '33333'
+      })
+    end
+    let(:client) { described_class.new(credentials) }
+
+    before do
+      Timecop.freeze
+      allow(Bankster::Hbci::Message).to receive(:generate_security_reference).and_return("10999990")
+
+      stub_request(:post, credentials.url).
+        with(body: Base64.encode64(stub_dialog_init_request(credentials))).
+        to_return(status: 200, body: Base64.encode64(stub_dialog_init_response(credentials)))
+
+      stub_request(:post, credentials.url).
+        with(body: Base64.encode64(stub_transactions_request(credentials, account_number: '11111111', start_date: Date.new(2016,2,18), end_date: Date.new(2016,2,20)))).
+        to_return(status: 200, body: Base64.encode64(stub_transactions_response(credentials, account_number: '11111111')))
+    end
+    after do
+      Timecop.return
+    end
+
+    it 'returns the transactions' do
+      transactions = client.transactions('11111111', Date.new(2016,2,18), Date.new(2016,2,20))
+      expect(transactions.count).to eql(1)
+
+      transaction = transactions.first
+      expect(transaction["amount_in_cents"]).to eql(1833)
+      expect(transaction["swift_code"]).to eql('NMSC')
+    end
+  end
+
   describe '#balance(account_number)' do
     let(:credentials) do
       Bankster::BankCredentials::Hbci.new({
@@ -34,7 +71,6 @@ describe Bankster::Hbci::Client do
         pin:        '12345'
       })
     end
-
     let(:client) { described_class.new(credentials) }
 
     before do
@@ -54,13 +90,10 @@ describe Bankster::Hbci::Client do
       Timecop.return
     end
 
-    it 'initiates the dialog' do
-      # require 'development_profiler'
-      # DevelopmentProfiler.prof('new_without_def') do
+    it 'receives the balance' do
       expect(client.balance('11111111')).to eql(
         { "11111111" => Money.eur(420283) }
       )
-      # end
 
       expect(
         a_request(:post, credentials.url).

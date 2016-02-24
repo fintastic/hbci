@@ -24,13 +24,13 @@ module Bankster
         end
       end
 
-      def all_transactions
+      def all_transactions(start_date, end_date)
         dialog.accounts.each_with_object({}) do |account, output|
-          output[account.number] = transactions(account.number)
+          output[account.number] = transactions(account.number, start_date, end_date)
         end
       end
 
-      def transactions(account_number)
+      def transactions(account_number, start_date, end_date)
         messenger = Messenger.new(dialog: dialog)
 
         transactions_request_segment = Segments::HKKAZv6.build(dialog: @dialog)
@@ -38,16 +38,20 @@ module Bankster
         transactions_request_segment.account.kik_blz = @credentials.bank_code
         transactions_request_segment.account.kik_country = 280
         transactions_request_segment.all_accounts = "N"
-        transactions_request_segment.from = Date.new(2016,1,20).strftime('%Y%m%d')
-        transactions_request_segment.to = Date.new(2016,2,20).strftime('%Y%m%d')
+        transactions_request_segment.from = start_date.strftime('%Y%m%d')
+        transactions_request_segment.to = end_date.strftime('%Y%m%d')
 
         messenger.add_request_payload(transactions_request_segment)
         messenger.request!
 
-        mt940 = messenger.response.payload.select { |seg| 
+        transaction_segment = messenger.response.payload.select { |seg| 
           seg.head.type == "HIKAZ" 
-        }.first.booked
-        Cmxl.parse(mt940).first.transactions.map(&:to_h)
+        }.first
+        if transaction_segment
+          Cmxl.parse(transaction_segment.booked).first.transactions.map(&:to_h)
+        else
+          []
+        end
       end
 
       def balance(account_number)
