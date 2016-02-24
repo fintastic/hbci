@@ -84,12 +84,8 @@ module Bankster
       end
 
       def define_element_groups_from_class
-        begin
         self.class.element_groups_to_be_defined.each do |element_group|
           define_element_group(element_group)
-        end
-        rescue
-          byebug
         end
       end
 
