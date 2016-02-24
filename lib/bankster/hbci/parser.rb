@@ -1,49 +1,114 @@
-require 'parslet'
-
 module Bankster
   module Hbci
-    class Parser < Parslet::Parser
-      root :segments
+    class Parser
+      attr_reader :scanner
+      attr_accessor :segments
 
-      rule(:segments) { segment.as(:segment).repeat(1) }
+      ELEMENT_DELIMITER       = ':'
+      ELEMENT_GROUP_DELIMITER = '+'
+      SEGMENT_DELIMITER       = '\''
 
-      rule(:segment) do
-        (segment_delimiter.absent? >> segment_content).repeat(1) >> segment_delimiter
+      
+      # ELEMENT_REGEX matches everything until a a delimiter that is not escaped
+      #
+      # NODE                     EXPLANATION
+      # ------------------------------------------------------------------------
+      #   (                        group and capture to \1:
+      # ------------------------------------------------------------------------
+      #     .*?                      any character except \n (0 or more times
+      #                              (matching the least amount possible))
+      # ------------------------------------------------------------------------
+      #     (?=                      look ahead to see if there is:
+      # ------------------------------------------------------------------------
+      #       (?<!                     look behind to see if there is not:
+      # ------------------------------------------------------------------------
+      #         \?                       '?'
+      # ------------------------------------------------------------------------
+      #       )                        end of look-behind
+      # ------------------------------------------------------------------------
+      #       [:+']                    any character of: ':', '+', '''
+      # ------------------------------------------------------------------------
+      #     )                        end of look-ahead
+      # ------------------------------------------------------------------------
+      #   )                        end of \1
+      ELEMENT_REGEX           = /(.*?(?=(?<!\?)[:+']))/
+
+      # Binary Elements may contain unescaped delimiters. Thus they are not be
+      # terminated by regular delimiters. But They content is preceeded with 
+      # its lenth surrounded by '@'s. e.g.:
+      #
+      # '@6@mydata' or '@12@mydatamydata'
+      # 
+      # The BINARY_ELEMENT_LENGTH_REGEx matches only the length.
+      BINARY_ELEMENT_LENGTH_REGEX = /@(\d+)@/
+
+      def self.parse(string)
+        self.new(string).parse
       end
 
-      rule(:segment_content) do
-        element_group.as(:element_group) >> (element_group_delimiter >> element_group.repeat(0,1).as(:element_group)).repeat
+      def initialize(string)
+        @scanner = StringScanner.new(string)
+        @segments = []
+        add_segment
+        add_element_group
       end
 
-      rule(:element_group) do
-        element.as(:element) >> (element_delimiter >> element.maybe.as(:element)).repeat
+      def parse
+        parse_element
+        while scanner.rest_size > 1
+          parse_delimiter
+          parse_element 
+        end
+        segments
       end
 
-      rule(:regular_element) do
-        (end_of_element.absent? >> element_char).repeat(1)
+      private 
+
+      def parse_regular_element
+        current_element_group << scanner.scan(ELEMENT_REGEX)
       end
 
-      rule(:binary_element) do
-        binary_length >> dynamic do |_, context|
-          any.repeat(context.captures[:length].to_i, context.captures[:length].to_i)
+      def parse_element
+        binary_element_ahead? ? parse_binary_element : parse_regular_element
+      end
+
+      def parse_delimiter
+        delimiter = scanner.getch
+        return if scanner.eos?
+        if delimiter == ELEMENT_GROUP_DELIMITER
+          add_element_group
+        elsif delimiter == SEGMENT_DELIMITER
+          add_segment
+          add_element_group
         end
       end
 
-      rule(:element)                 { (binary_length.absent? >> regular_element ) | binary_element }
-      rule(:binary_length)           { str('@') >> integer.capture(:length) >> str('@') }
-      rule(:escaped_reserved)        { escaper >> reserved }
-      rule(:reserved)                { delimiter | escaper }
-      rule(:end_of_element)          { delimiter }
-      rule(:delimiter)               { segment_delimiter | element_group_delimiter | element_delimiter }
-      # rule(:element_char)            { escaped_reserved | match('[a-zA-Z0-9]') }
-      rule(:element_char)            { escaped_reserved | any }
-      rule(:segment_delimiter)       { str('\'') }
-      rule(:element_group_delimiter) { str('+') }
-      rule(:element_delimiter)       { str(':') }
-      rule(:escaper)                 { str('?') }
-      rule(:integer)                 { digit.repeat(1) }
-      rule(:digit)                   { match('[0-9]')  }
-      rule(:eof)                     { any.absent?  }
+      def parse_binary_element
+        scanner.scan(BINARY_ELEMENT_LENGTH_REGEX)
+        binary = scanner.rest.byteslice(0,scanner[1].to_i)
+        scanner.pos = scanner.pos + scanner[1].to_i
+        current_element_group << binary
+      end
+
+      def binary_element_ahead?
+        scanner.peek(1) == '@' && scanner.check(BINARY_ELEMENT_LENGTH_REGEX)
+      end
+
+      def add_segment
+        segments << []
+      end
+
+      def add_element_group
+        current_segment << []
+      end
+
+      def current_segment
+        segments.last
+      end
+
+      def current_element_group
+        current_segment.last
+      end
     end
   end
 end

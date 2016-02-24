@@ -1,16 +1,12 @@
 module Bankster
   module Hbci
     module Segments
-      class HISALv4 < Segment
-        def booked_amount
-          sign = case booked.credit_debit
-                 when "C" then 1
-                 when "D" then -1
-                 end
-          sign * Money.new(booked.btg_value.gsub(',',''), booked.btg_curr)
-        end
-      end
       class HIRMSv2 < Segment
+        element_group :head, type: ElementGroups::SegmentHead
+        99.times do |i|
+          element_group "ret_val_#{i}".to_sym, type: ElementGroups::RetVal
+        end
+
         def allowed_tan_mechanism
           groups_with_status_code = element_groups.select{ |eg| eg.respond_to?(:code) && eg.code == "3920" }
           groups_with_status_code.first.parm if groups_with_status_code.any?

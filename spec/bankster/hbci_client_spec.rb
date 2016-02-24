@@ -55,9 +55,12 @@ describe Bankster::Hbci::Client do
     end
 
     it 'initiates the dialog' do
+      # require 'development_profiler'
+      # DevelopmentProfiler.prof('new_without_def') do
       expect(client.balance('11111111')).to eql(
         { "11111111" => Money.eur(420283) }
       )
+      # end
 
       expect(
         a_request(:post, credentials.url).

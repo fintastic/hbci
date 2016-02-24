@@ -12,7 +12,7 @@ module Bankster
         end
 
         element_group :security_profile do
-          element :method, default: 'PIN'
+          element :security_method, default: 'PIN'
           element :version, default: 1
         end
 

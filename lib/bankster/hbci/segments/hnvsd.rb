@@ -7,8 +7,7 @@ module Bankster
 
         def after_build
           self.head.position = 999
-          data = self.message.signed_payload.join('')
-          self.content = "@#{data.size}@#{data}"
+          self.content = self.message.signed_payload.join('')
         end
 
         # def self.parse(string)

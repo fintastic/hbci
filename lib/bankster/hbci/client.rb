@@ -46,7 +46,7 @@ module Bankster
 
         mt940 = messenger.response.payload.select { |seg| 
           seg.head.type == "HIKAZ" 
-        }.first.booked.split('@',3)[2]
+        }.first.booked
         Cmxl.parse(mt940).first.transactions.map(&:to_h)
       end
 

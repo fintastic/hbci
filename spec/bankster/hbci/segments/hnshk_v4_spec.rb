@@ -11,7 +11,7 @@ describe Bankster::Hbci::Segments::HNSHKv4 do
       Timecop.return
     end
     it 'sets te correct default values' do
-      expect(subject.security_profile.method).to eql('PIN')
+      expect(subject.security_profile.security_method).to eql('PIN')
       expect(subject.security_profile.version).to eql(1)
       expect(subject.tan_mechanism).to eql(999)
       expect(subject.area_of_security_application).to eql(1)

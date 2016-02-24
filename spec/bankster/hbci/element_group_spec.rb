@@ -139,7 +139,7 @@ describe Bankster::Hbci::ElementGroup do
             eg.d = "te:st"
             eg.to_s
           end
-          it { is_expected.to eql('te?+st:a+sd:te??st:te?:st') }
+          it { is_expected.to eql('te?+st:@4@a+sd:te??st:te?:st') }
         end
       end
     end

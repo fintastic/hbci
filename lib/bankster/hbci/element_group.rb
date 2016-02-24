@@ -79,7 +79,7 @@ module Bankster
             element.map do |entry| 
               case defined_elements[index][:type]
               when :binary
-                entry.to_s
+                "@#{entry.size}@#{entry}"
               else
                 entry.to_s.gsub('?','??').gsub('+','?+').gsub(':','?:').gsub('\'','?\'')
               end
@@ -87,7 +87,7 @@ module Bankster
           else
             case defined_elements[index][:type]
             when :binary
-              element.to_s
+              "@#{element.size}@#{element}"
             else
               element.to_s.gsub('?','??').gsub('+','?+').gsub(':','?:').gsub('\'','?\'')
             end
@@ -102,17 +102,48 @@ module Bankster
         define_elements_from_class
       end
 
+      def respond_to?(name)
+        potential_element_name = name.to_s.split("=").first.to_sym
+
+        !!index_for_element(potential_element_name) || super
+      end
+
       private
 
       def define_element_reader(definition)
-        define_singleton_method("#{definition[:name]}") do 
-          elements[index_for_element(definition[:name])]
-        end
+        # define_singleton_method("#{definition[:name]}") do 
+        #   elements[index_for_element(definition[:name])]
+        # end
       end
 
       def define_element_writer(definition)
-        define_singleton_method("#{definition[:name]}=") do |value| 
-          elements[index_for_element(definition[:name])] = value
+        # define_singleton_method("#{definition[:name]}=") do |value| 
+        #   elements[index_for_element(definition[:name])] = value
+        # end
+      end
+
+      def get_element(name)
+        elements[index_for_element(name)]
+      end
+
+      def set_element(name, value)
+        elements[index_for_element(name)] = value
+      end
+
+
+      def method_missing(name, *args)
+        potential_element_name = name.to_s.split("=").first.to_sym
+        writer = (name[-1..-1] == "=")
+
+        index = index_for_element(potential_element_name)
+        if index
+          if writer && args.count == 1
+            set_element(potential_element_name, args.first)
+          else
+            get_element(potential_element_name)
+          end
+        else
+          super
         end
       end
 
