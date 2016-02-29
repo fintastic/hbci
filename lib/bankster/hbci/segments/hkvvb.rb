@@ -7,7 +7,7 @@ module Bankster
         element :bpd_version, default: 0
         element :upd_version, default: 0
         element :dialog_language, default: 0
-        element :product_name, default: "Bankster"
+        element :product_name, default: 'Bankster'
         element :product_version, default: Bankster::Hbci::VERSION
 
         def after_build

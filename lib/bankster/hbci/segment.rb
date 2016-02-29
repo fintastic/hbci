@@ -100,11 +100,11 @@ module Bankster
       end
 
       def self.type
-        self.name.split('::').last.split('v').first rescue "EmptySegment"
+        self.name.split('::').last.split('v').first rescue 'EmptySegment'
       end
 
       def self.version
-        self.name.split('::').last.split('v').last rescue "0"
+        self.name.split('::').last.split('v').last rescue '0'
       end
 
       def self.build(dialog: nil, message: nil, **)
@@ -146,7 +146,7 @@ module Bankster
               element_data.gsub!('??','?')
               element_data.gsub!('?:',':')
               element_data.gsub!("?'","'")
-              element_data.gsub!("?+","+")
+              element_data.gsub!('?+','+')
             end
             segment[element_group_index][element_index] = element_data 
           end

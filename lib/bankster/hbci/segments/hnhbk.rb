@@ -20,7 +20,7 @@ module Bankster
           head_length = 30
           tail_length = 11
           length = head_length + tail_length + dialog.next_sent_message_number.to_s.size + dialog.id.to_s.size + message.encrypted_payload.to_s.size + message.enc_head.to_s.size
-          self.message_size = length.to_s.rjust(12, "0")
+          self.message_size = length.to_s.rjust(12, '0')
           self.dialog_id = dialog.id
           self.message_number = dialog.next_sent_message_number
         end

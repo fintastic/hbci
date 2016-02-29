@@ -34,9 +34,9 @@ describe Bankster::Hbci::ElementGroup do
       context 'when all elements have content' do
         subject do
           eg = clazz.new
-          eg.a = "a"
-          eg.b = "b"
-          eg.c = "c"
+          eg.a = 'a'
+          eg.b = 'b'
+          eg.c = 'c'
           eg.to_s
         end
         it { is_expected.to eql('a:b:c') }
@@ -46,8 +46,8 @@ describe Bankster::Hbci::ElementGroup do
         subject do
           eg = clazz.new
           eg.a = nil
-          eg.b = "b"
-          eg.c = "c"
+          eg.b = 'b'
+          eg.c = 'c'
           eg.to_s
         end
         it { is_expected.to eql(':b:c') }
@@ -57,7 +57,7 @@ describe Bankster::Hbci::ElementGroup do
         subject do
           eg = clazz.new
           eg.a = nil
-          eg.b = "b"
+          eg.b = 'b'
           eg.c = nil
           eg.to_s
         end
@@ -67,8 +67,8 @@ describe Bankster::Hbci::ElementGroup do
       context 'when the last element is empty' do
         subject do
           eg = clazz.new
-          eg.a = "a"
-          eg.b = "b"
+          eg.a = 'a'
+          eg.b = 'b'
           eg.c = nil
           eg.to_s
         end
@@ -78,7 +78,7 @@ describe Bankster::Hbci::ElementGroup do
       context 'when the last 2 elements are empty' do
         subject do
           eg = clazz.new
-          eg.a = "a"
+          eg.a = 'a'
           eg.b = nil
           eg.c = nil
           eg.to_s
@@ -111,10 +111,10 @@ describe Bankster::Hbci::ElementGroup do
         context 'when all elements have content' do
           subject do
             eg = clazz.new
-            eg.a = "te+st"
+            eg.a = 'te+st'
             eg.b = "te'st"
-            eg.c = "te?st"
-            eg.d = "te:st"
+            eg.c = 'te?st'
+            eg.d = 'te:st'
             eg.to_s
           end
           it { is_expected.to eql('te?+st:te?\'st:te??st:te?:st') }
@@ -133,10 +133,10 @@ describe Bankster::Hbci::ElementGroup do
         context 'when all elements have content' do
           subject do
             eg = clazz.new
-            eg.a = "te+st"
-            eg.b = "a+sd"
-            eg.c = "te?st"
-            eg.d = "te:st"
+            eg.a = 'te+st'
+            eg.b = 'a+sd'
+            eg.c = 'te?st'
+            eg.d = 'te:st'
             eg.to_s
           end
           it { is_expected.to eql('te?+st:@4@a+sd:te??st:te?:st') }
@@ -180,26 +180,26 @@ describe Bankster::Hbci::ElementGroup do
       it 'has a reader for its element' do
         subject[0] = 'test'
         expect(subject).to  respond_to(:test1)
-        expect(subject.test1).to eql("test")
+        expect(subject.test1).to eql('test')
       end
 
       it 'has a writer for its element' do
-        subject.test1 = "bla"
-        expect(subject.test1).to eql("bla")
+        subject.test1 = 'bla'
+        expect(subject.test1).to eql('bla')
       end
 
       it 'works with multiple elements' do
-        subject.test1 = "bla"
-        subject.test2 = "blubb"
-        expect(subject[0]).to eql("bla")
-        expect(subject[1]).to eql("blubb")
+        subject.test1 = 'bla'
+        subject.test2 = 'blubb'
+        expect(subject[0]).to eql('bla')
+        expect(subject[1]).to eql('blubb')
       end
     end
 
     context 'given a default value' do
       subject do 
         class MyGroup < Bankster::Hbci::ElementGroup
-          element :test1, default: "my_default_value"
+          element :test1, default: 'my_default_value'
           element :test2
         end
         MyGroup.new

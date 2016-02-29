@@ -38,7 +38,7 @@ describe Bankster::Hbci::Client do
 
     before do
       Timecop.freeze
-      allow(Bankster::Hbci::Message).to receive(:generate_security_reference).and_return("10999990")
+      allow(Bankster::Hbci::Message).to receive(:generate_security_reference).and_return('10999990')
 
       stub_request(:post, credentials.url).
         with(body: Base64.encode64(stub_dialog_init_request(credentials))).
@@ -57,8 +57,8 @@ describe Bankster::Hbci::Client do
       expect(transactions.count).to eql(1)
 
       transaction = transactions.first
-      expect(transaction["amount_in_cents"]).to eql(1833)
-      expect(transaction["swift_code"]).to eql('NMSC')
+      expect(transaction['amount_in_cents']).to eql(1833)
+      expect(transaction['swift_code']).to eql('NMSC')
     end
   end
 
@@ -75,7 +75,7 @@ describe Bankster::Hbci::Client do
 
     before do
       Timecop.freeze
-      allow(Bankster::Hbci::Message).to receive(:generate_security_reference).and_return("10999990")
+      allow(Bankster::Hbci::Message).to receive(:generate_security_reference).and_return('10999990')
 
       stub_request(:post, credentials.url).
         with(body: Base64.encode64(stub_dialog_init_request(credentials))).
@@ -92,7 +92,7 @@ describe Bankster::Hbci::Client do
 
     it 'receives the balance' do
       expect(client.balance('11111111')).to eql(
-        { "11111111" => Money.eur(4202830) }
+        { '11111111' => Money.eur(4202830) }
       )
 
       expect(

@@ -36,7 +36,7 @@ module Bankster
         transactions_request_segment.account.number      = account_number
         transactions_request_segment.account.kik_blz     = credentials.bank_code
         transactions_request_segment.account.kik_country = 280
-        transactions_request_segment.all_accounts        = "N"
+        transactions_request_segment.all_accounts        = 'N'
         transactions_request_segment.from                = start_date.strftime('%Y%m%d')
         transactions_request_segment.to                  = end_date.strftime('%Y%m%d')
 
@@ -53,20 +53,20 @@ module Bankster
         balance_request_segment = Segments::HKSALv4.build(dialog: @dialog)
         balance_request_segment.account.code = @credentials.bank_code
         balance_request_segment.account.number = account_number
-        balance_request_segment.all_accounts = "N"
+        balance_request_segment.all_accounts = 'N'
 
         messenger.add_request_payload(balance_request_segment)
         messenger.request!
 
         messenger.response.payload.select { |seg| 
-          seg.head.type == "HISAL" 
+          seg.head.type == 'HISAL' 
         }.each_with_object({}) { |seg, output|
           output[seg.ktv.number] = seg.booked_amount
         }
       end
 
       def dump_messages
-        puts "Messages:"
+        puts 'Messages:'
         dialog.sent_messages.each_with_index do |m, i|
           puts
           puts "Sent message #{i}"

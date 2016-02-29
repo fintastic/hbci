@@ -1,8 +1,8 @@
-def stub_dialog_init_request(credentials, rand: "10999990")
+def stub_dialog_init_request(credentials, rand: '10999990')
   date = Time.now.strftime('%Y%m%d') 
   time = Time.now.strftime('%H%m%S') 
 
-  str = ""
+  str = ''
   str << "HNHBK:1:3+000000000353+300+0+1'"
   str << "HNVSK:998:3+PIN:1+998+1+1::0+1:#{date}:#{time}+2:2:13:@5@NOKEY:6:1+280:#{credentials.bank_code}:#{credentials.user_id}:V:1:1+0'"
   str << "HNVSD:999:1+@195@HNSHK:2:4+PIN:1+999+#{rand}+1+1+1::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'"
@@ -16,28 +16,28 @@ def stub_dialog_init_response(credentials, dialog_id: 'LM6022214510276', rand: '
   date = Time.now.strftime('%Y%m%d') 
   time = Time.now.strftime('%H%m%S') 
 
-  bank_account_1 = "11111111"
-  bank_account_2 = "22222222"
-  bank_account_3 = "333333333"
-  bank_account_4 = "444444444"
-  bank_account_5 = "5555555555"
-  bank_account_6 = "6666666666"
-  bank_account_7 = "7777777777"
+  bank_account_1 = '11111111'
+  bank_account_2 = '22222222'
+  bank_account_3 = '333333333'
+  bank_account_4 = '444444444'
+  bank_account_5 = '5555555555'
+  bank_account_6 = '6666666666'
+  bank_account_7 = '7777777777'
 
-  bank_account_iban_1 = "DE11111111111111111111"
-  bank_account_iban_2 = "DE22222222222222222222"
-  bank_account_iban_3 = "DE33333333333333333333"
-  bank_account_iban_4 = "DE44444444444444444444"
-  bank_account_iban_5 = "DE55555555555555555555"
-  bank_account_iban_6 = "DE66666666666666666666"
-  bank_account_iban_7 = "DE77777777777777777777"
+  bank_account_iban_1 = 'DE11111111111111111111'
+  bank_account_iban_2 = 'DE22222222222222222222'
+  bank_account_iban_3 = 'DE33333333333333333333'
+  bank_account_iban_4 = 'DE44444444444444444444'
+  bank_account_iban_5 = 'DE55555555555555555555'
+  bank_account_iban_6 = 'DE66666666666666666666'
+  bank_account_iban_7 = 'DE77777777777777777777'
 
   owner = 'xxxxx yyyyyyy'
 
-  str = ""
+  str = ''
   str << "HNHBK:1:3+000000011279+300+#{dialog_id}+1+#{dialog_id}:1'"
   str << "HNVSK:998:3+PIN:1+998+1+2::0+1:#{date}:#{time}+2:2:13:@5@NOKEY:6:1+280:#{credentials.bank_code}:#{credentials.user_id}:V:1:1+0'"
-  str << "HNVSD:999:1+@11088@"
+  str << 'HNVSD:999:1+@11088@'
     str << "HNSHK:2:4+PIN:1+999+#{rand}+1+1+2::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'"
     str << "HIRMG:3:2+3060::Bitte beachten Sie die enthaltenen Warnungen/Hinweise.'"
     str << "HIRMS:4:2:4+3050::UPD nicht mehr aktuell, aktuelle Version enthalten.+3050::BPD nicht mehr aktuell, aktuelle Version enthalten.+3920::Zugelassene TAN-Verfahren f\xFCr den Benutzer:942+0901::*PIN g\xFCltig.+0020::*Dialoginitialisierung erfolgreich'"
@@ -102,14 +102,14 @@ def stub_dialog_init_response(credentials, dialog_id: 'LM6022214510276', rand: '
 end
 
 
-def stub_balance_request(credentials, account_number: "11111111", dialog_id: 'LM6022214510276', rand: '10999990')
+def stub_balance_request(credentials, account_number: '11111111', dialog_id: 'LM6022214510276', rand: '10999990')
   date = Time.now.strftime('%Y%m%d') 
   time = Time.now.strftime('%H%m%S') 
   
-  str = ""
+  str = ''
   str << "HNHBK:1:3+000000000334+300+#{dialog_id}+2'"
   str << "HNVSK:998:3+PIN:1+998+1+1::0+1:#{date}:#{time}+2:2:13:@5@NOKEY:6:1+280:#{credentials.bank_code}:#{credentials.user_id}:V:1:1+0'"
-  str << "HNVSD:999:1+@162@"
+  str << 'HNVSD:999:1+@162@'
   str << "HNSHK:2:4+PIN:1+942+#{rand}+1+1+1::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'"
   str << "HKSAL:3:4+#{account_number}:280:#{credentials.bank_code}+N'"
   str << "HNSHA:4:2+#{rand}++#{credentials.pin}''"
@@ -120,7 +120,7 @@ def stub_balance_response(credentials, account_number: '11111111', dialog_id: 'L
   date = Time.now.strftime('%Y%m%d') 
   time = Time.now.strftime('%H%m%S') 
 
-  str = ""
+  str = ''
   str << "HNHBK:1:3+000000000485+300+#{dialog_id}+3+#{dialog_id}:3'"
   str << "HNVSK:998:3+PIN:1+998+1+2::0+1:#{date}:#{time}+2:2:13:@5@NOKEY:6:1+280:#{credentials.bank_code}:#{credentials.user_id}:V:1:1+0'"
   str << "HNVSD:999:1+@295@HNSHK:2:4+PIN:1+942+#{rand}+1+1+2::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'"
@@ -135,10 +135,10 @@ def stub_transactions_request(credentials, account_number: '11111111', dialog_id
   date = Time.now.strftime('%Y%m%d') 
   time = Time.now.strftime('%H%m%S') 
 
-  str = ""
+  str = ''
   str << "HNHBK:1:3+000000000353+300+#{dialog_id}+2'"
   str << "HNVSK:998:3+PIN:1+998+1+1::0+1:#{date}:#{time}+2:2:13:@5@NOKEY:6:1+280:#{credentials.bank_code}:#{credentials.user_id}:V:1:1+0'"
-  str << "HNVSD:999:1+@181@"
+  str << 'HNVSD:999:1+@181@'
     str << "HNSHK:2:4+PIN:1+942+#{rand}+1+1+1::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'"
     str << "HKKAZ:3:6+#{account_number}::280:#{credentials.bank_code}+N+#{start_date.strftime('%Y%m%d')}+#{end_date.strftime('%Y%m%d')}'"
     str << "HNSHA:4:2+#{rand}++#{credentials.pin}''"

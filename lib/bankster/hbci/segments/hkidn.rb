@@ -12,7 +12,7 @@ module Bankster
         element :state, default: 1
 
         def after_build
-          self.head.position = message ? message.payload_index_of(self) + 3 : "X"
+          self.head.position = message ? message.payload_index_of(self) + 3 : 'X'
           self.bank.code = dialog.credentials.bank_code
           self.user_id = dialog.credentials.user_id
         end

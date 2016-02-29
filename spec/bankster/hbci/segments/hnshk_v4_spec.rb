@@ -19,8 +19,8 @@ describe Bankster::Hbci::Segments::HNSHKv4 do
       expect(subject.security_identification_details.type).to eql(1)
       expect(subject.security_reference_number).to eql(1)
       expect(subject.secured_at.identifier).to eql(1)
-      expect(subject.secured_at.date).to eql(Time.now.strftime("%Y%m%d"))
-      expect(subject.secured_at.time).to eql(Time.now.strftime("%H%m%S"))
+      expect(subject.secured_at.date).to eql(Time.now.strftime('%Y%m%d'))
+      expect(subject.secured_at.time).to eql(Time.now.strftime('%H%m%S'))
 
       expect(subject.hash_alg.usage).to eql(1)
       expect(subject.hash_alg.code).to eql(999)
@@ -31,7 +31,7 @@ describe Bankster::Hbci::Segments::HNSHKv4 do
       expect(subject.sig_alg.operation_mode).to eql(16)
 
       expect(subject.key.bank_country_code).to eql(280)
-      expect(subject.key.type).to eql("S")
+      expect(subject.key.type).to eql('S')
       expect(subject.key.version).to eql(0)
       expect(subject.key.number).to eql(0)
     end

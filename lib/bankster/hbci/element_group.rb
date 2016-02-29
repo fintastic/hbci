@@ -103,7 +103,7 @@ module Bankster
       end
 
       def respond_to?(name)
-        potential_element_name = name.to_s.split("=").first.to_sym
+        potential_element_name = name.to_s.split('=').first.to_sym
 
         !!index_for_element(potential_element_name) || super
       end
@@ -132,8 +132,8 @@ module Bankster
 
 
       def method_missing(name, *args)
-        potential_element_name = name.to_s.split("=").first.to_sym
-        writer = (name[-1..-1] == "=")
+        potential_element_name = name.to_s.split('=').first.to_sym
+        writer = (name[-1..-1] == '=')
 
         index = index_for_element(potential_element_name)
         if index

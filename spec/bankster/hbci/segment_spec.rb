@@ -29,8 +29,8 @@ describe Bankster::Hbci::Segment do
       end
 
       it 'enables a direct reader for the element in the element group' do
-        subject.element_groups[0].elements[0] = "asdasd"
-        expect(subject.my_element).to eql("asdasd")
+        subject.element_groups[0].elements[0] = 'asdasd'
+        expect(subject.my_element).to eql('asdasd')
       end
     end
 
@@ -38,7 +38,7 @@ describe Bankster::Hbci::Segment do
     context 'given one element with a default value' do
       subject do
         clazz = Class.new(described_class)
-        clazz.element(:my_element, default: "asd")
+        clazz.element(:my_element, default: 'asd')
         clazz.element_groups_to_be_defined
       end
 
@@ -50,7 +50,7 @@ describe Bankster::Hbci::Segment do
         expect(subject).to be_a(Array)
         expect(subject.count).to eql(1)
         expect(subject.first[:name]).to eql(:my_element)
-        expect(subject.first[:elements]).to eql([{name: :my_element, default: "asd"}])
+        expect(subject.first[:elements]).to eql([{name: :my_element, default: 'asd'}])
       end
     end
   end
@@ -77,8 +77,8 @@ describe Bankster::Hbci::Segment do
       end
 
       it 'has working accessors for the elements' do
-        subject.head.a = "test"
-        expect(subject.head.a).to eql("test")
+        subject.head.a = 'test'
+        expect(subject.head.a).to eql('test')
       end
     end
 
@@ -150,7 +150,7 @@ describe Bankster::Hbci::Segment do
     context 'given single element groups' do
       subject do
         segment_class = Class.new(Bankster::Hbci::Segment) do
-          element_group :my_test1, elements: [{name: :a, default: "asd"}, :b, :c]
+          element_group :my_test1, elements: [{name: :a, default: 'asd'}, :b, :c]
           element_group :my_test2, elements: [:x, :y, :c]
         end
         segment_class.new
@@ -173,7 +173,7 @@ describe Bankster::Hbci::Segment do
       end
 
       it 'has a default value' do
-        expect(subject.my_test1.a).to eql("asd")
+        expect(subject.my_test1.a).to eql('asd')
       end
     end
 

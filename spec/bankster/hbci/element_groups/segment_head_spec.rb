@@ -14,11 +14,11 @@ describe Bankster::Hbci::ElementGroups::SegmentHead do
   end
 
   it 'can save attributes' do
-    subject.type     = "type"
-    subject.position = "position"
-    subject.version  = "version"
-    expect(subject.type).to     eql("type")
-    expect(subject.position).to eql("position")
-    expect(subject.version).to  eql("version")
+    subject.type     = 'type'
+    subject.position = 'position'
+    subject.version  = 'version'
+    expect(subject.type).to     eql('type')
+    expect(subject.position).to eql('position')
+    expect(subject.version).to  eql('version')
   end
 end

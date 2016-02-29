@@ -32,7 +32,7 @@ module Bankster
           element :usage, default: 2
           element :operation_mode, default: 2
           element :code, default: 13
-          element :key, default: "@5@NOKEY"
+          element :key, default: '@5@NOKEY'
           element :type, default: 6
           element :additional_name, default: 1
           element :additional_value

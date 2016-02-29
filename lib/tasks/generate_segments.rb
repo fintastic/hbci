@@ -6,11 +6,11 @@ require 'active_support/all'
 
 class Nokogiri::XML::Document
   def remove_empty_lines!
-    self.xpath("//text()").each { |text| text.content = text.content.gsub(/\n(\s*\n)+/,"\n")  }; self
+    self.xpath('//text()').each { |text| text.content = text.content.gsub(/\n(\s*\n)+/,"\n")  }; self
   end
 end
 
-desc "Generates segments"
+desc 'Generates segments'
 task :generate_segment_classes do
   url = 'https://raw.githubusercontent.com/willuhn/hbci4java/master/src/hbci-300.xml'
 
@@ -23,14 +23,14 @@ task :generate_segment_classes do
   end
 
 
-  segments = doc.css("SEGdef").map do |segdef|
+  segments = doc.css('SEGdef').map do |segdef|
     segment = {}
     segment[:name] = segdef.css("value[path='SegHead.code']").text
     segment[:version] = segdef.css("value[path='SegHead.version']").text
-    segment[:elements] = segdef.children.select{ |c| c.name == "DE" || c.name == "DEG" }.map do |child|
-      if child.name == "DE"
+    segment[:elements] = segdef.children.select{ |c| c.name == 'DE' || c.name == 'DEG' }.map do |child|
+      if child.name == 'DE'
         el = { type: :element, name: child.attr(:name) }
-      elsif child.name == "DEG"
+      elsif child.name == 'DEG'
         el = { type: :element_group, name: child.attr(:name) ? child.attr(:name) : child.attr(:type), eg: child.attr(:type), maxnum: child.attr(:maxnum).to_i }
       end
       el
@@ -39,7 +39,7 @@ task :generate_segment_classes do
   end
 
   used_element_groups = []
-  s = ""
+  s = ''
   s << "module Bankster\n"
   s << "  module Hbci\n"
   s << "    module Segments\n"
@@ -49,7 +49,7 @@ task :generate_segment_classes do
       if el[:type] == :element
     s << "        element :#{el[:name].underscore.gsub('.','_')}\n"
       elsif el[:type] == :element_group
-        if el[:name] == "SegHead"
+        if el[:name] == 'SegHead'
           s << "        element_group :head, type: ElementGroups::SegmentHead\n"
         else
           used_element_groups << el[:eg]
@@ -70,17 +70,17 @@ task :generate_segment_classes do
   s << "  end\n"
   s << "end\n"
 
-  File.open("lib/bankster/hbci/segments/param_segments_generated.rb", 'w') { |file| file.write(s)  }
+  File.open('lib/bankster/hbci/segments/param_segments_generated.rb', 'w') { |file| file.write(s)  }
 
   # Generate ElementGroups
-  element_groups = doc.css("DEGdef").map do |degdef|
+  element_groups = doc.css('DEGdef').map do |degdef|
     element_group = {}
     element_group[:name] = degdef.attr(:id)
-    element_group[:elements] = degdef.children.select{ |c| c.name == "DE" || c.name == "DEG" }.map do |child|
-      if child.name == "DE"
+    element_group[:elements] = degdef.children.select{ |c| c.name == 'DE' || c.name == 'DEG' }.map do |child|
+      if child.name == 'DE'
         element_definition(child)
-      elsif child.name == "DEG"
-        doc.css("DEGdef##{child.attr(:type)}").children.select{ |c| c.name == "DE" }.map { |c| element_definition(c) }
+      elsif child.name == 'DEG'
+        doc.css("DEGdef##{child.attr(:type)}").children.select{ |c| c.name == 'DE' }.map { |c| element_definition(c) }
       else
         next
       end
@@ -89,7 +89,7 @@ task :generate_segment_classes do
     element_group
   end
 
-  s = ""
+  s = ''
   s << "module Bankster\n"
   s << "  module Hbci\n"
   s << "    module ElementGroups\n"
@@ -104,5 +104,5 @@ task :generate_segment_classes do
   s << "    end\n"
   s << "  end\n"
   s << "end\n"
-  File.open("lib/bankster/hbci/element_groups/generated_element_groups.rb", 'w') { |file| file.write(s)  }
+  File.open('lib/bankster/hbci/element_groups/generated_element_groups.rb', 'w') { |file| file.write(s)  }
 end

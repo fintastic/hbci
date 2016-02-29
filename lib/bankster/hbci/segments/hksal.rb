@@ -8,10 +8,10 @@ module Bankster
           element :country, default: 280
           element :code # blz
         end
-        element :all_accounts, default: "N"
+        element :all_accounts, default: 'N'
 
         def after_build
-          self.head.position = "3"
+          self.head.position = '3'
         end
       end
     end

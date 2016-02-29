@@ -29,8 +29,8 @@ module Bankster
 
         def booked_amount
           sign = case booked.credit_debit
-                 when "C" then 1
-                 when "D" then -1
+                 when 'C' then 1
+                 when 'D' then -1
                  end
           sign * Monetize.parse(booked.btg_value, booked.btg_curr)
         end

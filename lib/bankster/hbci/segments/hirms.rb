@@ -8,7 +8,7 @@ module Bankster
         end
 
         def allowed_tan_mechanism
-          groups_with_status_code = element_groups.select{ |eg| eg.respond_to?(:code) && eg.code == "3920" }
+          groups_with_status_code = element_groups.select{ |eg| eg.respond_to?(:code) && eg.code == '3920' }
           groups_with_status_code.first.parm if groups_with_status_code.any?
         end
       end
