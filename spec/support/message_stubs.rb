@@ -145,7 +145,6 @@ def stub_transactions_request(credentials, account_number: '11111111', dialog_id
 end
 
 def stub_transactions_response(credentials, account_number: '11111111', dialog_id: 'LM6022214510276', rand: '10999990')
-
   date = Time.now.strftime('%Y%m%d')
   time = Time.now.strftime('%H%m%S')
 

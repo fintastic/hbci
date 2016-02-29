@@ -2456,7 +2456,6 @@ module Bankster
         element :secclass
         element_group :par_wp_stamm_list, type: ElementGroups::ParWPStammList
       end
-
     end
   end
 end

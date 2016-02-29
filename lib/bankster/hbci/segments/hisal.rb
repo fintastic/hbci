@@ -79,8 +79,6 @@ module Bankster
         element_group :timestamp, type: ElementGroups::Timestamp
         element :duedate
       end
-
     end
   end
 end
-

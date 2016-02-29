@@ -209,7 +209,7 @@ describe Bankster::Hbci::Segment do
     end
 
     context 'given valid elements' do
-      let(:string) { [['element_1', 'element_2'], ['element_3']] }
+      let(:string) { [%w(element_1 element_2), ['element_3']] }
       it 'fills the elements' do
         segment = segment_class.parse(string)
 

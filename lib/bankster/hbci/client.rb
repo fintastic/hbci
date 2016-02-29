@@ -43,7 +43,7 @@ module Bankster
         messenger.add_request_payload(transactions_request_segment)
         messenger.request!
 
-        transaction_segment = messenger.response.payload.select { |seg| seg.head.type == 'HIKAZ' }.first
+        transaction_segment = messenger.response.payload.find { |seg| seg.head.type == 'HIKAZ' }
         transaction_segment ? Cmxl.parse(transaction_segment.booked).first.transactions.map(&:to_h) : []
       end
 
@@ -58,11 +58,11 @@ module Bankster
         messenger.add_request_payload(balance_request_segment)
         messenger.request!
 
-        messenger.response.payload.select { |seg|
+        messenger.response.payload.select do |seg|
           seg.head.type == 'HISAL'
-        }.each_with_object({}) { |seg, output|
+        end.each_with_object({}) do |seg, output|
           output[seg.ktv.number] = seg.booked_amount
-        }
+        end
       end
 
       def dump_messages

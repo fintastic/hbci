@@ -1,6 +1,5 @@
 module Bankster
   module Hbci
-
     # An ElementGroup contains any number of elements.
     #
     # Every Element can be accessed via one of the folloging methods:
@@ -34,7 +33,6 @@ module Bankster
     #   my_element_group.define_element(:my_first_element)
     #   my_element_group.define_element(:my_second_element)
     class ElementGroup
-
       extend Forwardable
       def_delegator :@elements, :[]
       def_delegator :@elements, :[]=
@@ -74,7 +72,7 @@ module Bankster
       end
 
       def to_s
-        elements.each_with_index.map { |element, index|
+        elements.each_with_index.map do |element, index|
           if element.is_a?(Array)
             element.map do |entry|
               case defined_elements[index][:type]
@@ -92,7 +90,7 @@ module Bankster
               element.to_s.gsub('?', '??').gsub('+', '?+').gsub(':', '?:').gsub('\'', '?\'')
             end
           end
-        }.join(':').gsub(/:*$/, '')
+        end.join(':').gsub(/:*$/, '')
       end
 
       def initialize
@@ -150,12 +148,12 @@ module Bankster
         name = definition[:name]
         index = index_for_element(name)
 
-        if definition[:multi]
-          elements[index] = []
-        elsif definition[:default].is_a?(Proc)
-          elements[index] = definition[:default].call(self)
-        else
-          elements[index] = definition[:default]
+        elements[index] = if definition[:multi]
+                            []
+                          elsif definition[:default].is_a?(Proc)
+                            definition[:default].call(self)
+                          else
+                            definition[:default]
         end
       end
 

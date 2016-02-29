@@ -23,11 +23,11 @@ module Bankster
 
       def define_element_group_reader(name, pass = false)
         if pass
-          define_singleton_method("#{name}") do
+          define_singleton_method(name.to_s) do
             element_groups[index_of_element_group(name)][0]
           end
         else
-          define_singleton_method("#{name}") do
+          define_singleton_method(name.to_s) do
             element_groups[index_of_element_group(name)]
           end
         end
@@ -70,17 +70,17 @@ module Bankster
       # at inistialization
       def self.element_group(name, definition = {}, &block)
         ensure_setup_element_group_definitions
-        element_groups_to_be_defined << definition.merge({ name: name, block: block })
+        element_groups_to_be_defined << definition.merge(name: name, block: block)
       end
 
       def self.element_groups(name, definition = {}, &block)
         ensure_setup_element_group_definitions
-        element_groups_to_be_defined << definition.merge({ name: name, block: block, multi: true })
+        element_groups_to_be_defined << definition.merge(name: name, block: block, multi: true)
       end
 
       def self.element(name, definition = {})
         ensure_setup_element_group_definitions
-        element_groups_to_be_defined << { elements: [definition.merge({ name: name })], name: name }
+        element_groups_to_be_defined << { elements: [definition.merge(name: name)], name: name }
       end
 
       def define_element_groups_from_class
@@ -100,11 +100,15 @@ module Bankster
       end
 
       def self.type
-        name.split('::').last.split('v').first rescue 'EmptySegment'
+        name.split('::').last.split('v').first
+      rescue
+        'EmptySegment'
       end
 
       def self.version
-        name.split('::').last.split('v').last rescue '0'
+        name.split('::').last.split('v').last
+      rescue
+        '0'
       end
 
       def self.build(dialog: nil, message: nil, **)
@@ -124,7 +128,7 @@ module Bankster
       end
 
       def self.descendants
-        ObjectSpace.each_object(Class).select { |klass| klass < self  }
+        ObjectSpace.each_object(Class).select { |klass| klass < self }
       end
 
       def self.register
@@ -136,11 +140,11 @@ module Bankster
 
         segment_data.each_with_index do |element_group_data, element_group_index|
           unless segment[element_group_index].is_a?(ElementGroup)
-            raise "Failed to add a parsed element group to segment #{segment.class.type}v#{segment.class.version} at index #{element_group_index}"
+            fail "Failed to add a parsed element group to segment #{segment.class.type}v#{segment.class.version} at index #{element_group_index}"
           end
           element_group_data.each_with_index do |element_data, element_index|
             if element_index > segment[element_group_index].elements.size
-              raise "Failed to add a parsed element to element_group #{segment.class.type}v#{segment.class.version} at element_group #{element_group_index} index #{element_index}"
+              fail "Failed to add a parsed element to element_group #{segment.class.type}v#{segment.class.version} at element_group #{element_group_index} index #{element_index}"
             end
             if element_data.is_a?(String)
               element_data.gsub!('??', '?')

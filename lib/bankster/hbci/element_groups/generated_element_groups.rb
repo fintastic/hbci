@@ -964,7 +964,6 @@ module Bankster
       class WPZinsTermine < ElementGroup
         element :termin
       end
-
     end
   end
 end

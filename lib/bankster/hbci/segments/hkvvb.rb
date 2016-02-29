@@ -2,7 +2,6 @@ module Bankster
   module Hbci
     module Segments
       class HKVVBv3 < Segment
-
         element_group :head, type: ElementGroups::SegmentHead
         element :bpd_version, default: 0
         element :upd_version, default: 0
@@ -15,7 +14,6 @@ module Bankster
           head.position = 4
           self.dialog_language = 1
         end
-
       end
     end
   end

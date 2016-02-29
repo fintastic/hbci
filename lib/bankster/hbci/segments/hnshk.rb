@@ -6,7 +6,6 @@ module Bankster
       # Top of the signature and counterpart of HNSHA
       # https://www.hbci-zka.de/dokumente/spezifikation_deutsch/fintsv3/FinTS_3.0_Security_Sicherheitsverfahren_HBCI_Rel_20130718_final_version.pdf#page=63
       class HNSHKv4 < Bankster::Hbci::Segment
-
         element_group :head, type: ElementGroups::SegmentHead do
           element :position, default: 2
         end
@@ -34,8 +33,8 @@ module Bankster
 
         element_group :secured_at do
           element :identifier, default: 1
-          element :date, default: ->(eg) { Time.now.strftime('%Y%m%d') }
-          element :time , default: ->(eg) { Time.now.strftime('%H%m%S') }
+          element :date, default: ->(_eg) { Time.now.strftime('%Y%m%d') }
+          element :time, default: ->(_eg) { Time.now.strftime('%H%m%S') }
         end
 
         element_group :hash_alg do

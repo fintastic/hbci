@@ -4,9 +4,9 @@ module Bankster
       attr_reader :scanner
       attr_accessor :segments
 
-      ELEMENT_DELIMITER       = ':'
-      ELEMENT_GROUP_DELIMITER = '+'
-      SEGMENT_DELIMITER       = '\''
+      ELEMENT_DELIMITER       = ':'.freeze
+      ELEMENT_GROUP_DELIMITER = '+'.freeze
+      SEGMENT_DELIMITER       = '\''.freeze
 
       # ELEMENT_REGEX matches everything until a a delimiter that is not escaped
       #

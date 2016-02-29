@@ -179,7 +179,7 @@ describe Bankster::Hbci::ElementGroup do
 
       it 'has a reader for its element' do
         subject[0] = 'test'
-        expect(subject).to  respond_to(:test1)
+        expect(subject).to respond_to(:test1)
         expect(subject.test1).to eql('test')
       end
 
@@ -218,7 +218,7 @@ describe Bankster::Hbci::ElementGroup do
       it 'sets a default value' do
         Timecop.freeze(time_1)
         clazz = Class.new(Bankster::Hbci::ElementGroup) do
-          element :test1, default: ->(eg) { Time.now }
+          element :test1, default: ->(_eg) { Time.now }
         end
         Timecop.freeze(time_2)
         instance = clazz.new

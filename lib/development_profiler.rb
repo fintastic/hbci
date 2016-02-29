@@ -1,8 +1,6 @@
 require 'ruby-prof'
 class DevelopmentProfiler
-
   def self.prof(file_name)
-
     RubyProf.start
     yield
     results = RubyProf.stop
@@ -22,7 +20,5 @@ class DevelopmentProfiler
     File.open "#{base_path}/#{file_name}-stack.html", 'w' do |file|
       RubyProf::CallStackPrinter.new(results).print(file)
     end
-
   end
-
 end

@@ -6,7 +6,7 @@ require 'active_support/all'
 
 class Nokogiri::XML::Document
   def remove_empty_lines!
-    xpath('//text()').each { |text| text.content = text.content.gsub(/\n(\s*\n)+/, "\n")  }; self
+    xpath('//text()').each { |text| text.content = text.content.gsub(/\n(\s*\n)+/, "\n") }; self
   end
 end
 
@@ -42,22 +42,22 @@ task :generate_segment_classes do
   s << "module Bankster\n"
   s << "  module Hbci\n"
   s << "    module Segments\n"
-  segments.select { |s| s[:name].match(/^HI.*/)  }.each do |seg|
+  segments.select { |s| s[:name].match(/^HI.*/) }.each do |seg|
     s << "      class #{seg[:name]}v#{seg[:version]} < Segment\n"
     seg[:elements].each do |el|
       if el[:type] == :element
-    s << "        element :#{el[:name].underscore.gsub('.', '_')}\n"
+        s << "        element :#{el[:name].underscore.tr('.', '_')}\n"
       elsif el[:type] == :element_group
         if el[:name] == 'SegHead'
           s << "        element_group :head, type: ElementGroups::SegmentHead\n"
         else
           used_element_groups << el[:eg]
           if el[:maxnum].is_a?(Integer) && el[:maxnum] > 1
-          s << "        #{el[:maxnum]}.times do |i|\n"
-          s << "          element_group \"#{el[:name].underscore.gsub('.', '_')}_\#{i}\".to_sym, type: ElementGroups::#{el[:eg].camelize}\n"
-          s << "        end\n"
+            s << "        #{el[:maxnum]}.times do |i|\n"
+            s << "          element_group \"#{el[:name].underscore.tr('.', '_')}_\#{i}\".to_sym, type: ElementGroups::#{el[:eg].camelize}\n"
+            s << "        end\n"
           else
-          s << "        element_group :#{el[:name].underscore.gsub('.', '_')}, type: ElementGroups::#{el[:eg].camelize}\n"
+            s << "        element_group :#{el[:name].underscore.tr('.', '_')}, type: ElementGroups::#{el[:eg].camelize}\n"
           end
         end
       end
@@ -69,7 +69,7 @@ task :generate_segment_classes do
   s << "  end\n"
   s << "end\n"
 
-  File.open('lib/bankster/hbci/segments/param_segments_generated.rb', 'w') { |file| file.write(s)  }
+  File.open('lib/bankster/hbci/segments/param_segments_generated.rb', 'w') { |file| file.write(s) }
 
   # Generate ElementGroups
   element_groups = doc.css('DEGdef').map do |degdef|
@@ -92,10 +92,10 @@ task :generate_segment_classes do
   s << "module Bankster\n"
   s << "  module Hbci\n"
   s << "    module ElementGroups\n"
-  element_groups.select { |eg| used_element_groups.include?(eg[:name])}.each do |eg|
+  element_groups.select { |eg| used_element_groups.include?(eg[:name]) }.each do |eg|
     s << "      class #{eg[:name].camelize} < ElementGroup\n"
     eg[:elements].each do |el|
-      s << "        element :#{el[:name].underscore.gsub('.', '_')}\n"
+      s << "        element :#{el[:name].underscore.tr('.', '_')}\n"
     end
     s << "      end\n"
     s << "\n"
@@ -103,5 +103,5 @@ task :generate_segment_classes do
   s << "    end\n"
   s << "  end\n"
   s << "end\n"
-  File.open('lib/bankster/hbci/element_groups/generated_element_groups.rb', 'w') { |file| file.write(s)  }
+  File.open('lib/bankster/hbci/element_groups/generated_element_groups.rb', 'w') { |file| file.write(s) }
 end

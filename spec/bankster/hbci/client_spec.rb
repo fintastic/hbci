@@ -1,17 +1,14 @@
 require 'spec_helper'
 
 describe Bankster::Hbci::Client do
-
   describe '#initialize' do
     describe 'checking of credentials' do
-      let(:credentials) {
-        Bankster::BankCredentials::Hbci.new({
-          url:        'https://hbci11.fiducia.de/cgi-bin/hbciservlet',
-          bank_code:  '0000',
-          user_id:    '1111',
-          pin:        'pin'
-        })
-      }
+      let(:credentials) do
+        Bankster::BankCredentials::Hbci.new(url:        'https://hbci11.fiducia.de/cgi-bin/hbciservlet',
+                                            bank_code:  '0000',
+                                            user_id:    '1111',
+                                            pin:        'pin')
+      end
 
       it 'fails with an error when not givven a Bankster::BankCredentials::Hbci object' do
         expect { described_class.new('doh!') }
@@ -27,12 +24,10 @@ describe Bankster::Hbci::Client do
 
   describe '#transactions(account_number)' do
     let(:credentials) do
-      Bankster::BankCredentials::Hbci.new({
-        url:        'https://hbci11.fiducia.de/cgi-bin/hbciservlet',
-        bank_code:  '11111111',
-        user_id:    '22222222',
-        pin:        '33333'
-      })
+      Bankster::BankCredentials::Hbci.new(url:        'https://hbci11.fiducia.de/cgi-bin/hbciservlet',
+                                          bank_code:  '11111111',
+                                          user_id:    '22222222',
+                                          pin:        '33333')
     end
     let(:client) { described_class.new(credentials) }
 
@@ -64,12 +59,10 @@ describe Bankster::Hbci::Client do
 
   describe '#balance(account_number)' do
     let(:credentials) do
-      Bankster::BankCredentials::Hbci.new({
-        url:        'https://hbci11.fiducia.de/cgi-bin/hbciservlet',
-        bank_code:  '22222222',
-        user_id:    '11111111',
-        pin:        '12345'
-      })
+      Bankster::BankCredentials::Hbci.new(url:        'https://hbci11.fiducia.de/cgi-bin/hbciservlet',
+                                          bank_code:  '22222222',
+                                          user_id:    '11111111',
+                                          pin:        '12345')
     end
     let(:client) { described_class.new(credentials) }
 
@@ -92,7 +85,7 @@ describe Bankster::Hbci::Client do
 
     it 'receives the balance' do
       expect(client.balance('11111111')).to eql(
-        { '11111111' => Money.eur(4202830) }
+        '11111111' => Money.eur(4_202_830)
       )
 
       expect(
@@ -107,4 +100,3 @@ describe Bankster::Hbci::Client do
     end
   end
 end
-

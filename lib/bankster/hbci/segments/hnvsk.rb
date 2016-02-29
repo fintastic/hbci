@@ -2,7 +2,6 @@ module Bankster
   module Hbci
     module Segments
       class HNVSKv3 < Bankster::Hbci::Segment
-
         element_group :head, type: ElementGroups::SegmentHead do
           element :position, default: 998
         end
@@ -24,8 +23,8 @@ module Bankster
 
         element_group :secured_at do
           element :identifier, default: 1
-          element :date, default: ->(eg) { Time.now.strftime('%Y%m%d') }
-          element :time , default: ->(eg) { Time.now.strftime('%H%m%S') }
+          element :date, default: ->(_eg) { Time.now.strftime('%Y%m%d') }
+          element :time, default: ->(_eg) { Time.now.strftime('%H%m%S') }
         end
 
         element_group :enc_alg do

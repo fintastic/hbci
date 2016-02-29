@@ -4,6 +4,4 @@ require 'tasks/generate_segments.rb'
 
 RSpec::Core::RakeTask.new(:spec)
 
-task :default => :spec
-
-
+task default: :spec

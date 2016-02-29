@@ -5,7 +5,6 @@ module Bankster
       #
       # Counterpart of the Signature Opening (HNSHK)
       class HNSHAv2 < Bankster::Hbci::Segment
-
         # Segment Head
         element_group :head, type: ElementGroups::SegmentHead
 
@@ -23,9 +22,9 @@ module Bankster
         end
 
         def after_build
-          head.position      = message.payload.size + 3
+          head.position = message.payload.size + 3
           self.security_reference = message.sec_ref
-          signature.pin      = dialog.credentials.pin
+          signature.pin = dialog.credentials.pin
         end
       end
     end
