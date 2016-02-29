@@ -1,6 +1,7 @@
 # External gems
 require 'httparty'
 require 'money'
+require 'monetize'
 require 'cmxl'
 
 # External gems from the bankster ecosystem

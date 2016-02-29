@@ -32,7 +32,7 @@ module Bankster
                  when "C" then 1
                  when "D" then -1
                  end
-          sign * Money.new(booked.btg_value.gsub(',',''), booked.btg_curr)
+          sign * Monetize.parse(booked.btg_value, booked.btg_curr)
         end
       end
 

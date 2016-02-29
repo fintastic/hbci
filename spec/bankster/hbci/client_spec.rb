@@ -92,7 +92,7 @@ describe Bankster::Hbci::Client do
 
     it 'receives the balance' do
       expect(client.balance('11111111')).to eql(
-        { "11111111" => Money.eur(420283) }
+        { "11111111" => Money.eur(4202830) }
       )
 
       expect(
