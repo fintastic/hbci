@@ -130,7 +130,6 @@ module Bankster
         elements[index_for_element(name)] = value
       end
 
-
       def method_missing(name, *args)
         potential_element_name = name.to_s.split('=').first.to_sym
         writer = (name[-1..-1] == '=')
@@ -161,11 +160,11 @@ module Bankster
       end
 
       def define_elements_from_class
-        self.class.elements_to_be_defined.each{ |el| define_element(el) }
+        self.class.elements_to_be_defined.each { |el| define_element(el) }
       end
 
       def index_for_element(name)
-        defined_elements.index{ |el| el[:name] == name }
+        defined_elements.index { |el| el[:name] == name }
       end
     end
   end

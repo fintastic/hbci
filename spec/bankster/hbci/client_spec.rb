@@ -14,13 +14,13 @@ describe Bankster::Hbci::Client do
       }
 
       it 'fails with an error when not givven a Bankster::BankCredentials::Hbci object' do
-        expect { described_class.new('doh!') }.
-          to raise_error(ArgumentError, "#{described_class}#initialize expects a Bankster::BankCredentials::Hbci object")
+        expect { described_class.new('doh!') }
+          .to raise_error(ArgumentError, "#{described_class}#initialize expects a Bankster::BankCredentials::Hbci object")
       end
 
       it 'does not fail with an error when givven a bankster bank credentials hbci object' do
-        expect { described_class.new(credentials) }.
-          to_not raise_error
+        expect { described_class.new(credentials) }
+          .to_not raise_error
       end
     end
   end
@@ -40,13 +40,13 @@ describe Bankster::Hbci::Client do
       Timecop.freeze
       allow(Bankster::Hbci::Message).to receive(:generate_security_reference).and_return('10999990')
 
-      stub_request(:post, credentials.url).
-        with(body: Base64.encode64(stub_dialog_init_request(credentials))).
-        to_return(status: 200, body: Base64.encode64(stub_dialog_init_response(credentials)))
+      stub_request(:post, credentials.url)
+        .with(body: Base64.encode64(stub_dialog_init_request(credentials)))
+        .to_return(status: 200, body: Base64.encode64(stub_dialog_init_response(credentials)))
 
-      stub_request(:post, credentials.url).
-        with(body: Base64.encode64(stub_transactions_request(credentials, account_number: '11111111', start_date: Date.new(2016, 2, 18), end_date: Date.new(2016, 2, 20)))).
-        to_return(status: 200, body: Base64.encode64(stub_transactions_response(credentials, account_number: '11111111')))
+      stub_request(:post, credentials.url)
+        .with(body: Base64.encode64(stub_transactions_request(credentials, account_number: '11111111', start_date: Date.new(2016, 2, 18), end_date: Date.new(2016, 2, 20))))
+        .to_return(status: 200, body: Base64.encode64(stub_transactions_response(credentials, account_number: '11111111')))
     end
     after do
       Timecop.return
@@ -77,13 +77,13 @@ describe Bankster::Hbci::Client do
       Timecop.freeze
       allow(Bankster::Hbci::Message).to receive(:generate_security_reference).and_return('10999990')
 
-      stub_request(:post, credentials.url).
-        with(body: Base64.encode64(stub_dialog_init_request(credentials))).
-        to_return(status: 200, body: Base64.encode64(stub_dialog_init_response(credentials)))
+      stub_request(:post, credentials.url)
+        .with(body: Base64.encode64(stub_dialog_init_request(credentials)))
+        .to_return(status: 200, body: Base64.encode64(stub_dialog_init_response(credentials)))
 
-      stub_request(:post, credentials.url).
-        with(body: Base64.encode64(stub_balance_request(credentials, account_number: '11111111'))).
-        to_return(status: 200, body: Base64.encode64(stub_balance_response(credentials, account_number: '11111111')))
+      stub_request(:post, credentials.url)
+        .with(body: Base64.encode64(stub_balance_request(credentials, account_number: '11111111')))
+        .to_return(status: 200, body: Base64.encode64(stub_balance_response(credentials, account_number: '11111111')))
     end
 
     after do
@@ -96,13 +96,13 @@ describe Bankster::Hbci::Client do
       )
 
       expect(
-        a_request(:post, credentials.url).
-        with(body: Base64.encode64(stub_dialog_init_request(credentials)))
+        a_request(:post, credentials.url)
+        .with(body: Base64.encode64(stub_dialog_init_request(credentials)))
       ).to have_been_made.once
 
       expect(
-        a_request(:post, credentials.url).
-        with(body: Base64.encode64(stub_balance_request(credentials, account_number: '11111111')))
+        a_request(:post, credentials.url)
+        .with(body: Base64.encode64(stub_balance_request(credentials, account_number: '11111111')))
       ).to have_been_made.once
     end
   end

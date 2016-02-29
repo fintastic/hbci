@@ -13,7 +13,6 @@ module Bankster
         element_group :used, type: ElementGroups::BTG
       end
 
-
       class HISALv4 < Segment
         element_group :head, type: ElementGroups::SegmentHead
         element_group :ktv, type: ElementGroups::KTO

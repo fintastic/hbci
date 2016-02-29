@@ -125,7 +125,6 @@ module Bankster
         end
       end
 
-
       class HIBMBSv1 < Segment
         element_group :head, type: ElementGroups::SegmentHead
         element :max_amount_of_transactions
@@ -233,7 +232,6 @@ module Bankster
           element :option_5_min_load_amount
           element :option_5_max_load_amount
           element :option_5_possible_load_amounts
-
 
           element :option_6_number
           element :option_6_provider

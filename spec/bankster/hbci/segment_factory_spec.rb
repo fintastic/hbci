@@ -62,8 +62,8 @@ describe Bankster::Hbci::SegmentFactory do
         expect(segment_class_1).to_not receive(:parse)
         expect(segment_class_2).to_not receive(:parse)
 
-        expect { described_class.build(segment_data) }.
-          to raise_error('Ambiguous class candidates for TESTCLASS in version 1')
+        expect { described_class.build(segment_data) }
+          .to raise_error('Ambiguous class candidates for TESTCLASS in version 1')
       end
     end
   end

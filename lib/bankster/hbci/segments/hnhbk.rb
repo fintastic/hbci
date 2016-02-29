@@ -12,7 +12,6 @@ module Bankster
           element :message_number
         end
 
-
         def after_build
           head.position = 1
           head.version = 3

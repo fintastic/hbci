@@ -101,7 +101,6 @@ def stub_dialog_init_response(credentials, dialog_id: 'LM6022214510276', rand: '
   str
 end
 
-
 def stub_balance_request(credentials, account_number: '11111111', dialog_id: 'LM6022214510276', rand: '10999990')
   date = Time.now.strftime('%Y%m%d')
   time = Time.now.strftime('%H%m%S')
@@ -144,7 +143,6 @@ def stub_transactions_request(credentials, account_number: '11111111', dialog_id
     str << "HNSHA:4:2+#{rand}++#{credentials.pin}''"
   str << "HNHBS:5:1+2'"
 end
-
 
 def stub_transactions_response(credentials, account_number: '11111111', dialog_id: 'LM6022214510276', rand: '10999990')
 

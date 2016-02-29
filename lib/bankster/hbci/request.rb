@@ -4,7 +4,6 @@ module Bankster
       attr_reader :dialog
       attr_reader :sec_ref
 
-
       def head
         @head ||= Segments::HNHBKv3.build(dialog: dialog, message: self)
       end

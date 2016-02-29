@@ -8,7 +8,6 @@ module Bankster
       ELEMENT_GROUP_DELIMITER = '+'
       SEGMENT_DELIMITER       = '\''
 
-
       # ELEMENT_REGEX matches everything until a a delimiter that is not escaped
       #
       # NODE                     EXPLANATION

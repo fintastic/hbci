@@ -153,7 +153,7 @@ describe Bankster::Hbci::ElementGroup do
         end
       end
 
-      subject{ element_group_class.new }
+      subject { element_group_class.new }
 
       it 'enables the accessing of multiple elements as an array' do
         expect(subject).to respond_to(:entries)

@@ -22,12 +22,11 @@ task :generate_segment_classes do
     { name: element_node.attr(:name) }
   end
 
-
   segments = doc.css('SEGdef').map do |segdef|
     segment = {}
     segment[:name] = segdef.css("value[path='SegHead.code']").text
     segment[:version] = segdef.css("value[path='SegHead.version']").text
-    segment[:elements] = segdef.children.select{ |c| c.name == 'DE' || c.name == 'DEG' }.map do |child|
+    segment[:elements] = segdef.children.select { |c| c.name == 'DE' || c.name == 'DEG' }.map do |child|
       if child.name == 'DE'
         el = { type: :element, name: child.attr(:name) }
       elsif child.name == 'DEG'
@@ -43,7 +42,7 @@ task :generate_segment_classes do
   s << "module Bankster\n"
   s << "  module Hbci\n"
   s << "    module Segments\n"
-  segments.select{ |s| s[:name].match(/^HI.*/)  }.each do |seg|
+  segments.select { |s| s[:name].match(/^HI.*/)  }.each do |seg|
     s << "      class #{seg[:name]}v#{seg[:version]} < Segment\n"
     seg[:elements].each do |el|
       if el[:type] == :element
@@ -76,11 +75,11 @@ task :generate_segment_classes do
   element_groups = doc.css('DEGdef').map do |degdef|
     element_group = {}
     element_group[:name] = degdef.attr(:id)
-    element_group[:elements] = degdef.children.select{ |c| c.name == 'DE' || c.name == 'DEG' }.map do |child|
+    element_group[:elements] = degdef.children.select { |c| c.name == 'DE' || c.name == 'DEG' }.map do |child|
       if child.name == 'DE'
         element_definition(child)
       elsif child.name == 'DEG'
-        doc.css("DEGdef##{child.attr(:type)}").children.select{ |c| c.name == 'DE' }.map { |c| element_definition(c) }
+        doc.css("DEGdef##{child.attr(:type)}").children.select { |c| c.name == 'DE' }.map { |c| element_definition(c) }
       else
         next
       end
@@ -93,7 +92,7 @@ task :generate_segment_classes do
   s << "module Bankster\n"
   s << "  module Hbci\n"
   s << "    module ElementGroups\n"
-  element_groups.select{ |eg| used_element_groups.include?(eg[:name])}.each do |eg|
+  element_groups.select { |eg| used_element_groups.include?(eg[:name])}.each do |eg|
     s << "      class #{eg[:name].camelize} < ElementGroup\n"
     eg[:elements].each do |el|
       s << "        element :#{el[:name].underscore.gsub('.', '_')}\n"

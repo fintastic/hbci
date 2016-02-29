@@ -11,8 +11,7 @@ describe Bankster::Hbci::Dialog do
       })
     end
 
-    subject{ described_class.new(credentials) }
-
+    subject { described_class.new(credentials) }
 
   end
 end

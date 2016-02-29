@@ -10,20 +10,17 @@ describe Bankster::Hbci::Segments::HISALv4 do
 
       expect(segment.booked_amount).to eql(Money.eur(213))
 
-
       segment.booked.credit_debit = 'D'
       segment.booked.btg_value = '2,13'
       segment.booked.btg_curr = 'EUR'
 
       expect(segment.booked_amount).to eql(- Money.eur(213))
 
-
       segment.booked.credit_debit = 'D'
       segment.booked.btg_value = '2,3'
       segment.booked.btg_curr = 'EUR'
 
       expect(segment.booked_amount).to eql(- Money.eur(230))
-
 
       segment.booked.credit_debit = 'C'
       segment.booked.btg_value = '2'

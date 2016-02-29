@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Bankster::Hbci::Segments::HNSHAv2 do
-  subject{ described_class.new }
+  subject { described_class.new }
 
   it 'has a head' do
     expect(subject).to respond_to(:head)

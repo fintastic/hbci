@@ -34,7 +34,6 @@ describe Bankster::Hbci::Segment do
       end
     end
 
-
     context 'given one element with a default value' do
       subject do
         clazz = Class.new(described_class)
