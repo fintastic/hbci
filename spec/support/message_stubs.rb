@@ -1,6 +1,6 @@
 def stub_dialog_init_request(credentials, rand: '10999990')
-  date = Time.now.strftime('%Y%m%d') 
-  time = Time.now.strftime('%H%m%S') 
+  date = Time.now.strftime('%Y%m%d')
+  time = Time.now.strftime('%H%m%S')
 
   str = ''
   str << "HNHBK:1:3+000000000353+300+0+1'"
@@ -13,8 +13,8 @@ def stub_dialog_init_request(credentials, rand: '10999990')
 end
 
 def stub_dialog_init_response(credentials, dialog_id: 'LM6022214510276', rand: '10999990')
-  date = Time.now.strftime('%Y%m%d') 
-  time = Time.now.strftime('%H%m%S') 
+  date = Time.now.strftime('%Y%m%d')
+  time = Time.now.strftime('%H%m%S')
 
   bank_account_1 = '11111111'
   bank_account_2 = '22222222'
@@ -103,9 +103,9 @@ end
 
 
 def stub_balance_request(credentials, account_number: '11111111', dialog_id: 'LM6022214510276', rand: '10999990')
-  date = Time.now.strftime('%Y%m%d') 
-  time = Time.now.strftime('%H%m%S') 
-  
+  date = Time.now.strftime('%Y%m%d')
+  time = Time.now.strftime('%H%m%S')
+
   str = ''
   str << "HNHBK:1:3+000000000334+300+#{dialog_id}+2'"
   str << "HNVSK:998:3+PIN:1+998+1+1::0+1:#{date}:#{time}+2:2:13:@5@NOKEY:6:1+280:#{credentials.bank_code}:#{credentials.user_id}:V:1:1+0'"
@@ -117,8 +117,8 @@ def stub_balance_request(credentials, account_number: '11111111', dialog_id: 'LM
 end
 
 def stub_balance_response(credentials, account_number: '11111111', dialog_id: 'LM6022214510276', rand: '10999990')
-  date = Time.now.strftime('%Y%m%d') 
-  time = Time.now.strftime('%H%m%S') 
+  date = Time.now.strftime('%Y%m%d')
+  time = Time.now.strftime('%H%m%S')
 
   str = ''
   str << "HNHBK:1:3+000000000485+300+#{dialog_id}+3+#{dialog_id}:3'"
@@ -132,8 +132,8 @@ def stub_balance_response(credentials, account_number: '11111111', dialog_id: 'L
 end
 
 def stub_transactions_request(credentials, account_number: '11111111', dialog_id: 'LM6022214510276', rand: '10999990', start_date: Date.new(2016,2,18), end_date: Date.new(2016,2,20))
-  date = Time.now.strftime('%Y%m%d') 
-  time = Time.now.strftime('%H%m%S') 
+  date = Time.now.strftime('%Y%m%d')
+  time = Time.now.strftime('%H%m%S')
 
   str = ''
   str << "HNHBK:1:3+000000000353+300+#{dialog_id}+2'"
@@ -148,8 +148,8 @@ end
 
 def stub_transactions_response(credentials, account_number: '11111111', dialog_id: 'LM6022214510276', rand: '10999990')
 
-  date = Time.now.strftime('%Y%m%d') 
-  time = Time.now.strftime('%H%m%S') 
+  date = Time.now.strftime('%Y%m%d')
+  time = Time.now.strftime('%H%m%S')
 
   mt940 = "\r\n:20:STARTUMS\r\n:25:#{credentials.bank_code}/#{account_number}\r\n:28C:0\r\n:60F:C160218EUR111,23\r\n:61:160218D18,33NMSCNONREF\r\n:86:005?00Basislastschrift?10931?20302-6022613-2945142 Amazon\r\n?21.Mktplce EU-DE 111111111111?222222 EREF: 1111111111111111\r\n?23 MREF: 44444444444444444444?245555555555 CRED: 6666666666\r\n?2577777777 IBAN: DE8730030880?261908262006 BIC: TUBDDEDD\r\n?3030030880?31?32AMAZON PAYMENTS EUROPE S.C.?33A.?34992\r\n:62F:C160218EUR111,56\r\n-'"
 

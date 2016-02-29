@@ -18,7 +18,7 @@ module Bankster
 
         element_group :security_identification_details do
           element :type, default: 1
-          element :cid 
+          element :cid
           element :party_identification # system_id
         end
 

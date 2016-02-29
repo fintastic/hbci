@@ -10,7 +10,7 @@ require 'spec_helper'
 #
 #     it 'contains the correct elements' do
 #       expect(result).to eql([
-#         [['a','a'], ['a', 's']], 
+#         [['a','a'], ['a', 's']],
 #         [['b', 'sd'], ['s', 'x']],
 #       ])
 #     end

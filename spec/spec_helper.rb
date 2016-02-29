@@ -7,7 +7,7 @@ require 'support/message_stubs'
 
 # @çount = 0
 # WebMock.disable_net_connect!(:allow => [
-#   lambda { |uri| 
+#   lambda { |uri|
 #     byebug
 #     @count = @count + 1
 #     @count <= 1

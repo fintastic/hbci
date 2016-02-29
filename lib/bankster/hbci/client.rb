@@ -5,7 +5,7 @@ module Bankster
 
       def initialize(credentials)
         unless credentials.is_a?(Bankster::BankCredentials::Hbci)
-          fail ArgumentError.new("#{self.class.name}#initialize expects a Bankster::BankCredentials::Hbci object") 
+          fail ArgumentError.new("#{self.class.name}#initialize expects a Bankster::BankCredentials::Hbci object")
         end
         @credentials = credentials
         credentials.validate!
@@ -58,8 +58,8 @@ module Bankster
         messenger.add_request_payload(balance_request_segment)
         messenger.request!
 
-        messenger.response.payload.select { |seg| 
-          seg.head.type == 'HISAL' 
+        messenger.response.payload.select { |seg|
+          seg.head.type == 'HISAL'
         }.each_with_object({}) { |seg, output|
           output[seg.ktv.number] = seg.booked_amount
         }

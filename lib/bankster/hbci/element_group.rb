@@ -10,13 +10,13 @@ module Bankster
     #
     # - named writer:
     #   element_group.element_name = "asd"
-    # 
+    #
     # - array reader:
     #   element_group[index_of_element]
     #
     # - array writer:
     #   element_group[index_of_element] = "asd"
-    # 
+    #
     #
     # By default, an ElementGroup does not have any elements. They need to be
     # configured. This can be done by 2 ways:
@@ -29,7 +29,7 @@ module Bankster
     #   end
     #
     # 2. Define them dynamically:
-    # 
+    #
     #   my_element_group = ElementGroup.new
     #   my_element_group.define_element(:my_first_element)
     #   my_element_group.define_element(:my_second_element)
@@ -76,7 +76,7 @@ module Bankster
       def to_s
         elements.each_with_index.map { |element, index|
           if element.is_a?(Array)
-            element.map do |entry| 
+            element.map do |entry|
               case defined_elements[index][:type]
               when :binary
                 "@#{entry.size}@#{entry}"
@@ -111,13 +111,13 @@ module Bankster
       private
 
       def define_element_reader(definition)
-        # define_singleton_method("#{definition[:name]}") do 
+        # define_singleton_method("#{definition[:name]}") do
         #   elements[index_for_element(definition[:name])]
         # end
       end
 
       def define_element_writer(definition)
-        # define_singleton_method("#{definition[:name]}=") do |value| 
+        # define_singleton_method("#{definition[:name]}=") do |value|
         #   elements[index_for_element(definition[:name])] = value
         # end
       end
@@ -152,7 +152,7 @@ module Bankster
         index = index_for_element(name)
 
         if definition[:multi]
-          elements[index] = []           
+          elements[index] = []
         elsif definition[:default].is_a?(Proc)
           elements[index] = definition[:default].call(self)
         else

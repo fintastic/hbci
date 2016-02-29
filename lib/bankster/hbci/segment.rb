@@ -48,8 +48,8 @@ module Bankster
       def initiate_element_group(name, element_definitions, block, type = nil)
         element_group_class = type ? type : Bankster::Hbci::ElementGroup
         element_group = element_group_class.new
-        element_group.instance_eval(&block) if block 
-        element_definitions.to_a.each do |element_definition| 
+        element_group.instance_eval(&block) if block
+        element_definitions.to_a.each do |element_definition|
           element_definition = {name: element_definition} if element_definition.is_a?(Symbol)
           element_group.define_element(element_definition)
         end
@@ -133,13 +133,13 @@ module Bankster
 
       def self.parse(segment_data)
         segment = self.new
-        
+
         segment_data.each_with_index do |element_group_data, element_group_index|
           unless segment[element_group_index].is_a?(ElementGroup)
             raise "Failed to add a parsed element group to segment #{segment.class.type}v#{segment.class.version} at index #{element_group_index}"
           end
           element_group_data.each_with_index do |element_data, element_index|
-            if element_index > segment[element_group_index].elements.size 
+            if element_index > segment[element_group_index].elements.size
               raise "Failed to add a parsed element to element_group #{segment.class.type}v#{segment.class.version} at element_group #{element_group_index} index #{element_index}"
             end
             if element_data.is_a?(String)
@@ -148,7 +148,7 @@ module Bankster
               element_data.gsub!("?'","'")
               element_data.gsub!('?+','+')
             end
-            segment[element_group_index][element_index] = element_data 
+            segment[element_group_index][element_index] = element_data
           end
         end
 

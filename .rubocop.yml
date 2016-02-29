@@ -6,3 +6,7 @@ Style/Documentation:
 
 Metrics/LineLength:
   Enabled: false
+
+Style/IndentationConsistency:
+  Exclude:
+    - spec/support/message_stubs.rb

@@ -13,7 +13,7 @@ module Bankster
         # MUST be the same as in signature opening (HNSHK)
         element :security_reference
 
-        # Security validation result. Empty when using pin/tan. 
+        # Security validation result. Empty when using pin/tan.
         element :security_validation_result
 
         # User signature

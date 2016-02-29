@@ -4,7 +4,7 @@ describe Bankster::Hbci::Client do
 
   describe '#initialize' do
     describe 'checking of credentials' do
-      let(:credentials) { 
+      let(:credentials) {
         Bankster::BankCredentials::Hbci.new({
           url:        'https://hbci11.fiducia.de/cgi-bin/hbciservlet',
           bank_code:  '0000',

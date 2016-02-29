@@ -165,7 +165,7 @@ describe Bankster::Hbci::ElementGroup do
 
   describe '.element' do
     context 'without any args' do
-      subject do 
+      subject do
         Class.new(described_class) do
           element :test1
           element :test2
@@ -197,7 +197,7 @@ describe Bankster::Hbci::ElementGroup do
     end
 
     context 'given a default value' do
-      subject do 
+      subject do
         class MyGroup < Bankster::Hbci::ElementGroup
           element :test1, default: 'my_default_value'
           element :test2

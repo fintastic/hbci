@@ -8,7 +8,7 @@ module Bankster
       ELEMENT_GROUP_DELIMITER = '+'
       SEGMENT_DELIMITER       = '\''
 
-      
+
       # ELEMENT_REGEX matches everything until a a delimiter that is not escaped
       #
       # NODE                     EXPLANATION
@@ -34,11 +34,11 @@ module Bankster
       ELEMENT_REGEX           = /(.*?(?=(?<!\?)[:+']))/
 
       # Binary Elements may contain unescaped delimiters. Thus they are not be
-      # terminated by regular delimiters. But They content is preceeded with 
+      # terminated by regular delimiters. But They content is preceeded with
       # its lenth surrounded by '@'s. e.g.:
       #
       # '@6@mydata' or '@12@mydatamydata'
-      # 
+      #
       # The BINARY_ELEMENT_LENGTH_REGEx matches only the length.
       BINARY_ELEMENT_LENGTH_REGEX = /@(\d+)@/
 
@@ -57,12 +57,12 @@ module Bankster
         parse_element
         while scanner.rest_size > 1
           parse_delimiter
-          parse_element 
+          parse_element
         end
         segments
       end
 
-      private 
+      private
 
       def parse_regular_element
         current_element_group << scanner.scan(ELEMENT_REGEX)
