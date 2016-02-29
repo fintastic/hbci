@@ -50,7 +50,7 @@ module Bankster
         element_group = element_group_class.new
         element_group.instance_eval(&block) if block
         element_definitions.to_a.each do |element_definition|
-          element_definition = {name: element_definition} if element_definition.is_a?(Symbol)
+          element_definition = { name: element_definition } if element_definition.is_a?(Symbol)
           element_group.define_element(element_definition)
         end
         element_groups[index_of_element_group(name)] = element_group
@@ -70,17 +70,17 @@ module Bankster
       # at inistialization
       def self.element_group(name, definition = {}, &block)
         ensure_setup_element_group_definitions
-        element_groups_to_be_defined << definition.merge({name: name, block: block})
+        element_groups_to_be_defined << definition.merge({ name: name, block: block })
       end
 
       def self.element_groups(name, definition = {}, &block)
         ensure_setup_element_group_definitions
-        element_groups_to_be_defined << definition.merge({name: name, block: block, multi: true})
+        element_groups_to_be_defined << definition.merge({ name: name, block: block, multi: true })
       end
 
       def self.element(name, definition = {})
         ensure_setup_element_group_definitions
-        element_groups_to_be_defined << {elements: [definition.merge({name: name})], name: name}
+        element_groups_to_be_defined << { elements: [definition.merge({ name: name })], name: name }
       end
 
       def define_element_groups_from_class

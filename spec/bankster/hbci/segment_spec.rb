@@ -17,7 +17,7 @@ describe Bankster::Hbci::Segment do
         expect(subject).to be_a(Array)
         expect(subject.count).to eql(1)
         expect(subject.first[:name]).to eql(:my_element)
-        expect(subject.first[:elements]).to eql([{name: :my_element}])
+        expect(subject.first[:elements]).to eql([{ name: :my_element }])
       end
     end
 
@@ -50,7 +50,7 @@ describe Bankster::Hbci::Segment do
         expect(subject).to be_a(Array)
         expect(subject.count).to eql(1)
         expect(subject.first[:name]).to eql(:my_element)
-        expect(subject.first[:elements]).to eql([{name: :my_element, default: 'asd'}])
+        expect(subject.first[:elements]).to eql([{ name: :my_element, default: 'asd' }])
       end
     end
   end
@@ -150,7 +150,7 @@ describe Bankster::Hbci::Segment do
     context 'given single element groups' do
       subject do
         segment_class = Class.new(Bankster::Hbci::Segment) do
-          element_group :my_test1, elements: [{name: :a, default: 'asd'}, :b, :c]
+          element_group :my_test1, elements: [{ name: :a, default: 'asd' }, :b, :c]
           element_group :my_test2, elements: [:x, :y, :c]
         end
         segment_class.new

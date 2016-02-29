@@ -19,7 +19,7 @@ task :generate_segment_classes do
   end
 
   def element_definition(element_node)
-    {name: element_node.attr(:name)}
+    { name: element_node.attr(:name) }
   end
 
 
