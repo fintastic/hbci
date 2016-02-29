@@ -6,8 +6,8 @@ module Bankster
         element :content, type: :binary
 
         def after_build
-          self.head.position = 999
-          self.content = self.message.signed_payload.join('')
+          head.position = 999
+          self.content = message.signed_payload.join('')
         end
 
         # def self.parse(string)

@@ -211,9 +211,9 @@ describe Bankster::Hbci::ElementGroup do
     end
 
     context 'given a default value as a block' do
-      let(:time_1) { Time.new(2015,1,1) }
-      let(:time_2) { Time.new(2015,2,1) }
-      let(:time_3) { Time.new(2015,3,1) }
+      let(:time_1) { Time.new(2015, 1, 1) }
+      let(:time_2) { Time.new(2015, 2, 1) }
+      let(:time_3) { Time.new(2015, 3, 1) }
 
       it 'sets a default value' do
         Timecop.freeze(time_1)

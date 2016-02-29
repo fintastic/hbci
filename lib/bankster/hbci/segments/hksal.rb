@@ -11,7 +11,7 @@ module Bankster
         element :all_accounts, default: 'N'
 
         def after_build
-          self.head.position = '3'
+          head.position = '3'
         end
       end
     end

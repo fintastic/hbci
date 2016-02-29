@@ -50,9 +50,9 @@ module Bankster
         element :compression_method, default: 0
 
         def after_build
-          self.security_identification_details.party_identification = dialog.system_id
-          self.key.bank_code = dialog.credentials.bank_code
-          self.key.user_id = dialog.credentials.user_id
+          security_identification_details.party_identification = dialog.system_id
+          key.bank_code = dialog.credentials.bank_code
+          key.user_id = dialog.credentials.user_id
         end
       end
     end

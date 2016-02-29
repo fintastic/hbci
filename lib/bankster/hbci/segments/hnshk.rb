@@ -62,9 +62,9 @@ module Bankster
 
         def after_build
           self.security_reference = message.sec_ref
-          self.security_identification_details.party_identification = dialog.system_id
-          self.key.bank_code = dialog.credentials.bank_code
-          self.key.user_id = dialog.credentials.user_id
+          security_identification_details.party_identification = dialog.system_id
+          key.bank_code = dialog.credentials.bank_code
+          key.user_id = dialog.credentials.user_id
 
           self.tan_mechanism = dialog.tan_mechanism if dialog.tan_mechanism
         end

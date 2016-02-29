@@ -53,7 +53,7 @@ module Bankster
           element_definition = {name: element_definition} if element_definition.is_a?(Symbol)
           element_group.define_element(element_definition)
         end
-        self.element_groups[index_of_element_group(name)] = element_group
+        element_groups[index_of_element_group(name)] = element_group
       end
 
       def define_element_group(definition)
@@ -100,27 +100,27 @@ module Bankster
       end
 
       def self.type
-        self.name.split('::').last.split('v').first rescue 'EmptySegment'
+        name.split('::').last.split('v').first rescue 'EmptySegment'
       end
 
       def self.version
-        self.name.split('::').last.split('v').last rescue '0'
+        name.split('::').last.split('v').last rescue '0'
       end
 
       def self.build(dialog: nil, message: nil, **)
-        segment = self.new
+        segment = new
         segment.dialog = dialog
         segment.message = message
 
-        segment.head.version = self.version
-        segment.head.type = self.type
+        segment.head.version = version
+        segment.head.type = type
 
         segment.after_build
         segment
       end
 
       def to_s
-        element_groups.join('+').gsub(/\+*$/,'') << '\''
+        element_groups.join('+').gsub(/\+*$/, '') << '\''
       end
 
       def self.descendants
@@ -128,11 +128,11 @@ module Bankster
       end
 
       def self.register
-        SegmentParser.register_segment(type: self.type, version: self.version, class: self)
+        SegmentParser.register_segment(type: type, version: version, class: self)
       end
 
       def self.parse(segment_data)
-        segment = self.new
+        segment = new
 
         segment_data.each_with_index do |element_group_data, element_group_index|
           unless segment[element_group_index].is_a?(ElementGroup)
@@ -143,10 +143,10 @@ module Bankster
               raise "Failed to add a parsed element to element_group #{segment.class.type}v#{segment.class.version} at element_group #{element_group_index} index #{element_index}"
             end
             if element_data.is_a?(String)
-              element_data.gsub!('??','?')
-              element_data.gsub!('?:',':')
-              element_data.gsub!("?'","'")
-              element_data.gsub!('?+','+')
+              element_data.gsub!('??', '?')
+              element_data.gsub!('?:', ':')
+              element_data.gsub!("?'", "'")
+              element_data.gsub!('?+', '+')
             end
             segment[element_group_index][element_index] = element_data
           end

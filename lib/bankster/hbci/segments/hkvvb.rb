@@ -12,7 +12,7 @@ module Bankster
 
         def after_build
           # self.head.position = message ? message.payload_index_of(self) + 3 : "X"
-          self.head.position = 4
+          head.position = 4
           self.dialog_language = 1
         end
 

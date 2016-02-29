@@ -131,7 +131,7 @@ def stub_balance_response(credentials, account_number: '11111111', dialog_id: 'L
   str << "HNHBS:7:1+3'"
 end
 
-def stub_transactions_request(credentials, account_number: '11111111', dialog_id: 'LM6022214510276', rand: '10999990', start_date: Date.new(2016,2,18), end_date: Date.new(2016,2,20))
+def stub_transactions_request(credentials, account_number: '11111111', dialog_id: 'LM6022214510276', rand: '10999990', start_date: Date.new(2016, 2, 18), end_date: Date.new(2016, 2, 20))
   date = Time.now.strftime('%Y%m%d')
   time = Time.now.strftime('%H%m%S')
 

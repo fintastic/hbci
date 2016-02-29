@@ -23,9 +23,9 @@ module Bankster
         end
 
         def after_build
-          self.head.position      = message.payload.size + 3
+          head.position      = message.payload.size + 3
           self.security_reference = message.sec_ref
-          self.signature.pin      = dialog.credentials.pin
+          signature.pin      = dialog.credentials.pin
         end
       end
     end

@@ -45,7 +45,7 @@ describe Bankster::Hbci::Client do
         to_return(status: 200, body: Base64.encode64(stub_dialog_init_response(credentials)))
 
       stub_request(:post, credentials.url).
-        with(body: Base64.encode64(stub_transactions_request(credentials, account_number: '11111111', start_date: Date.new(2016,2,18), end_date: Date.new(2016,2,20)))).
+        with(body: Base64.encode64(stub_transactions_request(credentials, account_number: '11111111', start_date: Date.new(2016, 2, 18), end_date: Date.new(2016, 2, 20)))).
         to_return(status: 200, body: Base64.encode64(stub_transactions_response(credentials, account_number: '11111111')))
     end
     after do
@@ -53,7 +53,7 @@ describe Bankster::Hbci::Client do
     end
 
     it 'returns the transactions' do
-      transactions = client.transactions('11111111', Date.new(2016,2,18), Date.new(2016,2,20))
+      transactions = client.transactions('11111111', Date.new(2016, 2, 18), Date.new(2016, 2, 20))
       expect(transactions.count).to eql(1)
 
       transaction = transactions.first

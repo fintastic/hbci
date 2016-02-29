@@ -81,7 +81,7 @@ module Bankster
               when :binary
                 "@#{entry.size}@#{entry}"
               else
-                entry.to_s.gsub('?','??').gsub('+','?+').gsub(':','?:').gsub('\'','?\'')
+                entry.to_s.gsub('?', '??').gsub('+', '?+').gsub(':', '?:').gsub('\'', '?\'')
               end
             end
           else
@@ -89,10 +89,10 @@ module Bankster
             when :binary
               "@#{element.size}@#{element}"
             else
-              element.to_s.gsub('?','??').gsub('+','?+').gsub(':','?:').gsub('\'','?\'')
+              element.to_s.gsub('?', '??').gsub('+', '?+').gsub(':', '?:').gsub('\'', '?\'')
             end
           end
-        }.join(':').gsub(/:*$/,'')
+        }.join(':').gsub(/:*$/, '')
       end
 
       def initialize

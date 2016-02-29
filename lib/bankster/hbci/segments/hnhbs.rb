@@ -6,7 +6,7 @@ module Bankster
         element :message_number
 
         def after_build
-          self.head.position = message.payload.size + 4
+          head.position = message.payload.size + 4
           self.message_number = dialog.next_sent_message_number
         end
       end

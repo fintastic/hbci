@@ -43,7 +43,7 @@ module Bankster
       BINARY_ELEMENT_LENGTH_REGEX = /@(\d+)@/
 
       def self.parse(string)
-        self.new(string).parse
+        new(string).parse
       end
 
       def initialize(string)
@@ -85,7 +85,7 @@ module Bankster
 
       def parse_binary_element
         scanner.scan(BINARY_ELEMENT_LENGTH_REGEX)
-        binary = scanner.rest.byteslice(0,scanner[1].to_i)
+        binary = scanner.rest.byteslice(0, scanner[1].to_i)
         scanner.pos = scanner.pos + scanner[1].to_i
         current_element_group << binary
       end

@@ -14,8 +14,8 @@ module Bankster
 
 
         def after_build
-          self.head.position = 1
-          self.head.version = 3
+          head.position = 1
+          head.version = 3
 
           head_length = 30
           tail_length = 11
