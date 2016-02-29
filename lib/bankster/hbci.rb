@@ -18,7 +18,6 @@ require 'bankster/hbci/message'
 require 'bankster/hbci/request'
 require 'bankster/hbci/response'
 
-
 # Element groups
 require 'bankster/hbci/element_group'
 require 'bankster/hbci/element_groups/segment_head'
@@ -47,7 +46,7 @@ require 'bankster/hbci/segments/unknown'
 I18n.enforce_available_locales = false if I18n.available_locales.none?
 
 module Bankster
+  # Hbci Client
   module Hbci
-
   end
 end

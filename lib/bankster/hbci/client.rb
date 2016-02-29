@@ -72,7 +72,7 @@ module Bankster
           puts "Sent message #{i}"
           puts m.request.raw
           puts
-          return unless m.response
+          next unless m.response
           puts "Received response #{i}"
           puts m.response.raw
         end

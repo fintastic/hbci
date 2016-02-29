@@ -150,8 +150,6 @@ def stub_transactions_response(credentials, account_number: '11111111', dialog_i
 
   date = Time.now.strftime('%Y%m%d') 
   time = Time.now.strftime('%H%m%S') 
-  transaction_start_date = "20160218"
-  transaction_end_date = "20160220"
 
   mt940 = "\r\n:20:STARTUMS\r\n:25:#{credentials.bank_code}/#{account_number}\r\n:28C:0\r\n:60F:C160218EUR111,23\r\n:61:160218D18,33NMSCNONREF\r\n:86:005?00Basislastschrift?10931?20302-6022613-2945142 Amazon\r\n?21.Mktplce EU-DE 111111111111?222222 EREF: 1111111111111111\r\n?23 MREF: 44444444444444444444?245555555555 CRED: 6666666666\r\n?2577777777 IBAN: DE8730030880?261908262006 BIC: TUBDDEDD\r\n?3030030880?31?32AMAZON PAYMENTS EUROPE S.C.?33A.?34992\r\n:62F:C160218EUR111,56\r\n-'"
 
