@@ -46,7 +46,6 @@ require 'bankster/hbci/segments/unknown'
 I18n.enforce_available_locales = false if I18n.available_locales.none?
 
 module Bankster
-  # Hbci Client
   module Hbci
   end
 end

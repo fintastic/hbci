@@ -43,9 +43,6 @@ describe Bankster::Hbci::Client do
         .with(body: Base64.encode64(stub_transactions_request(credentials, account_number: '11111111', start_date: Date.new(2016, 2, 18), end_date: Date.new(2016, 2, 20))))
         .to_return(status: 200, body: Base64.encode64(stub_transactions_response(credentials, account_number: '11111111')))
     end
-    after do
-      Timecop.return
-    end
 
     it 'returns the transactions' do
       transactions = client.transactions('11111111', Date.new(2016, 2, 18), Date.new(2016, 2, 20))
@@ -77,10 +74,6 @@ describe Bankster::Hbci::Client do
       stub_request(:post, credentials.url)
         .with(body: Base64.encode64(stub_balance_request(credentials, account_number: '11111111')))
         .to_return(status: 200, body: Base64.encode64(stub_balance_response(credentials, account_number: '11111111')))
-    end
-
-    after do
-      Timecop.return
     end
 
     it 'receives the balance' do
