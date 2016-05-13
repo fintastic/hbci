@@ -54,7 +54,7 @@ module Bankster
         messenger.request!
 
         transaction_segment = messenger.response.payload.find { |seg| seg.head.type == 'HIKAZ' }
-        transaction_segment ? Cmxl.parse(transaction_segment.booked).flat_map(&:transactions).map(&:to_h) : []
+        transaction_segment ? Cmxl.parse(transaction_segment.booked.force_encoding('ISO-8859-1').encode('UTF-8')).flat_map(&:transactions).map(&:to_h) : []
       end
 
       def balance(account_number)
