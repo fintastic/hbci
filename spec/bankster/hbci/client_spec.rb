@@ -1,95 +1,74 @@
 require 'spec_helper'
 
 describe Bankster::Hbci::Client do
+  let(:credentials)          { build(:hbci_credentials) }
+  let(:client)               { described_class.new(credentials) }
+  let!(:dialog_init_request) { stub_dialog_init_request(credentials) }
+
+  before do
+    Timecop.freeze
+    allow(Bankster::Hbci::Message).to receive(:generate_security_reference).and_return('10999990')
+  end
+
   describe '#initialize' do
     describe 'checking of credentials' do
-      let(:credentials) do
-        Bankster::BankCredentials::Hbci.new(url:        'https://hbci11.fiducia.de/cgi-bin/hbciservlet',
-                                            bank_code:  '0000',
-                                            user_id:    '1111',
-                                            pin:        'pin')
-      end
-
       it 'fails with an error when not givven a Bankster::BankCredentials::Hbci object' do
         expect { described_class.new('doh!') }
-          .to raise_error(ArgumentError, "#{described_class}#initialize expects a Bankster::BankCredentials::Hbci object")
+        .to raise_error(ArgumentError, "#{described_class}#initialize expects a Bankster::BankCredentials::Hbci object")
       end
 
       it 'does not fail with an error when givven a bankster bank credentials hbci object' do
-        expect { described_class.new(credentials) }
-          .to_not raise_error
+        expect { described_class.new(credentials) }.to_not raise_error
       end
     end
   end
 
-  describe '#transactions(account_number)' do
-    let(:credentials) do
-      Bankster::BankCredentials::Hbci.new(url:        'https://hbci11.fiducia.de/cgi-bin/hbciservlet',
-                                          bank_code:  '11111111',
-                                          user_id:    '22222222',
-                                          pin:        '33333')
-    end
-    let(:client) { described_class.new(credentials) }
+  describe '#transactions(account_number, start_date, end_date, version)' do
+    let(:start_date)     { Date.new(2016, 2, 18) }
+    let(:end_date)       { Date.new(2016, 2, 20) }
+    let(:account_number) { '11111111' }
 
-    before do
-      Timecop.freeze
-      allow(Bankster::Hbci::Message).to receive(:generate_security_reference).and_return('10999990')
+    context 'when requested via hkkaz version 6' do
+      let!(:transaction_request) { stub_transaction_v6_request(credentials, account_number, start_date, end_date) }
+      let!(:transactions)        { client.transactions(account_number, start_date, end_date) }
 
-      stub_request(:post, credentials.url)
-        .with(body: Base64.encode64(stub_dialog_init_request(credentials)))
-        .to_return(status: 200, body: Base64.encode64(stub_dialog_init_response(credentials)))
+      it 'returns the transactions when requested with hkkaz v6' do
+        expect(transaction_request).to have_been_made.once
 
-      stub_request(:post, credentials.url)
-        .with(body: Base64.encode64(stub_transactions_request(credentials, account_number: '11111111', start_date: Date.new(2016, 2, 18), end_date: Date.new(2016, 2, 20))))
-        .to_return(status: 200, body: Base64.encode64(stub_transactions_response(credentials, account_number: '11111111')))
+        expect(transactions.count).to eql(1)
+        expect(transactions[0]['amount_in_cents']).to eql(1833)
+        expect(transactions[0]['swift_code']).to eql('NMSC')
+      end
     end
 
-    it 'returns the transactions' do
-      transactions = client.transactions('11111111', Date.new(2016, 2, 18), Date.new(2016, 2, 20))
-      expect(transactions.count).to eql(1)
+    context 'when requested via hkkaz version 7' do
+      let!(:transaction_request) { stub_transaction_v7_request(credentials, account_number, start_date, end_date) }
+      let!(:transactions)        { client.transactions(account_number, start_date, end_date, 7) }
 
-      transaction = transactions.first
-      expect(transaction['amount_in_cents']).to eql(1833)
-      expect(transaction['swift_code']).to eql('NMSC')
+      it 'returns the transactions when requested with hkkaz v7' do
+        expect(transaction_request).to have_been_made.once
+        expect(transactions.count).to eql(1)
+        expect(transactions[0]['amount_in_cents']).to eql(1833)
+        expect(transactions[0]['swift_code']).to eql('NMSC')
+      end
     end
   end
 
   describe '#balance(account_number)' do
-    let(:credentials) do
-      Bankster::BankCredentials::Hbci.new(url:        'https://hbci11.fiducia.de/cgi-bin/hbciservlet',
-                                          bank_code:  '22222222',
-                                          user_id:    '11111111',
-                                          pin:        '12345')
-    end
-    let(:client) { described_class.new(credentials) }
+    let(:account_number)   { '11111111' }
+    let!(:balance_request) { stub_balance_request(credentials, account_number) }
+    let!(:balance)         { client.balance(account_number) }
 
-    before do
-      Timecop.freeze
-      allow(Bankster::Hbci::Message).to receive(:generate_security_reference).and_return('10999990')
-
-      stub_request(:post, credentials.url)
-        .with(body: Base64.encode64(stub_dialog_init_request(credentials)))
-        .to_return(status: 200, body: Base64.encode64(stub_dialog_init_response(credentials)))
-
-      stub_request(:post, credentials.url)
-        .with(body: Base64.encode64(stub_balance_request(credentials, account_number: '11111111')))
-        .to_return(status: 200, body: Base64.encode64(stub_balance_response(credentials, account_number: '11111111')))
+    it 'initiates the dialog' do
+      expect(dialog_init_request).to have_been_made.once
     end
 
-    it 'receives the balance' do
-      expect(client.balance('11111111')).to eql(
-        '11111111' => Money.eur(4_202_830)
-      )
+    it 'requests the balance' do
+      expect(balance_request).to have_been_made.once
+    end
 
-      expect(
-        a_request(:post, credentials.url)
-        .with(body: Base64.encode64(stub_dialog_init_request(credentials)))
-      ).to have_been_made.once
-
-      expect(
-        a_request(:post, credentials.url)
-        .with(body: Base64.encode64(stub_balance_request(credentials, account_number: '11111111')))
-      ).to have_been_made.once
+    it 'returns the balance' do
+      expect(balance).to eql(account_number => Money.eur(4_202_830))
     end
   end
 end

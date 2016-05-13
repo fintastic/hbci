@@ -29,13 +29,23 @@ module Bankster
         end
       end
 
-      def transactions(account_number, start_date, end_date)
+      def transactions(account_number, start_date, end_date, version = 6)
         messenger = Messenger.new(dialog: dialog)
 
-        transactions_request_segment = Segments::HKKAZv6.build(dialog: @dialog)
+        if version == 6
+          transactions_request_segment = Segments::HKKAZv6.build(dialog: @dialog)
+        elsif version == 7
+          iban = Ibanizator.new.calculate_iban country_code: :de, bank_code: credentials.bank_code, account_number: account_number
+          bic = Ibanizator.bank_db.bank_by_bank_code(credentials.bank_code).bic
+          transactions_request_segment = Segments::HKKAZv7.build(dialog: @dialog)
+          transactions_request_segment.account.iban        = iban
+          transactions_request_segment.account.bic         = bic
+        end
+
         transactions_request_segment.account.number      = account_number
         transactions_request_segment.account.kik_blz     = credentials.bank_code
         transactions_request_segment.account.kik_country = 280
+
         transactions_request_segment.all_accounts        = 'N'
         transactions_request_segment.from                = start_date.strftime('%Y%m%d')
         transactions_request_segment.to                  = end_date.strftime('%Y%m%d')

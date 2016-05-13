@@ -4,6 +4,8 @@ require 'bankster/hbci'
 require 'timecop'
 require 'webmock/rspec'
 require 'support/message_stubs'
+require 'support/mocks'
+require 'support/request_stubs'
 
 RSpec.configure do |config|
   config.after(:each) do

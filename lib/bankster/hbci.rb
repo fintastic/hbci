@@ -3,6 +3,7 @@ require 'httparty'
 require 'money'
 require 'monetize'
 require 'cmxl'
+require 'ibanizator'
 
 # External gems from the bankster ecosystem
 require 'bankster/bank_credentials'

@@ -1,4 +1,4 @@
-def stub_dialog_init_request(credentials, rand: '10999990')
+def stub_dialog_init_request_message(credentials, rand: '10999990')
   date = Time.now.strftime('%Y%m%d')
   time = Time.now.strftime('%H%m%S')
 
@@ -12,7 +12,7 @@ def stub_dialog_init_request(credentials, rand: '10999990')
   str << "HNHBS:6:1+1'"
 end
 
-def stub_dialog_init_response(credentials, dialog_id: 'LM6022214510276', rand: '10999990')
+def stub_dialog_init_response_message(credentials, dialog_id: 'LM6022214510276', rand: '10999990')
   date = Time.now.strftime('%Y%m%d')
   time = Time.now.strftime('%H%m%S')
 
@@ -101,7 +101,7 @@ def stub_dialog_init_response(credentials, dialog_id: 'LM6022214510276', rand: '
   str
 end
 
-def stub_balance_request(credentials, account_number: '11111111', dialog_id: 'LM6022214510276', rand: '10999990')
+def stub_balance_request_message(credentials, account_number: '11111111', dialog_id: 'LM6022214510276', rand: '10999990')
   date = Time.now.strftime('%Y%m%d')
   time = Time.now.strftime('%H%m%S')
 
@@ -115,7 +115,7 @@ def stub_balance_request(credentials, account_number: '11111111', dialog_id: 'LM
   str << "HNHBS:5:1+2'"
 end
 
-def stub_balance_response(credentials, account_number: '11111111', dialog_id: 'LM6022214510276', rand: '10999990')
+def stub_balance_response_message(credentials, account_number: '11111111', dialog_id: 'LM6022214510276', rand: '10999990')
   date = Time.now.strftime('%Y%m%d')
   time = Time.now.strftime('%H%m%S')
 
@@ -130,7 +130,7 @@ def stub_balance_response(credentials, account_number: '11111111', dialog_id: 'L
   str << "HNHBS:7:1+3'"
 end
 
-def stub_transactions_request(credentials, account_number: '11111111', dialog_id: 'LM6022214510276', rand: '10999990', start_date: Date.new(2016, 2, 18), end_date: Date.new(2016, 2, 20))
+def stub_transactions_v6_request_message(credentials, account_number: '11111111', dialog_id: 'LM6022214510276', rand: '10999990', start_date: Date.new(2016, 2, 18), end_date: Date.new(2016, 2, 20))
   date = Time.now.strftime('%Y%m%d')
   time = Time.now.strftime('%H%m%S')
 
@@ -144,7 +144,23 @@ def stub_transactions_request(credentials, account_number: '11111111', dialog_id
   str << "HNHBS:5:1+2'"
 end
 
-def stub_transactions_response(credentials, account_number: '11111111', dialog_id: 'LM6022214510276', rand: '10999990')
+def stub_transactions_v7_request_message(credentials, account_number: '11111111', dialog_id: 'LM6022214510276', rand: '10999990', start_date: Date.new(2016, 2, 18), end_date: Date.new(2016, 2, 20))
+  date = Time.now.strftime('%Y%m%d')
+  time = Time.now.strftime('%H%m%S')
+  iban = Ibanizator.new.calculate_iban country_code: :de, bank_code: credentials.bank_code, account_number: account_number
+  bic = Ibanizator.bank_db.bank_by_bank_code(credentials.bank_code).bic
+
+  str = ''
+  str << "HNHBK:1:3+000000000388+300+#{dialog_id}+2'"
+  str << "HNVSK:998:3+PIN:1+998+1+1::0+1:#{date}:#{time}+2:2:13:@5@NOKEY:6:1+280:#{credentials.bank_code}:#{credentials.user_id}:V:1:1+0'"
+  str << 'HNVSD:999:1+@216@'
+    str << "HNSHK:2:4+PIN:1+942+#{rand}+1+1+1::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'"
+    str << "HKKAZ:3:7+#{iban}:#{bic}:#{account_number}::280:#{credentials.bank_code}+N+#{start_date.strftime('%Y%m%d')}+#{end_date.strftime('%Y%m%d')}'"
+    str << "HNSHA:4:2+#{rand}++#{credentials.pin}''"
+  str << "HNHBS:5:1+2'"
+end
+
+def stub_transactions_response_message(credentials, account_number: '11111111', dialog_id: 'LM6022214510276', rand: '10999990')
   date = Time.now.strftime('%Y%m%d')
   time = Time.now.strftime('%H%m%S')
 
