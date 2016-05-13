@@ -9,9 +9,9 @@ Gem::Specification.new do |spec|
   spec.authors       = ['Roman Lehnert']
   spec.email         = ['roman.lehnert@googlemail.com']
 
-  spec.summary       = 'summ'
-  spec.description   = 'my desc'
-  spec.homepage      = 'http://google.de'
+  spec.summary       = 'A Ruby hbci client'
+  spec.description   = 'A pure ruby hbci banking client'
+  spec.homepage      = 'http://bankster.io'
   spec.license       = 'MIT'
 
   # Prevent pushing this gem to RubyGems.org by setting 'allowed_push_host', or
