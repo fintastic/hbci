@@ -83,7 +83,7 @@ module Bankster
               end
             end
           else
-            case defined_elements[index][:type]
+            case defined_elements[index] && defined_elements[index][:type]
             when :binary
               "@#{element.size}@#{element}"
             else
