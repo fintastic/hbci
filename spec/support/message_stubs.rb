@@ -7,7 +7,7 @@ def stub_dialog_init_request_message(credentials, rand: '10999990')
   str << "HNVSK:998:3+PIN:1+998+1+1::0+1:#{date}:#{time}+2:2:13:@5@NOKEY:6:1+280:#{credentials.bank_code}:#{credentials.user_id}:V:1:1+0'"
   str << "HNVSD:999:1+@195@HNSHK:2:4+PIN:1+999+#{rand}+1+1+1::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'"
   str << "HKIDN:3:2+280:#{credentials.bank_code}+#{credentials.user_id}+0+1'"
-  str << "HKVVB:4:3+0+0+1+Bankster+0.1.0'"
+  str << "HKVVB:4:3+0+0+1+Bankster+#{Bankster::Hbci::VERSION}'"
   str << "HNSHA:5:2+#{rand}++#{credentials.pin}''"
   str << "HNHBS:6:1+1'"
 end
