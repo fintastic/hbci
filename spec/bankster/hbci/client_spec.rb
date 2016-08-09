@@ -52,6 +52,23 @@ describe Bankster::Hbci::Client do
         expect(transactions[0]['swift_code']).to eql('NMSC')
       end
     end
+
+    context 'when requested via hkkaz verion 7 with pagination' do
+      let!(:transaction_request_1) { stub_paginated_transaction_v7_request(credentials, account_number, start_date, end_date, nil, 2, 2) }
+      let!(:transaction_request_2) { stub_paginated_transaction_v7_request(credentials, account_number, start_date, end_date, 2, 3, 3) }
+      let!(:transaction_request_3) { stub_paginated_transaction_v7_request(credentials, account_number, start_date, end_date, 3, nil, 4) }
+      let!(:transactions)          { client.transactions(account_number, start_date, end_date, 7) }
+
+      it 'returns the transactions when requested with hkkaz v7' do
+        expect(transaction_request_1).to have_been_made.once
+        expect(transaction_request_2).to have_been_made.once
+        expect(transaction_request_3).to have_been_made.once
+        expect(transactions.count).to eql(3)
+
+        expect(transactions[0]['amount_in_cents']).to eql(1833)
+        expect(transactions[0]['swift_code']).to eql('NMSC')
+      end
+    end
   end
 
   describe '#balance(account_number)' do
