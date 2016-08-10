@@ -1,12 +1,18 @@
 AllCops:
-  TargetRubyVersion: 2.1
+  TargetRubyVersion: 2.3
 
-Style/Documentation:
-  Enabled: false
-
+# Style/Documentation:
+#   Enabled: false
+#
 Metrics/LineLength:
-  Enabled: false
-
-Style/IndentationConsistency:
   Exclude:
     - spec/support/message_stubs.rb
+
+Metrics/MethodLength:
+  Exclude:
+    - spec/support/message_stubs.rb
+#   Enabled: false
+#
+# Style/IndentationConsistency:
+#   Exclude:
+#     - spec/support/message_stubs.rb

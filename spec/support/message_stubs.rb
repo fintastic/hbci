@@ -16,7 +16,6 @@ def stub_dialog_finish_request_message(credentials, dialog_id: 'LM6022214510276'
   date = Time.now.strftime('%Y%m%d')
   time = Time.now.strftime('%H%m%S')
 
-
   payload = ''
   payload << "HNSHK:2:4+PIN:1+942+#{rand}+1+1+1::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'"
   payload << "HKEND:3:1+#{dialog_id}'"
@@ -29,12 +28,10 @@ def stub_dialog_finish_request_message(credentials, dialog_id: 'LM6022214510276'
   msg << "HNHBS:5:1+#{message_number}'"
 
   padded_length = msg.length.to_s.rjust(12, '0')
-  # byebug
 
   msg.gsub!('HNHBK:1:3+000000000000', "HNHBK:1:3+#{padded_length}")
   msg
 end
-
 
 def stub_dialog_finish_response_message(credentials, dialog_id: 'LM6022214510276', rand: '10999990', message_number: 3)
   date = Time.now.strftime('%Y%m%d')
