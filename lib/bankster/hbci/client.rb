@@ -38,7 +38,6 @@ module Bankster
         transactions_request_segment.account.kik_blz     = credentials.bank_code
         transactions_request_segment.account.kik_country = 280
 
-        transactions_request_segment.all_accounts        = 'N'
         transactions_request_segment.from                = start_date.strftime('%Y%m%d')
         transactions_request_segment.to                  = end_date.strftime('%Y%m%d')
 
@@ -48,13 +47,13 @@ module Bankster
         transactions = []
 
         transaction_segment = messenger.response.payload.find { |seg| seg.head.type == 'HIKAZ' }
-        response_code = messenger.response.payload.find { |seg| seg.head.type == 'HIRMS'  }[1][0]
 
         if transaction_segment
           transactions.push(*Cmxl.parse(transaction_segment.booked.force_encoding('ISO-8859-1').encode('UTF-8')).flat_map(&:transactions).map(&:to_h))
         end
 
-        while messenger.response.payload.find { |seg| seg.head.type == 'HIRMS'   }[1][0] == "3040" && attach = messenger.response.payload.find { |seg| seg.head.type == 'HIRMS' }[1][3] do
+        while messenger.response.payload.find { |seg| seg.head.type == 'HIRMS'   }[1][0] == "3040" do
+          attach = messenger.response.payload.find { |seg| seg.head.type == 'HIRMS' }[1][3]
           messenger = Messenger.new(dialog: dialog)
           transactions_request_segment.attach = attach
           messenger.add_request_payload(transactions_request_segment)
@@ -64,7 +63,6 @@ module Bankster
         end
 
         dialog.finish
-
         transactions
       end
 

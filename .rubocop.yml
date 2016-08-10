@@ -1,9 +1,11 @@
+inherit_from: .rubocop_todo.yml
+
 AllCops:
   TargetRubyVersion: 2.3
 
-# Style/Documentation:
-#   Enabled: false
-#
+Style/Documentation:
+  Enabled: false
+
 Metrics/LineLength:
   Exclude:
     - spec/support/message_stubs.rb
@@ -11,8 +13,3 @@ Metrics/LineLength:
 Metrics/MethodLength:
   Exclude:
     - spec/support/message_stubs.rb
-#   Enabled: false
-#
-# Style/IndentationConsistency:
-#   Exclude:
-#     - spec/support/message_stubs.rb

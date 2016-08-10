@@ -154,7 +154,7 @@ module Bankster
                             definition[:default].call(self)
                           else
                             definition[:default]
-        end
+                          end
       end
 
       def define_elements_from_class

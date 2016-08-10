@@ -5,7 +5,7 @@ def build(type, args: {})
   end
 end
 
-def build_hbci_credentials(args)
+def build_hbci_credentials(_args)
   Bankster::BankCredentials::Hbci.new(
     url:        'https://hbci11.fiducia.de/cgi-bin/hbciservlet',
     bank_code:  '74090000',
