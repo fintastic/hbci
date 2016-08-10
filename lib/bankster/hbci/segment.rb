@@ -131,10 +131,6 @@ module Bankster
         ObjectSpace.each_object(Class).select { |klass| klass < self }
       end
 
-      def self.register
-        SegmentParser.register_segment(type: type, version: version, class: self)
-      end
-
       def self.parse(segment_data)
         segment = new
 

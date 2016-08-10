@@ -27,6 +27,13 @@ module Bankster
         @initiated
       end
 
+      def finish
+        messenger = Messenger.new(dialog: self)
+        dialog_finish_segment = Segments::HKENDv1.build(dialog: self)
+        messenger.add_request_payload(dialog_finish_segment)
+        messenger.request!
+      end
+
       def initiate
         messenger = Messenger.new(dialog: self)
         identification_seg = Segments::HKIDNv2.build(message: messenger.request, dialog: self)

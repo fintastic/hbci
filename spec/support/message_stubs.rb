@@ -12,6 +12,51 @@ def stub_dialog_init_request_message(credentials, rand: '10999990')
   str << "HNHBS:6:1+1'"
 end
 
+def stub_dialog_finish_request_message(credentials, dialog_id: 'LM6022214510276', rand: '10999990', message_number: 3)
+  date = Time.now.strftime('%Y%m%d')
+  time = Time.now.strftime('%H%m%S')
+
+
+  payload = ''
+  payload << "HNSHK:2:4+PIN:1+942+#{rand}+1+1+1::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'"
+  payload << "HKEND:3:1+#{dialog_id}'"
+  payload << "HNSHA:4:2+#{rand}++#{credentials.pin}'"
+
+  msg = ''
+  msg << "HNHBK:1:3+000000000000+300+#{dialog_id}+#{message_number}'"
+  msg << "HNVSK:998:3+PIN:1+998+1+1::0+1:#{date}:#{time}+2:2:13:@5@NOKEY:6:1+280:#{credentials.bank_code}:#{credentials.user_id}:V:1:1+0'"
+  msg << "HNVSD:999:1+@#{payload.length}@#{payload}'"
+  msg << "HNHBS:5:1+#{message_number}'"
+
+  padded_length = msg.length.to_s.rjust(12, '0')
+  # byebug
+
+  msg.gsub!('HNHBK:1:3+000000000000', "HNHBK:1:3+#{padded_length}")
+  msg
+end
+
+
+def stub_dialog_finish_response_message(credentials, dialog_id: 'LM6022214510276', rand: '10999990', message_number: 3)
+  date = Time.now.strftime('%Y%m%d')
+  time = Time.now.strftime('%H%m%S')
+
+  payload = ''
+  payload << "HNSHK:2:4+PIN:1+942+#{rand}+1+1+2::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'"
+  payload << "HIRMG:3:2+0010::Nachricht entgegengenommen.+0100::Dialog beendet.'"
+  payload << "HNSHA:6:2+#{rand}'"
+
+  msg = ''
+  msg << "HNHBK:1:3+00000000000+300+#{dialog_id}+2+#{dialog_id}:#{message_number}'"
+  msg << "HNVSK:998:3+PIN:1+998+1+2::0+1:#{date}:#{time}+2:2:13:@5@NOKEY:6:1+280:#{credentials.bank_code}:#{credentials.user_id}:V:1:1+0'"
+  msg << "HNVSD:999:1+@#{payload.length}@#{payload}'"
+  msg << "HNHBS:7:1+2'"
+
+  padded_length = msg.length.to_s.rjust(12, '0')
+
+  msg.gsub!('HNHBK:1:3+000000000000', "HNHBK:1:3+#{padded_length}")
+  msg
+end
+
 def stub_dialog_init_response_message(credentials, dialog_id: 'LM6022214510276', rand: '10999990')
   date = Time.now.strftime('%Y%m%d')
   time = Time.now.strftime('%H%m%S')

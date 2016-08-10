@@ -1,9 +1,10 @@
 require 'spec_helper'
 
 describe Bankster::Hbci::Client do
-  let(:credentials)          { build(:hbci_credentials) }
-  let(:client)               { described_class.new(credentials) }
-  let!(:dialog_init_request) { stub_dialog_init_request(credentials) }
+  let(:credentials)            { build(:hbci_credentials) }
+  let(:client)                 { described_class.new(credentials) }
+  let!(:dialog_init_request)   { stub_dialog_init_request(credentials) }
+  let!(:dialog_finish_request) { stub_dialog_finish_request(credentials) }
 
   before do
     Timecop.freeze
@@ -34,6 +35,7 @@ describe Bankster::Hbci::Client do
 
       it 'returns the transactions when requested with hkkaz v6' do
         expect(transaction_request).to have_been_made.once
+        expect(dialog_finish_request).to have_been_made.once
 
         expect(transactions.count).to eql(1)
         expect(transactions[0]['amount_in_cents']).to eql(1833)
@@ -47,6 +49,7 @@ describe Bankster::Hbci::Client do
 
       it 'returns the transactions when requested with hkkaz v7' do
         expect(transaction_request).to have_been_made.once
+        expect(dialog_finish_request).to have_been_made.once
         expect(transactions.count).to eql(1)
         expect(transactions[0]['amount_in_cents']).to eql(1833)
         expect(transactions[0]['swift_code']).to eql('NMSC')
@@ -57,12 +60,15 @@ describe Bankster::Hbci::Client do
       let!(:transaction_request_1) { stub_paginated_transaction_v7_request(credentials, account_number, start_date, end_date, nil, 2, 2) }
       let!(:transaction_request_2) { stub_paginated_transaction_v7_request(credentials, account_number, start_date, end_date, 2, 3, 3) }
       let!(:transaction_request_3) { stub_paginated_transaction_v7_request(credentials, account_number, start_date, end_date, 3, nil, 4) }
+      let!(:dialog_finish_request) { stub_dialog_finish_request(credentials, 5) }
       let!(:transactions)          { client.transactions(account_number, start_date, end_date, 7) }
 
       it 'returns the transactions when requested with hkkaz v7' do
         expect(transaction_request_1).to have_been_made.once
         expect(transaction_request_2).to have_been_made.once
         expect(transaction_request_3).to have_been_made.once
+        expect(dialog_finish_request).to have_been_made.once
+
         expect(transactions.count).to eql(3)
 
         expect(transactions[0]['amount_in_cents']).to eql(1833)
@@ -76,16 +82,11 @@ describe Bankster::Hbci::Client do
     let!(:balance_request) { stub_balance_request(credentials, account_number) }
     let!(:balance)         { client.balance(account_number) }
 
-    it 'initiates the dialog' do
+    it 'requests and returns the balance' do
       expect(dialog_init_request).to have_been_made.once
-    end
-
-    it 'requests the balance' do
       expect(balance_request).to have_been_made.once
-    end
-
-    it 'returns the balance' do
-      expect(balance).to eql(account_number => Money.eur(4_202_830))
+      expect(dialog_finish_request).to have_been_made.once
+      expect(balance).to eql(Money.eur(4_202_830))
     end
   end
 end

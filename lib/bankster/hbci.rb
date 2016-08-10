@@ -42,6 +42,7 @@ require 'bankster/hbci/segments/hisal'
 require 'bankster/hbci/segments/hirms'
 require 'bankster/hbci/segments/hiupd'
 require 'bankster/hbci/segments/hikaz'
+require 'bankster/hbci/segments/hkend'
 require 'bankster/hbci/segments/unknown'
 
 I18n.enforce_available_locales = false if I18n.available_locales.none?
