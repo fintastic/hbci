@@ -44,7 +44,7 @@ describe Bankster::Hbci::Segment do
       it 'adds the element group to the definition list' do
         expect(subject).to be_a(Array)
         expect(subject.count).to eql(1)
-        expect(subject).to eql([{ block: nil, name: :my_element, default: 'asd', passthrough: true}])
+        expect(subject).to eql([{ block: nil, name: :my_element, default: 'asd', passthrough: true }])
       end
     end
   end
@@ -78,7 +78,7 @@ describe Bankster::Hbci::Segment do
 
     context 'given one element group with elements' do
       let(:block) do
-        Proc.new do
+        proc do
           element :a
           element :b
         end

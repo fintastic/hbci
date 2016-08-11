@@ -13,3 +13,7 @@ Metrics/LineLength:
 Metrics/MethodLength:
   Exclude:
     - spec/support/message_stubs.rb
+
+Metrics/AbcSize:
+  Exclude:
+    - spec/support/message_stubs.rb

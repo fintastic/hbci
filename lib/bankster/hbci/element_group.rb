@@ -70,7 +70,8 @@ module Bankster
         potential_element_name = name.to_s.split('=').first.to_sym
         is_writer = (name[-1..-1] == '=')
 
-        if index = index_for_element(potential_element_name)
+        index = index_for_element(potential_element_name)
+        if index
           return set_element(potential_element_name, args.first) if is_writer && args.count == 1
           return get_element(potential_element_name)
         end
@@ -79,9 +80,8 @@ module Bankster
       end
 
       def set_element_default(definition)
-        default = case
-                  when definition[:multi] then []
-                  when definition[:default].is_a?(Proc) then definition[:default].call(self)
+        default = if definition[:multi] then []
+                  elsif definition[:default].is_a?(Proc) then definition[:default].call(self)
                   else definition[:default]
                   end
 

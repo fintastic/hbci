@@ -19,12 +19,11 @@ module Bankster
       end
 
       def self.parse(dialog:, raw_response:)
+        response = new(dialog: dialog)
+
         raw_segments = Parser.parse(raw_response.force_encoding('iso-8859-1'))
 
-        message = self.new(dialog: dialog)
-
-        message.raw = raw_response
-
+        response.raw = raw_response
 
         raw_segments.each do |raw_segment|
           segment = Bankster::Hbci::SegmentFactory.build(raw_segment)
@@ -32,23 +31,23 @@ module Bankster
           next unless segment.respond_to?(:head)
 
           case segment.head.type
-            when 'HNHBK' then message.head              = segment
-            when 'HNVSK' then message.enc_head          = segment
-            when 'HNSHK' then message.sig_head          = segment
-            when 'HNVSD' then message.encrypted_payload = segment
-            when 'HNSHA' then message.sig_tail          = segment
-            when 'HNHBS' then message.tail              = segment
+            when 'HNHBK' then response.head              = segment
+            when 'HNVSK' then response.enc_head          = segment
+            when 'HNSHK' then response.sig_head          = segment
+            when 'HNVSD' then response.encrypted_payload = segment
+            when 'HNSHA' then response.sig_tail          = segment
+            when 'HNHBS' then response.tail              = segment
           end
         end
 
-        if message.encrypted_payload
-          raw_payload_segments = Parser.parse(message.encrypted_payload.content)
+        if response.encrypted_payload
+          raw_payload_segments = Parser.parse(response.encrypted_payload.content)
 
-          message.payload = raw_payload_segments.map do |raw_payload_segment|
+          response.payload = raw_payload_segments.map do |raw_payload_segment|
             Bankster::Hbci::SegmentFactory.build(raw_payload_segment)
           end
         end
-        message
+        response
       end
     end
   end

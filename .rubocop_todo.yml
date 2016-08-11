@@ -7,14 +7,14 @@
 # versions of RuboCop, may require this file to be generated again.
 
 
-# Offense count: 21
+Offense count: 21
 Metrics/AbcSize:
   Max: 91
 
 # Offense count: 2
 # Configuration parameters: CountComments.
-# Metrics/ClassLength:
-#   Max: 125
+Metrics/ClassLength:
+  Max: 125
 
 # Offense count: 1
 Metrics/CyclomaticComplexity:

@@ -13,15 +13,27 @@ module Bankster
         end
 
         def after_build
-          head.position = 1
-          head.version = 3
-
-          head_length = 30
-          tail_length = 11
-          length = head_length + tail_length + dialog.next_sent_message_number.to_s.size + dialog.id.to_s.size + message.encrypted_payload.to_s.size + message.enc_head.to_s.size
-          self.message_size = length.to_s.rjust(12, '0')
+          set_message_length
           self.dialog_id = dialog.id
           self.message_number = dialog.next_sent_message_number
+          head.position = 1
+          head.version = 3
+        end
+
+        private
+
+        def set_message_length
+          self.message_size = calculate_message_length.to_s.rjust(12, '0')
+        end
+
+        def calculate_message_length
+          hnhbk_length + message.encrypted_payload.to_s.size + message.enc_head.to_s.size
+        end
+
+        def hnhbk_length
+          head_length = 30
+          tail_length = 11
+          head_length + tail_length + dialog.next_sent_message_number.to_s.size + dialog.id.to_s.size
         end
       end
     end
