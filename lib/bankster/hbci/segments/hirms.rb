@@ -3,7 +3,7 @@ module Bankster
     module Segments
       class HIRMSv2 < Segment
         element_group :head, type: ElementGroups::SegmentHead
-        99.times do |i|
+        10.times do |i|
           element_group "ret_val_#{i}".to_sym, type: ElementGroups::RetVal
         end
 

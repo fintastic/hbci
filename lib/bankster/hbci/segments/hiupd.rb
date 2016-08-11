@@ -11,7 +11,7 @@ module Bankster
         element :name2
         element :konto
         element_group :k_limit, type: ElementGroups::KLimit
-        999.times do |i|
+        10.times do |i|
           element_group "allowed_gv_#{i}".to_sym, type: ElementGroups::AllowedGV
         end
       end
