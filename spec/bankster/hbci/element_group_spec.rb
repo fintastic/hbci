@@ -99,7 +99,26 @@ describe Bankster::Hbci::ElementGroup do
     end
 
     describe 'escaping of special chars' do
-      context 'when given regular elements' do
+      context 'when given regular elements defined as multi elements' do
+        let(:clazz) do
+          Class.new(described_class) do
+            elements :entries
+          end
+        end
+        context 'when all elements have content' do
+          subject do
+            eg = clazz.new
+            eg.entries << 'te+st'
+            eg.entries << "te'st"
+            eg.entries << 'te?st'
+            eg.entries << 'te:st'
+            eg.to_s
+          end
+          it { is_expected.to eql('te?+st:te?\'st:te??st:te?:st') }
+        end
+      end
+
+      context 'when given regular elements defined as single elements' do
         let(:clazz) do
           Class.new(described_class) do
             element :a
@@ -122,24 +141,49 @@ describe Bankster::Hbci::ElementGroup do
       end
 
       context 'when given binary elements' do
-        let(:clazz) do
-          Class.new(described_class) do
-            element :a
-            element :b, type: :binary
-            element :c
-            element :d
+        context 'definedas multi elements' do
+          let(:clazz) do
+            Class.new(described_class) do
+              elements :entries, type: :binary
+            end
+          end
+
+          context 'when all elements have content' do
+            subject do
+              eg = clazz.new
+              eg.entries << 'te+st'
+              eg.entries << "te'st"
+              eg.entries << 'te?st'
+              eg.entries << 'te:st'
+              eg.to_s
+            end
+
+            it { is_expected.to eql("@5@te+st:@5@te'st:@5@te?st:@5@te:st") }
           end
         end
-        context 'when all elements have content' do
-          subject do
-            eg = clazz.new
-            eg.a = 'te+st'
-            eg.b = 'a+sd'
-            eg.c = 'te?st'
-            eg.d = 'te:st'
-            eg.to_s
+
+        context 'definedas single elements' do
+          let(:clazz) do
+            Class.new(described_class) do
+              element :a
+              element :b, type: :binary
+              element :c
+              element :d
+            end
           end
-          it { is_expected.to eql('te?+st:@4@a+sd:te??st:te?:st') }
+
+          context 'when all elements have content' do
+            subject do
+              eg = clazz.new
+              eg.a = 'te+st'
+              eg.b = 'a+sd'
+              eg.c = 'te?st'
+              eg.d = 'te:st'
+              eg.to_s
+            end
+
+            it { is_expected.to eql('te?+st:@4@a+sd:te??st:te?:st') }
+          end
         end
       end
     end

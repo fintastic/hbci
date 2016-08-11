@@ -18,6 +18,7 @@ require 'bankster/hbci/messenger'
 require 'bankster/hbci/message'
 require 'bankster/hbci/request'
 require 'bankster/hbci/response'
+require 'bankster/hbci/element_unparser'
 
 # Element groups
 require 'bankster/hbci/element_group'

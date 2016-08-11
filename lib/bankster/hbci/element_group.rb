@@ -63,34 +63,24 @@ module Bankster
         define_element(definition.merge(name: name))
       end
 
+      def define_elements_from_class
+        self.class.elements_to_be_defined.each { |el| define_element(el) }
+      end
+
       def define_element(definition)
         defined_elements << definition
-
-        define_element_reader(definition)
-        define_element_writer(definition)
         set_element_default(definition)
       end
 
       def to_s
-        elements.each_with_index.map do |element, index|
+        element_strings = elements.each_with_index.map do |element, index|
           if element.is_a?(Array)
-            element.map do |entry|
-              case defined_elements[index][:type]
-              when :binary
-                "@#{entry.size}@#{entry}"
-              else
-                entry.to_s.gsub('?', '??').gsub('+', '?+').gsub(':', '?:').gsub('\'', '?\'')
-              end
-            end
+            element.map { |entry| ElementUnparser.new(entry, defined_elements[index][:type]).unparse }
           else
-            case defined_elements[index] && defined_elements[index][:type]
-            when :binary
-              "@#{element.size}@#{element}"
-            else
-              element.to_s.gsub('?', '??').gsub('+', '?+').gsub(':', '?:').gsub('\'', '?\'')
-            end
+            ElementUnparser.new(element, defined_elements[index][:type]).unparse
           end
-        end.join(':').gsub(/:*$/, '')
+        end
+        element_strings.join(':').gsub(/:*$/, '')
       end
 
       def initialize
@@ -108,18 +98,6 @@ module Bankster
 
       private
 
-      def define_element_reader(definition)
-        # define_singleton_method("#{definition[:name]}") do
-        #   elements[index_for_element(definition[:name])]
-        # end
-      end
-
-      def define_element_writer(definition)
-        # define_singleton_method("#{definition[:name]}=") do |value|
-        #   elements[index_for_element(definition[:name])] = value
-        # end
-      end
-
       def get_element(name)
         elements[index_for_element(name)]
       end
@@ -130,35 +108,24 @@ module Bankster
 
       def method_missing(name, *args)
         potential_element_name = name.to_s.split('=').first.to_sym
-        writer = (name[-1..-1] == '=')
+        is_writer = (name[-1..-1] == '=')
 
-        index = index_for_element(potential_element_name)
-        if index
-          if writer && args.count == 1
-            set_element(potential_element_name, args.first)
-          else
-            get_element(potential_element_name)
-          end
-        else
-          super
+        if index = index_for_element(potential_element_name)
+          return set_element(potential_element_name, args.first) if is_writer && args.count == 1
+          return get_element(potential_element_name)
         end
+
+        super
       end
 
       def set_element_default(definition)
-        name = definition[:name]
-        index = index_for_element(name)
+        default = case
+                  when definition[:multi] then []
+                  when definition[:default].is_a?(Proc) then definition[:default].call(self)
+                  else definition[:default]
+                  end
 
-        elements[index] = if definition[:multi]
-                            []
-                          elsif definition[:default].is_a?(Proc)
-                            definition[:default].call(self)
-                          else
-                            definition[:default]
-                          end
-      end
-
-      def define_elements_from_class
-        self.class.elements_to_be_defined.each { |el| define_element(el) }
+        set_element(definition[:name], default)
       end
 
       def index_for_element(name)
