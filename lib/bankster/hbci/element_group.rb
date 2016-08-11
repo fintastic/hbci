@@ -1,37 +1,5 @@
 module Bankster
   module Hbci
-    # An ElementGroup contains any number of elements.
-    #
-    # Every Element can be accessed via one of the folloging methods:
-    #
-    # - named reader:
-    #   element_group.element_name
-    #
-    # - named writer:
-    #   element_group.element_name = "asd"
-    #
-    # - array reader:
-    #   element_group[index_of_element]
-    #
-    # - array writer:
-    #   element_group[index_of_element] = "asd"
-    #
-    #
-    # By default, an ElementGroup does not have any elements. They need to be
-    # configured. This can be done by 2 ways:
-    #
-    # 1. Define them on class level by subclassing ElementGroup
-    #
-    #   class MyElementGroup < ElementGroup
-    #     element :my_first_element
-    #     element :my_second_element
-    #   end
-    #
-    # 2. Define them dynamically:
-    #
-    #   my_element_group = ElementGroup.new
-    #   my_element_group.define_element(:my_first_element)
-    #   my_element_group.define_element(:my_second_element)
     class ElementGroup
       extend Forwardable
       def_delegator :@elements, :[]
@@ -39,23 +7,15 @@ module Bankster
       attr_accessor :elements
       attr_accessor :defined_elements
 
-      @elements_to_be_defined = []
-
-      class << self
-        attr_accessor :elements_to_be_defined
-      end
-
-      def self.ensure_setup_of_elements_to_be_defined
-        self.elements_to_be_defined = [] unless elements_to_be_defined.is_a?(Array)
+      def self.elements_to_be_defined
+        @elements_to_be_defined ||= []
       end
 
       def self.element(name, definition = {})
-        ensure_setup_of_elements_to_be_defined
         elements_to_be_defined << definition.merge(name: name)
       end
 
       def self.elements(name, definition = {})
-        ensure_setup_of_elements_to_be_defined
         elements_to_be_defined << definition.merge(name: name, multi: true)
       end
 
@@ -63,7 +23,7 @@ module Bankster
         define_element(definition.merge(name: name))
       end
 
-      def define_elements_from_class
+      def define_elements
         self.class.elements_to_be_defined.each { |el| define_element(el) }
       end
 
@@ -87,7 +47,7 @@ module Bankster
         @defined_elements = []
         @elements = []
 
-        define_elements_from_class
+        define_elements
       end
 
       def respond_to?(name, include_all=false)

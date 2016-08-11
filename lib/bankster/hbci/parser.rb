@@ -32,9 +32,9 @@ module Bankster
       #   )                        end of \1
       ELEMENT_REGEX           = /(.*?(?=(?<!\?)[:+']))/
 
-      # Binary Elements may contain unescaped delimiters. Thus they are not be
-      # terminated by regular delimiters. But They content is preceeded with
-      # its lenth surrounded by '@'s. e.g.:
+      # Binary Elements may contain unescaped delimiters. Thus they are not
+      # terminated by regular delimiters. But their content is preceeded with
+      # its length surrounded by '@'s. e.g.:
       #
       # '@6@mydata' or '@12@mydatamydata'
       #
@@ -64,7 +64,8 @@ module Bankster
       private
 
       def parse_regular_element
-        current_element_group << scanner.scan(ELEMENT_REGEX)
+        str = scanner.scan(ELEMENT_REGEX)
+        current_element_group << str.gsub('??', '?').gsub('?:', ':').gsub("?'", "'").gsub('?+', '+')
       end
 
       def parse_element
