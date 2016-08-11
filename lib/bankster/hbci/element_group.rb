@@ -50,10 +50,10 @@ module Bankster
         define_elements
       end
 
-      def respond_to?(name, include_all=false)
+      def respond_to?(name, include_all = false)
         potential_element_name = name.to_s.split('=').first.to_sym
 
-        !!index_for_element(potential_element_name) || super
+        index_for_element(potential_element_name) || super
       end
 
       private

@@ -31,12 +31,12 @@ module Bankster
           next unless segment.respond_to?(:head)
 
           case segment.head.type
-            when 'HNHBK' then response.head              = segment
-            when 'HNVSK' then response.enc_head          = segment
-            when 'HNSHK' then response.sig_head          = segment
-            when 'HNVSD' then response.encrypted_payload = segment
-            when 'HNSHA' then response.sig_tail          = segment
-            when 'HNHBS' then response.tail              = segment
+          when 'HNHBK' then response.head              = segment
+          when 'HNVSK' then response.enc_head          = segment
+          when 'HNSHK' then response.sig_head          = segment
+          when 'HNVSD' then response.encrypted_payload = segment
+          when 'HNSHA' then response.sig_tail          = segment
+          when 'HNHBS' then response.tail              = segment
           end
         end
 

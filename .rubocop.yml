@@ -2,18 +2,9 @@ inherit_from: .rubocop_todo.yml
 
 AllCops:
   TargetRubyVersion: 2.3
+  Exclude:
+    - spec/support/message_stubs.rb
+    - spec/support/request_stubs.rb
 
 Style/Documentation:
   Enabled: false
-
-Metrics/LineLength:
-  Exclude:
-    - spec/support/message_stubs.rb
-
-Metrics/MethodLength:
-  Exclude:
-    - spec/support/message_stubs.rb
-
-Metrics/AbcSize:
-  Exclude:
-    - spec/support/message_stubs.rb

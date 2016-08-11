@@ -34,7 +34,7 @@ module Bankster
       end
 
       def self.generate_security_reference
-        rand(1..23) * 999999 + 1000000
+        rand(1..23) * 999_999 + 1_000_000
       end
 
       def add_payload(segment)

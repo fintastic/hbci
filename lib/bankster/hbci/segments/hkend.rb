@@ -7,7 +7,7 @@ module Bankster
 
         def after_build
           self.dialog_id = dialog.id
-          self.head.position = '3'
+          head.position = '3'
         end
       end
     end

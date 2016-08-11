@@ -5,7 +5,7 @@ module Bankster
 
       def initialize(credentials)
         unless credentials.is_a?(Bankster::BankCredentials::Hbci)
-          fail ArgumentError.new("#{self.class.name}#initialize expects a Bankster::BankCredentials::Hbci object")
+          raise ArgumentError, "#{self.class.name}#initialize expects a Bankster::BankCredentials::Hbci object"
         end
         @credentials = credentials
         credentials.validate!
@@ -52,7 +52,7 @@ module Bankster
           transactions.push(*Cmxl.parse(transaction_segment.booked.force_encoding('ISO-8859-1').encode('UTF-8')).flat_map(&:transactions).map(&:to_h))
         end
 
-        while messenger.response.payload.find { |seg| seg.head.type == 'HIRMS'   }[1][0] == "3040" do
+        while messenger.response.payload.find { |seg| seg.head.type == 'HIRMS' }[1][0] == '3040'
           attach = messenger.response.payload.find { |seg| seg.head.type == 'HIRMS' }[1][3]
           messenger = Messenger.new(dialog: dialog)
           transactions_request_segment.attach = attach

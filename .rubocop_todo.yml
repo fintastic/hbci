@@ -7,7 +7,7 @@
 # versions of RuboCop, may require this file to be generated again.
 
 
-Offense count: 21
+# Offense count: 21
 Metrics/AbcSize:
   Max: 91
 
@@ -36,53 +36,11 @@ Metrics/MethodLength:
 Metrics/ModuleLength:
   Max: 292
 
-# Offense count: 3
-# Configuration parameters: CountKeywordArgs.
-Metrics/ParameterLists:
-  Max: 8
 
 # Offense count: 1
 Style/AccessorMethodName:
   Exclude:
     - 'lib/bankster/hbci/element_group.rb'
-
-# Offense count: 6
-# Cop supports --auto-correct.
-# Configuration parameters: IndentWhenRelativeTo, SupportedStyles, IndentOneStep, IndentationWidth.
-# SupportedStyles: case, end
-Style/CaseIndentation:
-  Enabled: false
-
-# Offense count: 1
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: nested, compact
-Style/ClassAndModuleChildren:
-  Exclude:
-    - 'lib/tasks/generate_segments.rb'
-
-# Offense count: 1
-Style/DoubleNegation:
-  Exclude:
-    - 'lib/bankster/hbci/element_group.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/EmptyCaseCondition:
-  Exclude:
-    - 'lib/bankster/hbci/segment_factory.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/EmptyLines:
-  Exclude:
-    - 'lib/bankster/hbci/response.rb'
-
-# Offense count: 2
-# Cop supports --auto-correct.
-# Configuration parameters: AllowForAlignment, ForceEqualSignAlignment.
-Style/ExtraSpacing:
-  Exclude:
-    - 'lib/bankster/hbci/client.rb'
 
 # Offense count: 60
 # Cop supports --auto-correct.
@@ -90,67 +48,3 @@ Style/ExtraSpacing:
 # SupportedStyles: when_needed, always
 Style/FrozenStringLiteralComment:
   Enabled: false
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, IndentationWidth.
-# SupportedStyles: aligned, indented
-Style/MultilineMethodCallIndentation:
-  Enabled: false
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/NumericLiterals:
-  MinDigits: 8
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: SupportedStyles.
-# SupportedStyles: compact, exploded
-Style/RaiseArgs:
-  EnforcedStyle: compact
-
-# Offense count: 2
-# Cop supports --auto-correct.
-Style/RedundantSelf:
-  Exclude:
-    - 'lib/bankster/hbci/response.rb'
-    - 'lib/bankster/hbci/segments/hkend.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: AllowAsExpressionSeparator.
-Style/Semicolon:
-  Exclude:
-    - 'lib/tasks/generate_segments.rb'
-
-# Offense count: 5
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: only_raise, only_fail, semantic
-Style/SignalException:
-  Exclude:
-    - 'bankster-hbci.gemspec'
-    - 'lib/bankster/hbci/client.rb'
-    - 'lib/bankster/hbci/segment.rb'
-    - 'lib/bankster/hbci/segment_factory.rb'
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: space, no_space
-Style/SpaceAroundEqualsInParameterDefault:
-  Enabled: false
-
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles, ConsistentQuotesInMultiline.
-# SupportedStyles: single_quotes, double_quotes
-Style/StringLiterals:
-  Enabled: false
-
-# Offense count: 1
-# Cop supports --auto-correct.
-Style/WhileUntilDo:
-  Exclude:
-    - 'lib/bankster/hbci/client.rb'
