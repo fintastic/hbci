@@ -46,6 +46,9 @@ require 'bankster/hbci/segments/hikaz'
 require 'bankster/hbci/segments/hkend'
 require 'bankster/hbci/segments/unknown'
 
+# Services
+require 'bankster/hbci/services/transactions_receiver'
+
 I18n.enforce_available_locales = false if I18n.available_locales.none?
 
 module Bankster
