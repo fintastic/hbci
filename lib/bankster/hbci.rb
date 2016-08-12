@@ -48,6 +48,8 @@ require 'bankster/hbci/segments/unknown'
 
 # Services
 require 'bankster/hbci/services/transactions_receiver'
+require 'bankster/hbci/services/balance_receiver'
+require 'bankster/hbci/services/accounts_receiver'
 
 I18n.enforce_available_locales = false if I18n.available_locales.none?
 

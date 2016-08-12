@@ -25,18 +25,45 @@ describe Bankster::Hbci::Client do
   end
 
   describe '#transactions(account_number, start_date, end_date, version)' do
+    let(:account_number) { double }
+    let(:start_date) { double }
+    let(:end_date) { double }
+    let(:service_class) { Bankster::Hbci::Services::TransactionsReceiver }
+    let(:transactions) { double }
+
+    before { allow(service_class).to receive(:perform).and_return(transactions) }
+
+    it 'calls the service' do
+      expect(client.transactions(account_number, start_date, end_date, 6)).to eql(transactions)
+
+      expect(service_class).to have_received(:perform).with(credentials, account_number, start_date, end_date, 6)
+    end
   end
 
   describe '#balance(account_number)' do
-    let(:account_number)   { '11111111' }
-    let!(:balance_request) { stub_balance_request(credentials, account_number) }
-    let!(:balance)         { client.balance(account_number) }
+    let(:account_number) { double }
+    let(:balance) { double }
+    let(:service_class) { Bankster::Hbci::Services::BalanceReceiver }
 
-    it 'requests and returns the balance' do
-      expect(dialog_init_request).to have_been_made.once
-      expect(balance_request).to have_been_made.once
-      expect(dialog_finish_request).to have_been_made.once
-      expect(balance).to eql(Money.eur(4_202_830))
+    before { allow(service_class).to receive(:perform).and_return(balance) }
+
+    it 'calls the service' do
+      expect(client.balance(account_number)).to eql(balance)
+
+      expect(service_class).to have_received(:perform).with(credentials, account_number)
+    end
+  end
+
+  describe '#accounts' do
+    let(:service_class) { Bankster::Hbci::Services::AccountsReceiver }
+    let(:accounts) { double }
+
+    before { allow(service_class).to receive(:perform).and_return(accounts) }
+
+    it 'calls the service' do
+      expect(client.accounts).to eql(accounts)
+
+      expect(service_class).to have_received(:perform).with(credentials)
     end
   end
 end
