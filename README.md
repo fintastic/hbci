@@ -1,8 +1,6 @@
 # Bankster::Hbci
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/bankster/hbci`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+A HBCI client for talting with german banks
 
 ## Installation
 
@@ -22,7 +20,45 @@ Or install it yourself as:
 
 ## Usage
 
-TODO: Write usage instructions here
+First, setup your credentials in a `Bankster::BankCredentials::Hbci` instance:
+```ruby
+credential_hash = {
+  url:        "url",
+  bank_code:  "bank_code",
+  user_id:    "user_id",
+  pin:        "pin"
+}
+
+credentials = Bankster::BankCredentials::Hbci.new(credential_hash)
+```
+
+Now, you can receive your balances, accounts and transactions:
+
+### Receiving the transactions
+
+```ruby
+client = Bankster::Hbci::Client.new(credentials)
+
+transactions = client.transactions('account_number')
+```
+
+### Receiving a balance
+
+```ruby
+client = Bankster::Hbci::Client.new(credentials)
+
+balance = client.balance('account_number')
+```
+
+### Receiving the accounts
+
+```ruby
+client = Bankster::Hbci::Client.new(credentials)
+
+client.accounts
+```
+
+
 
 ## Development
 
