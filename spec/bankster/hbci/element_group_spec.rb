@@ -2,207 +2,124 @@ require 'spec_helper'
 
 describe Bankster::Hbci::ElementGroup do
   describe '#to_s' do
-    context 'with multi elements' do
-      let(:clazz) do
-        Class.new(described_class) do
-          element :test
-          elements :entries
-        end
-      end
-
-      context 'when the multi elements have content' do
-        subject do
-          eg = clazz.new
-          eg.test = 'test'
-          eg.entries.push('entry_1')
-          eg.entries.push('entry_2')
-          eg.entries.push('entry_3')
-          eg.to_s
-        end
-        it { is_expected.to eql('test:entry_1:entry_2:entry_3') }
+    let(:clazz) do
+      Class.new(described_class) do
+        element :a
+        element :b
+        element :c
       end
     end
+    context 'when all elements have content' do
+      subject do
+        eg = clazz.new
+        eg.a = 'a'
+        eg.b = 'b'
+        eg.c = 'c'
+        eg.to_s
+      end
+      it { is_expected.to eql('a:b:c') }
+    end
 
-    context 'without multi elements' do
+    context 'when the first element is empty' do
+      subject do
+        eg = clazz.new
+        eg.a = nil
+        eg.b = 'b'
+        eg.c = 'c'
+        eg.to_s
+      end
+      it { is_expected.to eql(':b:c') }
+    end
+
+    context 'when the first and last element is empty' do
+      subject do
+        eg = clazz.new
+        eg.a = nil
+        eg.b = 'b'
+        eg.c = nil
+        eg.to_s
+      end
+      it { is_expected.to eql(':b') }
+    end
+
+    context 'when the last element is empty' do
+      subject do
+        eg = clazz.new
+        eg.a = 'a'
+        eg.b = 'b'
+        eg.c = nil
+        eg.to_s
+      end
+      it { is_expected.to eql('a:b') }
+    end
+
+    context 'when the last 2 elements are empty' do
+      subject do
+        eg = clazz.new
+        eg.a = 'a'
+        eg.b = nil
+        eg.c = nil
+        eg.to_s
+      end
+      it { is_expected.to eql('a') }
+    end
+
+    context 'when all are empty' do
+      subject do
+        eg = clazz.new
+        eg.a = nil
+        eg.b = nil
+        eg.c = nil
+        eg.to_s
+      end
+      it { is_expected.to eql('') }
+    end
+  end
+
+  describe 'escaping of special chars' do
+    context 'when given regular elements defined as single elements' do
       let(:clazz) do
         Class.new(described_class) do
           element :a
           element :b
           element :c
+          element :d
         end
       end
       context 'when all elements have content' do
         subject do
           eg = clazz.new
-          eg.a = 'a'
-          eg.b = 'b'
-          eg.c = 'c'
+          eg.a = 'te+st'
+          eg.b = "te'st"
+          eg.c = 'te?st'
+          eg.d = 'te:st'
           eg.to_s
         end
-        it { is_expected.to eql('a:b:c') }
-      end
-
-      context 'when the first element is empty' do
-        subject do
-          eg = clazz.new
-          eg.a = nil
-          eg.b = 'b'
-          eg.c = 'c'
-          eg.to_s
-        end
-        it { is_expected.to eql(':b:c') }
-      end
-
-      context 'when the first and last element is empty' do
-        subject do
-          eg = clazz.new
-          eg.a = nil
-          eg.b = 'b'
-          eg.c = nil
-          eg.to_s
-        end
-        it { is_expected.to eql(':b') }
-      end
-
-      context 'when the last element is empty' do
-        subject do
-          eg = clazz.new
-          eg.a = 'a'
-          eg.b = 'b'
-          eg.c = nil
-          eg.to_s
-        end
-        it { is_expected.to eql('a:b') }
-      end
-
-      context 'when the last 2 elements are empty' do
-        subject do
-          eg = clazz.new
-          eg.a = 'a'
-          eg.b = nil
-          eg.c = nil
-          eg.to_s
-        end
-        it { is_expected.to eql('a') }
-      end
-
-      context 'when all are empty' do
-        subject do
-          eg = clazz.new
-          eg.a = nil
-          eg.b = nil
-          eg.c = nil
-          eg.to_s
-        end
-        it { is_expected.to eql('') }
+        it { is_expected.to eql('te?+st:te?\'st:te??st:te?:st') }
       end
     end
 
-    describe 'escaping of special chars' do
-      context 'when given regular elements defined as multi elements' do
-        let(:clazz) do
-          Class.new(described_class) do
-            elements :entries
-          end
-        end
-        context 'when all elements have content' do
-          subject do
-            eg = clazz.new
-            eg.entries << 'te+st'
-            eg.entries << "te'st"
-            eg.entries << 'te?st'
-            eg.entries << 'te:st'
-            eg.to_s
-          end
-          it { is_expected.to eql('te?+st:te?\'st:te??st:te?:st') }
-        end
-      end
-
-      context 'when given regular elements defined as single elements' do
-        let(:clazz) do
-          Class.new(described_class) do
-            element :a
-            element :b
-            element :c
-            element :d
-          end
-        end
-        context 'when all elements have content' do
-          subject do
-            eg = clazz.new
-            eg.a = 'te+st'
-            eg.b = "te'st"
-            eg.c = 'te?st'
-            eg.d = 'te:st'
-            eg.to_s
-          end
-          it { is_expected.to eql('te?+st:te?\'st:te??st:te?:st') }
-        end
-      end
-
-      context 'when given binary elements' do
-        context 'definedas multi elements' do
-          let(:clazz) do
-            Class.new(described_class) do
-              elements :entries, type: :binary
-            end
-          end
-
-          context 'when all elements have content' do
-            subject do
-              eg = clazz.new
-              eg.entries << 'te+st'
-              eg.entries << "te'st"
-              eg.entries << 'te?st'
-              eg.entries << 'te:st'
-              eg.to_s
-            end
-
-            it { is_expected.to eql("@5@te+st:@5@te'st:@5@te?st:@5@te:st") }
-          end
-        end
-
-        context 'definedas single elements' do
-          let(:clazz) do
-            Class.new(described_class) do
-              element :a
-              element :b, type: :binary
-              element :c
-              element :d
-            end
-          end
-
-          context 'when all elements have content' do
-            subject do
-              eg = clazz.new
-              eg.a = 'te+st'
-              eg.b = 'a+sd'
-              eg.c = 'te?st'
-              eg.d = 'te:st'
-              eg.to_s
-            end
-
-            it { is_expected.to eql('te?+st:@4@a+sd:te??st:te?:st') }
-          end
-        end
-      end
-    end
-  end
-
-  describe '.elements' do
-    context 'given a count' do
-      let(:element_group_class) do
+    context 'when given binary elements' do
+      let(:clazz) do
         Class.new(described_class) do
-          elements :entries
+          element :a
+          element :b, type: :binary
+          element :c
+          element :d
         end
       end
 
-      subject { element_group_class.new }
+      context 'when all elements have content' do
+        subject do
+          eg = clazz.new
+          eg.a = 'te+st'
+          eg.b = 'a+sd'
+          eg.c = 'te?st'
+          eg.d = 'te:st'
+          eg.to_s
+        end
 
-      it 'enables the accessing of multiple elements as an array' do
-        expect(subject).to respond_to(:entries)
-        subject.entries.push(:test)
-        expect(subject.entries.first).to eql(:test)
+        it { is_expected.to eql('te?+st:@4@a+sd:te??st:te?:st') }
       end
     end
   end

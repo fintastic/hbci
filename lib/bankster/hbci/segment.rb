@@ -18,10 +18,6 @@ module Bankster
         element_groups_to_be_defined << definition.merge(name: name, block: block)
       end
 
-      def self.element_groups(name, definition = {}, &block)
-        element_groups_to_be_defined << definition.merge(name: name, block: block, multi: true)
-      end
-
       def self.element(name, definition = {})
         element_groups_to_be_defined << definition.merge(name: name, block: nil, passthrough: true)
       end

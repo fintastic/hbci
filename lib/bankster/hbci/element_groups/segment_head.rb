@@ -5,6 +5,7 @@ module Bankster
         element :type
         element :position
         element :version
+        element :reference
       end
     end
   end

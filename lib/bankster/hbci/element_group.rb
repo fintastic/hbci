@@ -15,10 +15,6 @@ module Bankster
         elements_to_be_defined << definition.merge(name: name)
       end
 
-      def self.elements(name, definition = {})
-        elements_to_be_defined << definition.merge(name: name, multi: true)
-      end
-
       def element(name, definition = {})
         define_element(definition.merge(name: name))
       end
@@ -34,10 +30,10 @@ module Bankster
 
       def to_s
         element_strings = elements.each_with_index.map do |element, index|
-          if element.is_a?(Array)
-            element.map { |entry| ElementUnparser.new(entry, defined_elements[index][:type]).unparse }
-          else
+          begin
             ElementUnparser.new(element, defined_elements[index][:type]).unparse
+          rescue
+            byebug
           end
         end
         element_strings.join(':').gsub(/:*$/, '')
@@ -80,12 +76,11 @@ module Bankster
       end
 
       def set_element_default(definition)
-        default = if definition[:multi] then []
-                  elsif definition[:default].is_a?(Proc) then definition[:default].call(self)
-                  else definition[:default]
-                  end
-
-        set_element(definition[:name], default)
+        if definition[:default].is_a?(Proc)
+          set_element(definition[:name], definition[:default].call(self))
+        else
+          set_element(definition[:name], definition[:default])
+        end
       end
 
       def index_for_element(name)
