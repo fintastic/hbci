@@ -18,6 +18,10 @@ module Bankster
           dialog = Dialog.new(credentials)
           dialog.initiate
 
+          unless dialog.accounts.map(&:number).include?(account_number)
+            raise "The account_number #{account_number} is not accessible for the given credentials"
+          end
+
           messenger = Messenger.new(dialog: dialog)
 
           balance_request_segment = Segments::HKSALv4.build(dialog: @dialog)
