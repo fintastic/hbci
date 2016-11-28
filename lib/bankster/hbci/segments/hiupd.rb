@@ -20,11 +20,11 @@ module Bankster
         element_group :head, type: ElementGroups::SegmentHead
         element_group :ktv, type: ElementGroups::KTV2
         element :iban
-        element :customerid
-        element :acctype
-        element :cur
-        element :name1
-        element :name2
+        element :user_id
+        element :account_type
+        element :currency
+        element :name_1
+        element :name_2
         element :konto
         element_group :k_limit, type: ElementGroups::KLimit
         999.times do |i|

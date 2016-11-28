@@ -60,6 +60,10 @@ module Bankster
         element_groups.join('+').gsub(/\+*$/, '') << '\''
       end
 
+      def type
+        self.class.type
+      end
+
       private
 
       def define_element_groups
