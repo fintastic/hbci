@@ -10,7 +10,7 @@ describe Bankster::Hbci::Services::AccountsReceiver do
     allow(Bankster::Hbci::Message).to receive(:generate_security_reference).and_return('10999990')
   end
 
-  let!(:accounts)         { described_class.perform(credentials) }
+  let!(:accounts) { described_class.perform(credentials) }
 
   it 'requests and returns the balance' do
     expect(dialog_init_request).to have_been_made.once

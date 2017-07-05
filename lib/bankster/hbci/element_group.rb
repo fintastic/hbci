@@ -30,11 +30,7 @@ module Bankster
 
       def to_s
         element_strings = elements.each_with_index.map do |element, index|
-          begin
-            ElementUnparser.new(element, defined_elements[index][:type]).unparse
-          rescue
-            byebug
-          end
+          ElementUnparser.new(element, defined_elements[index][:type]).unparse
         end
         element_strings.join(':').gsub(/:*$/, '')
       end

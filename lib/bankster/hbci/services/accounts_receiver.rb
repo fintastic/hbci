@@ -16,7 +16,7 @@ module Bankster
           dialog = Dialog.new(credentials)
           dialog.initiate
           dialog.finish
-          accounts = dialog.accounts.map do |eg|
+          dialog.accounts.map do |eg|
             { account_number: eg.number, bank_code: eg.kik_blz }
           end
         end

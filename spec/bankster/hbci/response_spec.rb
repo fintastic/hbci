@@ -31,6 +31,5 @@ describe Bankster::Hbci::Response do
   end
 
   describe '#success' do
-
   end
 end
