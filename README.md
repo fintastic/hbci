@@ -1,6 +1,6 @@
 # Bankster::Hbci
 
-A HBCI client for talting with german banks
+A pure ruby HBCI client for talking with german banks
 
 ## Installation
 
@@ -22,14 +22,12 @@ Or install it yourself as:
 
 First, setup your credentials in a `Bankster::BankCredentials::Hbci` instance:
 ```ruby
-credential_hash = {
-  url:        "url",
-  bank_code:  "bank_code",
-  user_id:    "user_id",
-  pin:        "pin"
-}
-
-credentials = Bankster::BankCredentials::Hbci.new(credential_hash)
+credentials = Bankster::BankCredentials::Hbci.new({
+  url:        'url',
+  bank_code:  'bank_code',
+  user_id:    'user_id',
+  pin:        'pin'
+})
 ```
 
 Now, you can receive your balances, accounts and transactions:
@@ -68,7 +66,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/bankster-hbci.
+Bug reports and pull requests are welcome on GitHub at https://github.com/bankster/bankster-hbci.
 
 
 ## License
