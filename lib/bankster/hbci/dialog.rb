@@ -43,13 +43,12 @@ module Bankster
 
         messenger.request!
 
-        if messenger.response && messenger.response.success?
-          @tan_mechanism = messenger.response.payload.find { |s| s.type == 'HIRMS' }.allowed_tan_mechanism
-          @accounts      = messenger.response.payload.select { |s| s.type == 'HIUPD' }.map(&:ktv)
-          # @accounts      = messenger.response.payload.select { |s| s.type == 'HIUPD' && s.ktv.number != '' }.map(&:ktv)
-          @id            = messenger.response.head.dialog_id
-          @initiated     = true
-        end
+        return unless messenger.response&.success?
+
+        @tan_mechanism = messenger.response.payload.find { |s| s.type == 'HIRMS' }.allowed_tan_mechanism
+        @accounts      = messenger.response.payload.select { |s| s.type == 'HIUPD' }.map(&:ktv)
+        @id            = messenger.response.head.dialog_id
+        @initiated     = true
       end
     end
   end

@@ -71,6 +71,12 @@ module Bankster
         super
       end
 
+      def respond_to_missing?(method_name, include_private = false)
+        potential_element_name = method_name.to_s.split('=').first.to_sym
+
+        index_for_element(potential_element_name) || super
+      end
+
       def set_element_default(definition)
         if definition[:default].is_a?(Proc)
           set_element(definition[:name], definition[:default].call(self))

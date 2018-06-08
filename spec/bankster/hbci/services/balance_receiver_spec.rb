@@ -31,7 +31,7 @@ describe Bankster::Hbci::Services::BalanceReceiver do
     let(:balance)          { described_class.perform(credentials, account_number) }
 
     it 'raises an error' do
-      expect{ balance }.to raise_error("The account_number #{account_number} is not accessible for the given credentials")
+      expect { balance }.to raise_error("The account_number #{account_number} is not accessible for the given credentials")
       expect(balance_request).to_not have_been_made
     end
   end

@@ -4,9 +4,7 @@ module Bankster
       attr_reader :credentials
 
       def initialize(credentials)
-        unless credentials.is_a?(Bankster::BankCredentials::Hbci)
-          raise ArgumentError, "#{self.class.name}#initialize expects a Bankster::BankCredentials::Hbci object"
-        end
+        raise ArgumentError, "#{self.class.name}#initialize expects a Bankster::BankCredentials::Hbci object" unless credentials.is_a?(Bankster::BankCredentials::Hbci)
         @credentials = credentials
         credentials.validate!
       end

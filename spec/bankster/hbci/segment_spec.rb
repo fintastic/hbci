@@ -102,8 +102,8 @@ describe Bankster::Hbci::Segment do
     context 'given multiple element groups with elements' do
       subject do
         clazz = Class.new(described_class)
-        clazz.element_group(:my_group_1, elements: [:a, :b])
-        clazz.element_group(:my_group_2, elements: [:c, :d])
+        clazz.element_group(:my_group_1, elements: %i[a b])
+        clazz.element_group(:my_group_2, elements: %i[c d])
         clazz.element_groups_to_be_defined
       end
 
@@ -111,9 +111,9 @@ describe Bankster::Hbci::Segment do
         expect(subject).to be_a(Array)
         expect(subject.count).to eql(2)
         expect(subject.first[:name]).to eql(:my_group_1)
-        expect(subject.first[:elements]).to eql([:a, :b])
+        expect(subject.first[:elements]).to eql(%i[a b])
         expect(subject.last[:name]).to eql(:my_group_2)
-        expect(subject.last[:elements]).to eql([:c, :d])
+        expect(subject.last[:elements]).to eql(%i[c d])
       end
     end
 
@@ -138,14 +138,14 @@ describe Bankster::Hbci::Segment do
 
       it 'creates the element groups' do
         expect(subject.element_groups[0]).to be_a(Bankster::Hbci::ElementGroup)
-        expect(subject.defined_element_groups).to eql([:asd, :my_test1, :my_test2, :test])
+        expect(subject.defined_element_groups).to eql(%i[asd my_test1 my_test2 test])
         expect(subject.my_test1).to respond_to(:a)
         expect(subject.my_test1).to respond_to(:b)
         expect(subject.my_test2).to respond_to(:c)
       end
 
       it 'enables the accessors' do
-        expect(subject.defined_element_groups).to eql([:asd, :my_test1, :my_test2, :test])
+        expect(subject.defined_element_groups).to eql(%i[asd my_test1 my_test2 test])
         expect(subject.element_groups[0]).to be_a(Bankster::Hbci::ElementGroup)
         expect(subject.my_test1).to be_a(Bankster::Hbci::ElementGroup)
       end
@@ -166,7 +166,7 @@ describe Bankster::Hbci::Segment do
     end
 
     context 'given valid elements' do
-      let(:string) { [%w(element_1 element_2), ['element_3']] }
+      let(:string) { [%w[element_1 element_2], ['element_3']] }
       it 'fills the elements' do
         segment = segment_class.fill(string)
 

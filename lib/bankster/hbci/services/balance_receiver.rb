@@ -18,9 +18,7 @@ module Bankster
           dialog = Dialog.new(credentials)
           dialog.initiate
 
-          unless dialog.accounts.map(&:number).include?(account_number)
-            raise "The account_number #{account_number} is not accessible for the given credentials"
-          end
+          raise "The account_number #{account_number} is not accessible for the given credentials" unless dialog.accounts.map(&:number).include?(account_number)
 
           messenger = Messenger.new(dialog: dialog)
 
