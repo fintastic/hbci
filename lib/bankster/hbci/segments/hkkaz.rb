@@ -1,9 +1,9 @@
 module Bankster
   module Hbci
     module Segments
-      class HKKAZv7 < Segment
+      class HKKAZv6 < Segment
         element_group :head, type: ElementGroups::SegmentHead
-        element_group :account, type: ElementGroups::KTVInt
+        element_group :account, type: ElementGroups::KTV2
         element :all_accounts, default: 'N'
         element :from
         element :to
@@ -15,9 +15,9 @@ module Bankster
         end
       end
 
-      class HKKAZv6 < Segment
+      class HKKAZv7 < Segment
         element_group :head, type: ElementGroups::SegmentHead
-        element_group :account, type: ElementGroups::KTV2
+        element_group :account, type: ElementGroups::KTVInt
         element :all_accounts, default: 'N'
         element :from
         element :to

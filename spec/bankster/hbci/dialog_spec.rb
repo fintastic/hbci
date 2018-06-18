@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe Bankster::Hbci::Dialog do
   describe 'initiate' do
-    let(:credentials)            { build(:hbci_credentials) }
-    let!(:dialog_init_request)   { stub_dialog_init_request(credentials) }
+    let(:credentials) { build(:hbci_credentials) }
+    let!(:dialog_init_request) { stub_dialog_init_request(credentials) }
 
     subject { described_class.new(credentials) }
 

@@ -7,20 +7,29 @@ describe Bankster::Hbci::Services::TransactionsReceiver do
   let(:account_number)         { '11111111' }
   let!(:dialog_init_request)   { stub_dialog_init_request(credentials) }
   let!(:dialog_finish_request) { stub_dialog_finish_request(credentials) }
+  let(:dialog) { Bankster::Hbci::Dialog.new(credentials) }
 
   before do
     Timecop.freeze
     allow(Bankster::Hbci::Message).to receive(:generate_security_reference).and_return('10999990')
   end
 
+  before do
+    dialog.initiate
+  end
+
+  after do
+    dialog.finish
+  end
+
   context 'when requested via hkkaz version 6' do
     let!(:transaction_request) { stub_transaction_v6_request(credentials, account_number, start_date, end_date) }
-    let!(:transactions)        { described_class.perform(credentials, account_number, start_date, end_date) }
+    subject { Bankster::Hbci::Services::TransactionsReceiver.new(dialog, account_number,6) }
 
     it 'returns the transactions when requested with hkkaz v6' do
-      expect(transaction_request).to have_been_made.once
-      expect(dialog_finish_request).to have_been_made.once
+      transactions = subject.perform(start_date, end_date)
 
+      expect(transaction_request).to have_been_made.once
       expect(transactions.count).to eql(1)
       expect(transactions[0]['amount_in_cents']).to eql(1833)
       expect(transactions[0]['swift_code']).to eql('NMSC')
@@ -29,11 +38,12 @@ describe Bankster::Hbci::Services::TransactionsReceiver do
 
   context 'when requested via hkkaz version 7' do
     let!(:transaction_request) { stub_transaction_v7_request(credentials, account_number, start_date, end_date) }
-    let!(:transactions)        { described_class.perform(credentials, account_number, start_date, end_date, 7) }
+    subject { Bankster::Hbci::Services::TransactionsReceiver.new(dialog, account_number,7) }
 
     it 'returns the transactions when requested with hkkaz v7' do
+      transactions = subject.perform(start_date, end_date)
+
       expect(transaction_request).to have_been_made.once
-      expect(dialog_finish_request).to have_been_made.once
       expect(transactions.count).to eql(1)
       expect(transactions[0]['amount_in_cents']).to eql(1833)
       expect(transactions[0]['swift_code']).to eql('NMSC')
@@ -45,16 +55,15 @@ describe Bankster::Hbci::Services::TransactionsReceiver do
     let!(:transaction_request_2) { stub_paginated_transaction_v7_request(credentials, account_number, start_date, end_date, 2, 3, 3) }
     let!(:transaction_request_3) { stub_paginated_transaction_v7_request(credentials, account_number, start_date, end_date, 3, nil, 4) }
     let!(:dialog_finish_request) { stub_dialog_finish_request(credentials, 5) }
-    let!(:transactions)          { described_class.perform(credentials, account_number, start_date, end_date, 7) }
+    subject { Bankster::Hbci::Services::TransactionsReceiver.new(dialog, account_number,7) }
 
     it 'returns the transactions when requested with hkkaz v7' do
+      transactions = subject.perform(start_date, end_date)
+
       expect(transaction_request_1).to have_been_made.once
       expect(transaction_request_2).to have_been_made.once
       expect(transaction_request_3).to have_been_made.once
-      expect(dialog_finish_request).to have_been_made.once
-
       expect(transactions.count).to eql(3)
-
       expect(transactions[0]['amount_in_cents']).to eql(1833)
       expect(transactions[0]['swift_code']).to eql('NMSC')
     end

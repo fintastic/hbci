@@ -163,13 +163,28 @@ def stub_dialog_finish_response_message(credentials, dialog_id: 'LM6022214510276
   enveloped_response_message(payload, credentials, dialog_id: dialog_id, rand: rand, message_number: message_number, date: date, time: time)
 end
 
-def stub_balance_request_message(credentials, account_number: '11111111', dialog_id: 'LM6022214510276', rand: '10999990')
+def stub_balance_v4_request_message(credentials, account_number: '11111111', dialog_id: 'LM6022214510276', rand: '10999990')
   date = Time.now.strftime('%Y%m%d')
   time = Time.now.strftime('%H%m%S')
 
   payload = %W(
     HNSHK:2:4+PIN:1+942+#{rand}+1+1+1::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'
     HKSAL:3:4+#{account_number}:280:#{credentials.bank_code}+N'
+    HNSHA:4:2+#{rand}++#{credentials.pin}'
+  )
+
+  enveloped_request_message(payload, credentials, dialog_id: dialog_id, rand: rand, message_number: 2, date: date, time: time)
+end
+
+def stub_balance_v7_request_message(credentials, account_number: '11111111', dialog_id: 'LM6022214510276', rand: '10999990')
+  date = Time.now.strftime('%Y%m%d')
+  time = Time.now.strftime('%H%m%S')
+  iban = Ibanizator.new.calculate_iban country_code: :de, bank_code: credentials.bank_code, account_number: account_number
+  bic = Ibanizator.bank_db.bank_by_bank_code(credentials.bank_code).bic
+
+  payload = %W(
+    HNSHK:2:4+PIN:1+942+#{rand}+1+1+1::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'
+    HKSAL:3:7+#{iban}:#{bic}:#{account_number}::280:#{credentials.bank_code}+N'
     HNSHA:4:2+#{rand}++#{credentials.pin}'
   )
 

@@ -1,9 +1,12 @@
 require_relative '../lib/bankster/hbci'
 require_relative 'credentials'
 
-start_date = 1.month.ago
+start_date = 3.day.ago
 end_date = Time.now
 
-@client.transactions(@account_number, start_date, end_date).each do |transaction|
-  puts transaction
+Bankster::Hbci::Dialog.open(@credentials) do |dialog|
+  transactions = Bankster::Hbci::Services::TransactionsReceiver.new(dialog, @account_number).perform(start_date, end_date)
+  transactions.each do |transaction|
+    puts transaction
+  end
 end

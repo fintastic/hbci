@@ -8,12 +8,20 @@ module Bankster
       attr_reader :tan_mechanism
       attr_reader :id
       attr_reader :accounts
+      attr_reader :hikazs
+      attr_reader :hisals
 
-      def next_sent_message_number
-        sent_messages.count + 1
+      def self.open(credentials)
+        dialog = Dialog.new(credentials)
+        dialog.initiate
+        yield dialog
+        dialog.finish
       end
 
       def initialize(credentials = nil)
+        raise ArgumentError, "#{self.class.name}#initialize expects a Bankster::BankCredentials::Hbci object" unless credentials.is_a?(Bankster::BankCredentials::Hbci)
+        credentials.validate!
+
         @initiated     = false
         @credentials   = credentials
         @hbci_version  = '3.0'
@@ -21,6 +29,10 @@ module Bankster
         @sent_messages = []
         @tan_mechanism = nil
         @id            = 0
+      end
+
+      def next_sent_message_number
+        sent_messages.count + 1
       end
 
       def initiated?
@@ -48,6 +60,8 @@ module Bankster
         @tan_mechanism = messenger.response.payload.find { |s| s.type == 'HIRMS' }.allowed_tan_mechanism
         @accounts      = messenger.response.payload.select { |s| s.type == 'HIUPD' }.map(&:ktv)
         @id            = messenger.response.head.dialog_id
+        @hikazs        = messenger.response.payload.select { |s| s.type == 'HIKAZS' }
+        @hisals        = messenger.response.payload.select { |s| s.type == 'HISALS' }
         @initiated     = true
       end
     end

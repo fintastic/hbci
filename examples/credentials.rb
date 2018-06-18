@@ -43,5 +43,3 @@ end.parse!
 )
 
 raise 'missing account_number' unless @account_number
-
-@client = Bankster::Hbci::Client.new(@credentials)

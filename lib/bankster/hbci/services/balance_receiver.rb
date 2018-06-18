@@ -1,40 +1,31 @@
 module Bankster
   module Hbci
     module Services
-      class BalanceReceiver
-        attr_reader :credentials
-        attr_reader :account_number
-
-        def self.perform(*args)
-          new(*args).perform
-        end
-
-        def initialize(credentials, account_number)
-          @credentials = credentials
-          @account_number = account_number
-        end
-
+      class BalanceReceiver < BaseReceiver
         def perform
-          dialog = Dialog.new(credentials)
-          dialog.initiate
-
-          raise "The account_number #{account_number} is not accessible for the given credentials" unless dialog.accounts.map(&:number).include?(account_number)
-
           messenger = Messenger.new(dialog: dialog)
 
-          balance_request_segment = Segments::HKSALv4.build(dialog: @dialog)
-          balance_request_segment.account.code = @credentials.bank_code
-          balance_request_segment.account.number = account_number
-          balance_request_segment.all_accounts = 'N'
+          if version == 4
+            segment = Segments::HKSALv4.build(dialog: dialog)
+            segment.account.code = dialog.credentials.bank_code
+          elsif version == 7
+            segment = Segments::HKSALv7.build(dialog: dialog)
+            segment.account.iban        = calculate_iban(dialog.credentials.bank_code, account_number)
+            segment.account.bic         = calculate_bic(dialog.credentials.bank_code)
+            segment.account.kik_blz     = dialog.credentials.bank_code
+            segment.account.kik_country = 280
+          end
+          segment.account.number = account_number
 
-          messenger.add_request_payload(balance_request_segment)
+          messenger.add_request_payload(segment)
           messenger.request!
+          messenger.response.payload.select { |seg| seg.head.type == 'HISAL' }.first.booked_amount
+        end
 
-          balance = messenger.response.payload.select { |seg| seg.head.type == 'HISAL' }.first.booked_amount
+        private
 
-          dialog.finish
-
-          balance
+        def supported_versions
+          @supported_versions ||= @dialog.hisals.map { |x| x.head.version.to_i }
         end
       end
     end

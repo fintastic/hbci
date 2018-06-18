@@ -28,8 +28,14 @@ def stub_paginated_transaction_v7_request(credentials, account_number, start_dat
     .to_return(status: 200, body: Base64.encode64(stub_transactions_response_message(credentials, account_number: account_number, attachment_id: next_attachment_id)))
 end
 
-def stub_balance_request(credentials, account_number)
+def stub_balance_v4_request(credentials, account_number)
   stub_request(:post, credentials.url)
-    .with(body: Base64.encode64(stub_balance_request_message(credentials, account_number: account_number)))
+    .with(body: Base64.encode64(stub_balance_v4_request_message(credentials, account_number: account_number)))
+    .to_return(status: 200, body: Base64.encode64(stub_balance_response_message(credentials, account_number: account_number)))
+end
+
+def stub_balance_v7_request(credentials, account_number)
+  stub_request(:post, credentials.url)
+    .with(body: Base64.encode64(stub_balance_v7_request_message(credentials, account_number: account_number)))
     .to_return(status: 200, body: Base64.encode64(stub_balance_response_message(credentials, account_number: account_number)))
 end
