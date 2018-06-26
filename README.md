@@ -35,25 +35,37 @@ Now, you can receive your balances, accounts and transactions:
 ### Receiving the transactions
 
 ```ruby
-client = Bankster::Hbci::Client.new(credentials)
+iban = 'DE05740900000011111111'
+start_date = 3.day.ago
+end_date = Time.now
 
-transactions = client.transactions('account_number')
+Bankster::Hbci::Dialog.open(credentials) do |dialog|
+  transactions = Bankster::Hbci::Services::TransactionsReceiver.new(dialog, iban).perform(start_date, end_date)
+  transactions.each do |transaction|
+    puts transaction
+  end
+end
 ```
 
 ### Receiving a balance
 
 ```ruby
-client = Bankster::Hbci::Client.new(credentials)
+iban = 'DE05740900000011111111'
 
-balance = client.balance('account_number')
+Bankster::Hbci::Dialog.open(credentials) do |dialog|
+  puts Bankster::Hbci::Services::BalanceReceiver.new(dialog, iban).perform
+end
 ```
 
 ### Receiving the accounts
 
 ```ruby
-client = Bankster::Hbci::Client.new(credentials)
-
-client.accounts
+Bankster::Hbci::Dialog.open(credentials) do |dialog|
+  accounts = Bankster::Hbci::Services::AccountsReceiver.new(dialog).perform
+  accounts.each do |account|
+    puts account
+  end
+end
 ```
 
 
@@ -70,6 +82,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/bankst
 
 ## Documents
 
+http://www.hbci-zka.de/dokumente/spezifikation_deutsch/fintsv3/FinTS_3.0_Formals_2017-10-06_final_version.pdf
 https://www.hbci-zka.de/dokumente/spezifikation_deutsch/fintsv3/FinTS_3.0_Messages_Geschaeftsvorfaelle_2015-08-07_final_version.pdf
 
 ## License

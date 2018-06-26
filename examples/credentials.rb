@@ -4,16 +4,21 @@ require 'active_support/core_ext'
 
 options = {
   url: nil,
+  hbci_version: nil,
   bank_code: nil,
   user_id: nil,
   pin: nil
 }
 
 OptionParser.new do |opts|
-  opts.banner = 'Usage: example.rb acount_number [options]'
+  opts.banner = 'Usage: example.rb iban [options]'
 
   opts.on '-url', '--url=URL', 'URL' do |arg|
     options[:url] = arg
+  end
+
+  opts.on '-v', '--hbci_version=VERSION', 'Version' do |arg|
+    options[:hbci_version] = arg
   end
 
   opts.on '-b', '--bank_code=BANK_CODE', 'Bank code' do |arg|
@@ -34,7 +39,8 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-@account_number = ARGV.at(0)
+@iban = ARGV.at(0)
+@hbci_version = options[:hbci_version] ? options[:hbci_version].to_i : nil
 @credentials = Bankster::BankCredentials::Hbci.new(
   url: options[:url],
   bank_code: options[:bank_code],
@@ -42,4 +48,4 @@ end.parse!
   pin: options[:pin]
 )
 
-raise 'missing account_number' unless @account_number
+raise 'missing iban' unless @iban

@@ -38,12 +38,12 @@ module Bankster
           elsif version == 7
             segment = Segments::HKKAZv7.build(dialog: @dialog)
 
-            segment.account.iban        = calculate_iban(@dialog.credentials.bank_code, account_number)
-            segment.account.bic         = calculate_bic(@dialog.credentials.bank_code)
+            segment.account.iban        = iban.to_s
+            segment.account.bic         = iban.extended_data.bic
           end
 
-          segment.account.number      = account_number
-          segment.account.kik_blz     = @dialog.credentials.bank_code
+          segment.account.number      = iban.extended_data.account_number
+          segment.account.kik_blz     = iban.extended_data.bank_code
           segment.account.kik_country = 280
 
           segment.from                = start_date.strftime('%Y%m%d')

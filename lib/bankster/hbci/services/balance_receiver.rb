@@ -7,15 +7,15 @@ module Bankster
 
           if version == 4
             segment = Segments::HKSALv4.build(dialog: dialog)
-            segment.account.code = dialog.credentials.bank_code
+            segment.account.code = iban.extended_data.bank_code
           elsif version == 7
             segment = Segments::HKSALv7.build(dialog: dialog)
-            segment.account.iban        = calculate_iban(dialog.credentials.bank_code, account_number)
-            segment.account.bic         = calculate_bic(dialog.credentials.bank_code)
-            segment.account.kik_blz     = dialog.credentials.bank_code
+            segment.account.iban        = iban.to_s
+            segment.account.bic         = iban.extended_data.bic
+            segment.account.kik_blz     = iban.extended_data.bank_code
             segment.account.kik_country = 280
           end
-          segment.account.number = account_number
+          segment.account.number = iban.extended_data.account_number
 
           messenger.add_request_payload(segment)
           messenger.request!

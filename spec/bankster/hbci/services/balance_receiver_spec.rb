@@ -7,6 +7,7 @@ describe Bankster::Hbci::Services::BalanceReceiver do
   let!(:dialog_init_request) { stub_dialog_init_request(credentials) }
   let!(:dialog_finish_request) { stub_dialog_finish_request(credentials) }
   let(:dialog) { Bankster::Hbci::Dialog.new(credentials) }
+  let(:iban) { 'DE05740900000011111111' }
 
   before do
     Timecop.freeze
@@ -22,11 +23,10 @@ describe Bankster::Hbci::Services::BalanceReceiver do
   end
 
   context 'when requested via hksal version 4' do
-    let!(:balance_request) { stub_balance_v4_request(credentials, account_number) }
+    let!(:balance_request) { stub_balance_v4_request(credentials, iban) }
 
     context 'when given an account number that is accessible' do
-      let(:account_number) { '11111111' }
-      subject { Bankster::Hbci::Services::BalanceReceiver.new(dialog, account_number, 4) }
+      subject { Bankster::Hbci::Services::BalanceReceiver.new(dialog, iban, 4) }
 
       it 'requests and returns the balance' do
         balance = subject.perform
@@ -38,11 +38,10 @@ describe Bankster::Hbci::Services::BalanceReceiver do
   end
 
   context 'when requested via hksal version 7' do
-    let!(:balance_request) { stub_balance_v7_request(credentials, account_number) }
+    let!(:balance_request) { stub_balance_v7_request(credentials, iban) }
 
     context 'when given an account number that is accessible' do
-      let(:account_number) { '11111111' }
-      subject { Bankster::Hbci::Services::BalanceReceiver.new(dialog, account_number, 7) }
+      subject { Bankster::Hbci::Services::BalanceReceiver.new(dialog, iban, 7) }
 
       it 'requests and returns the balance' do
         balance = subject.perform

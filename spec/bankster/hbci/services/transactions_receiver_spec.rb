@@ -4,10 +4,10 @@ describe Bankster::Hbci::Services::TransactionsReceiver do
   let(:credentials)            { build(:hbci_credentials) }
   let(:start_date)             { Date.new(2016, 2, 18) }
   let(:end_date)               { Date.new(2016, 2, 20) }
-  let(:account_number)         { '11111111' }
   let!(:dialog_init_request)   { stub_dialog_init_request(credentials) }
   let!(:dialog_finish_request) { stub_dialog_finish_request(credentials) }
   let(:dialog) { Bankster::Hbci::Dialog.new(credentials) }
+  let(:iban) { 'DE05740900000011111111' }
 
   before do
     Timecop.freeze
@@ -23,8 +23,8 @@ describe Bankster::Hbci::Services::TransactionsReceiver do
   end
 
   context 'when requested via hkkaz version 6' do
-    let!(:transaction_request) { stub_transaction_v6_request(credentials, account_number, start_date, end_date) }
-    subject { Bankster::Hbci::Services::TransactionsReceiver.new(dialog, account_number,6) }
+    let!(:transaction_request) { stub_transaction_v6_request(credentials, iban, start_date, end_date) }
+    subject { Bankster::Hbci::Services::TransactionsReceiver.new(dialog, iban,6) }
 
     it 'returns the transactions when requested with hkkaz v6' do
       transactions = subject.perform(start_date, end_date)
@@ -37,8 +37,8 @@ describe Bankster::Hbci::Services::TransactionsReceiver do
   end
 
   context 'when requested via hkkaz version 7' do
-    let!(:transaction_request) { stub_transaction_v7_request(credentials, account_number, start_date, end_date) }
-    subject { Bankster::Hbci::Services::TransactionsReceiver.new(dialog, account_number,7) }
+    let!(:transaction_request) { stub_transaction_v7_request(credentials, iban, start_date, end_date) }
+    subject { Bankster::Hbci::Services::TransactionsReceiver.new(dialog, iban,7) }
 
     it 'returns the transactions when requested with hkkaz v7' do
       transactions = subject.perform(start_date, end_date)
@@ -51,11 +51,11 @@ describe Bankster::Hbci::Services::TransactionsReceiver do
   end
 
   context 'when requested via hkkaz verion 7 with pagination' do
-    let!(:transaction_request_1) { stub_paginated_transaction_v7_request(credentials, account_number, start_date, end_date, nil, 2, 2) }
-    let!(:transaction_request_2) { stub_paginated_transaction_v7_request(credentials, account_number, start_date, end_date, 2, 3, 3) }
-    let!(:transaction_request_3) { stub_paginated_transaction_v7_request(credentials, account_number, start_date, end_date, 3, nil, 4) }
+    let!(:transaction_request_1) { stub_paginated_transaction_v7_request(credentials, iban, start_date, end_date, nil, 2, 2) }
+    let!(:transaction_request_2) { stub_paginated_transaction_v7_request(credentials, iban, start_date, end_date, 2, 3, 3) }
+    let!(:transaction_request_3) { stub_paginated_transaction_v7_request(credentials, iban, start_date, end_date, 3, nil, 4) }
     let!(:dialog_finish_request) { stub_dialog_finish_request(credentials, 5) }
-    subject { Bankster::Hbci::Services::TransactionsReceiver.new(dialog, account_number,7) }
+    subject { Bankster::Hbci::Services::TransactionsReceiver.new(dialog, iban,7) }
 
     it 'returns the transactions when requested with hkkaz v7' do
       transactions = subject.perform(start_date, end_date)
