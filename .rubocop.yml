@@ -4,7 +4,7 @@ AllCops:
   TargetRubyVersion: 2.5
   Exclude:
     - Guardfile
-    - bankster-hbci.gemspec
+    - hbci.gemspec
     - spec/support/message_stubs.rb
     - spec/support/request_stubs.rb
 
@@ -16,7 +16,7 @@ Style/IndentArray:
 
 Style/RescueStandardError:
   Exclude:
-    - lib/bankster/hbci/segment_factory.rb
+    - lib/hbci/segment_factory.rb
 
 Metrics/BlockLength:
   Exclude:

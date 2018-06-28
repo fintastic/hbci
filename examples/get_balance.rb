@@ -1,7 +1,6 @@
-require_relative '../lib/bankster/hbci'
+require_relative '../lib/hbci'
 require_relative 'credentials'
 
-Bankster::Hbci::Dialog.open(@credentials) do |dialog|
-  puts Bankster::Hbci::Services::BalanceReceiver.new(dialog, @iban).perform
+Hbci::Dialog.open(@credentials) do |dialog|
+  puts Hbci::Services::BalanceReceiver.new(dialog, @iban).perform
 end
-

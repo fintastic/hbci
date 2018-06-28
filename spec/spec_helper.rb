@@ -1,7 +1,7 @@
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 
 require 'byebug'
-require 'bankster/hbci'
+require 'hbci'
 require 'timecop'
 require 'webmock/rspec'
 require 'support/message_stubs'

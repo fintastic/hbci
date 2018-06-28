@@ -54,7 +54,7 @@ def stub_dialog_init_request_message(credentials, rand: '10999990')
   payload = %W(
     HNSHK:2:4+PIN:1+999+#{rand}+1+1+1::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'
     HKIDN:3:2+280:#{credentials.bank_code}+#{credentials.user_id}+0+1'
-    HKVVB:4:3+0+0+1+Bankster+#{Bankster::Hbci::VERSION}'
+    HKVVB:4:3+0+0+1+Bankster+#{Hbci::VERSION}'
     HNSHA:5:2+#{rand}++#{credentials.pin}'
   )
 

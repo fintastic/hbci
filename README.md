@@ -1,4 +1,4 @@
-# Bankster::Hbci
+# Hbci
 
 A pure ruby HBCI client for talking with german banks
 
@@ -7,7 +7,7 @@ A pure ruby HBCI client for talking with german banks
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'bankster-hbci'
+gem 'hbci'
 ```
 
 And then execute:
@@ -16,13 +16,13 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install bankster-hbci
+    $ gem install hbci
 
 ## Usage
 
-First, setup your credentials in a `Bankster::BankCredentials::Hbci` instance:
+First, setup your credentials in a `BankCredentials::Hbci` instance:
 ```ruby
-credentials = Bankster::BankCredentials::Hbci.new({
+credentials = BankCredentials::Hbci.new({
   url:        'url',
   bank_code:  'bank_code',
   user_id:    'user_id',
@@ -35,12 +35,13 @@ Now, you can receive your balances, accounts and transactions:
 ### Receiving the transactions
 
 ```ruby
+<<<<<<< HEAD
 iban = 'DE05740900000011111111'
 start_date = 3.day.ago
 end_date = Time.now
 
-Bankster::Hbci::Dialog.open(credentials) do |dialog|
-  transactions = Bankster::Hbci::Services::TransactionsReceiver.new(dialog, iban).perform(start_date, end_date)
+Hbci::Dialog.open(credentials) do |dialog|
+  transactions = Hbci::Services::TransactionsReceiver.new(dialog, iban).perform(start_date, end_date)
   transactions.each do |transaction|
     puts transaction
   end
@@ -52,16 +53,17 @@ end
 ```ruby
 iban = 'DE05740900000011111111'
 
-Bankster::Hbci::Dialog.open(credentials) do |dialog|
-  puts Bankster::Hbci::Services::BalanceReceiver.new(dialog, iban).perform
+Hbci::Dialog.open(credentials) do |dialog|
+  puts Hbci::Services::BalanceReceiver.new(dialog, iban).perform
 end
 ```
 
 ### Receiving the accounts
 
 ```ruby
-Bankster::Hbci::Dialog.open(credentials) do |dialog|
-  accounts = Bankster::Hbci::Services::AccountsReceiver.new(dialog).perform
+<<<<<<< HEAD
+Hbci::Dialog.open(credentials) do |dialog|
+  accounts = Hbci::Services::AccountsReceiver.new(dialog).perform
   accounts.each do |account|
     puts account
   end
@@ -77,7 +79,7 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/bankster/bankster-hbci.
+Bug reports and pull requests are welcome on GitHub at https://github.com/....
 
 
 ## Documents
