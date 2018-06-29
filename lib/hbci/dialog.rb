@@ -18,7 +18,7 @@ module Hbci
     end
 
     def initialize(credentials = nil)
-      raise ArgumentError, "#{self.class.name}#initialize expects a Bankster::BankCredentials::Hbci object" unless credentials.is_a?(Bankster::BankCredentials::Hbci)
+      raise ArgumentError, "#{self.class.name}#initialize expects a BankCredentials::Hbci object" unless credentials.is_a?(BankCredentials::Hbci)
       credentials.validate!
 
       @initiated     = false

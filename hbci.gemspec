@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_runtime_dependency 'httparty'
-  spec.add_runtime_dependency 'bankster-bank_credentials'
+  spec.add_runtime_dependency 'bank_credentials'
   spec.add_runtime_dependency 'money'
   spec.add_runtime_dependency 'monetize'
   spec.add_runtime_dependency 'cmxl', '~> 0.1.3'

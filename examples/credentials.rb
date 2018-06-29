@@ -41,7 +41,7 @@ end.parse!
 
 @iban = ARGV.at(0)
 @hbci_version = options[:hbci_version] ? options[:hbci_version].to_i : nil
-@credentials = Bankster::BankCredentials::Hbci.new(
+@credentials = BankCredentials::Hbci.new(
   url: options[:url],
   bank_code: options[:bank_code],
   user_id: options[:user_id],

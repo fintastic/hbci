@@ -5,8 +5,7 @@ require 'monetize'
 require 'cmxl'
 require 'ibanizator'
 
-# External gems from the bankster ecosystem
-require 'bankster/bank_credentials'
+require 'bank_credentials'
 
 # Internal logic
 require 'hbci/version'
