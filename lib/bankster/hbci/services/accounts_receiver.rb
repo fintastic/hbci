@@ -2,20 +2,13 @@ module Bankster
   module Hbci
     module Services
       class AccountsReceiver
-        attr_reader :credentials
+        attr_reader :dialog
 
-        def self.perform(*args)
-          new(*args).perform
-        end
-
-        def initialize(credentials)
-          @credentials = credentials
+        def initialize(dialog)
+          @dialog = dialog
         end
 
         def perform
-          dialog = Dialog.new(credentials)
-          dialog.initiate
-          dialog.finish
           dialog.accounts.map do |eg|
             { account_number: eg.number, bank_code: eg.kik_blz }
           end

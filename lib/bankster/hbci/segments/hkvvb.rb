@@ -10,7 +10,6 @@ module Bankster
         element :product_version, default: Bankster::Hbci::VERSION
 
         def after_build
-          # self.head.position = message ? message.payload_index_of(self) + 3 : "X"
           head.position = 4
           self.dialog_language = 1
         end
