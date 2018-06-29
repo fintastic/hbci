@@ -2,6 +2,11 @@
 
 A pure ruby HBCI client for talking with german banks
 
+[![Gem Version](https://badge.fury.io/rb/hbci.svg)](https://badge.fury.io/rb/hbci)
+[![Build Status](https://travis-ci.org/fintastic/hbci.svg?branch=master)](https://travis-ci.org/fintastic/hbci)
+[![Depfu](https://badges.depfu.com/badges/9be5e8286939565cd257add25432b1a8/count.svg)](https://depfu.com/github/fintastic/hbci?project=Bundler)
+
+
 ## Preface
 
 This gem is considered experimental.
