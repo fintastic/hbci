@@ -2,6 +2,10 @@
 
 A pure ruby HBCI client for talking with german banks
 
+## Preface
+
+This gem is considered experimental.
+
 ## Installation
 
 Add this line to your application's Gemfile:
