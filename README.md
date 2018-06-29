@@ -35,7 +35,6 @@ Now, you can receive your balances, accounts and transactions:
 ### Receiving the transactions
 
 ```ruby
-<<<<<<< HEAD
 iban = 'DE05740900000011111111'
 start_date = 3.day.ago
 end_date = Time.now
@@ -61,7 +60,6 @@ end
 ### Receiving the accounts
 
 ```ruby
-<<<<<<< HEAD
 Hbci::Dialog.open(credentials) do |dialog|
   accounts = Hbci::Services::AccountsReceiver.new(dialog).perform
   accounts.each do |account|
