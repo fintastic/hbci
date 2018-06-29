@@ -40,7 +40,7 @@ Metrics/ModuleLength:
 # Offense count: 1
 Style/AccessorMethodName:
   Exclude:
-    - 'lib/bankster/hbci/element_group.rb'
+    - 'lib/hbci/element_group.rb'
 
 # Offense count: 60
 # Cop supports --auto-correct.
