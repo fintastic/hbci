@@ -23,3 +23,6 @@ Metrics/BlockLength:
     - spec/**/*
 
 
+Metrics/ModuleLength:
+  Exclude:
+    - lib/hbci/element_groups/generated_element_groups.rb
