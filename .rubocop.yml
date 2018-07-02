@@ -1,5 +1,4 @@
 inherit_from: .rubocop_todo.yml
-
 Style/Documentation:
   Enabled: false
 
@@ -15,4 +14,8 @@ Metrics/LineLength:
   Exclude:
     - spec/support/message_stubs.rb
     - spec/support/request_stubs.rb
+
+Metrics/AbcSize:
+  Exclude: 
+    - spec/support/message_stubs.rb
 

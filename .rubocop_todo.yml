@@ -31,13 +31,6 @@ Metrics/MethodLength:
 Metrics/ParameterLists:
   Max: 8
 
-# Offense count: 14
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: snake_case, normalcase, non_integer
-Naming/VariableNumber:
-  Exclude:
-    - 'spec/support/message_stubs.rb'
-
 # Offense count: 133
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
