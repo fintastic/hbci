@@ -5,12 +5,12 @@ def enveloped_response_message(payload, credentials, dialog_id: 'LM6022214510276
   last_segment_number = 2 + payload.count
   reference_message_number = message_number
 
-  msg = %W(
+  msg = %W[
     HNHBK:1:3+000000000000+300+#{dialog_id}+#{message_number}+#{dialog_id}:#{reference_message_number}'
     HNVSK:998:3+PIN:1+998+1+2::0+1:#{date}:#{time}+2:2:13:@5@NOKEY:6:1+280:#{credentials.bank_code}:#{credentials.user_id}:V:1:1+0'
     HNVSD:999:1+@#{payload_data.length}@#{payload_data}'
     HNHBS:#{last_segment_number}:1+#{message_number}'
-  ).join
+  ].join
 
   padded_length = msg.length.to_s.rjust(12, '0')
 
@@ -22,12 +22,12 @@ def enveloped_request_message(payload, credentials, dialog_id: 'LM6022214510276'
   payload_data = payload.join
   last_segment_number = 2 + payload.count
 
-  msg = %W(
+  msg = %W[
     HNHBK:1:3+000000000000+300+#{dialog_id}+#{message_number}'
     HNVSK:998:3+PIN:1+998+1+1::0+1:#{date}:#{time}+2:2:13:@5@NOKEY:6:1+280:#{credentials.bank_code}:#{credentials.user_id}:V:1:1+0'
     HNVSD:999:1+@#{payload_data.length}@#{payload_data}'
     HNHBS:#{last_segment_number}:1+#{message_number}'
-  ).join
+  ].join
 
   padded_length = msg.length.to_s.rjust(12, '0')
 
@@ -38,11 +38,11 @@ def stub_dialog_finish_request_message(credentials, dialog_id: 'LM6022214510276'
   date = Time.now.strftime('%Y%m%d')
   time = Time.now.strftime('%H%m%S')
 
-  payload = %W(
+  payload = %W[
     HNSHK:2:4+PIN:1+942+#{rand}+1+1+1::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'
     HKEND:3:1+#{dialog_id}'
     HNSHA:4:2+#{rand}++#{credentials.pin}'
-  )
+  ]
 
   enveloped_request_message(payload, credentials, dialog_id: dialog_id, rand: rand, message_number: message_number, date: date, time: time)
 end
@@ -51,12 +51,12 @@ def stub_dialog_init_request_message(credentials, rand: '10999990')
   date = Time.now.strftime('%Y%m%d')
   time = Time.now.strftime('%H%m%S')
 
-  payload = %W(
+  payload = %W[
     HNSHK:2:4+PIN:1+999+#{rand}+1+1+1::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'
     HKIDN:3:2+280:#{credentials.bank_code}+#{credentials.user_id}+0+1'
     HKVVB:4:3+0+0+1+Bankster+#{Hbci::VERSION}'
     HNSHA:5:2+#{rand}++#{credentials.pin}'
-  )
+  ]
 
   enveloped_request_message(payload, credentials, dialog_id: 0, rand: rand, date: date, time: time, message_number: 1)
 end
@@ -154,11 +154,11 @@ def stub_dialog_finish_response_message(credentials, dialog_id: 'LM6022214510276
   date = Time.now.strftime('%Y%m%d')
   time = Time.now.strftime('%H%m%S')
 
-  payload = %W(
+  payload = %W[
     HNSHK:2:4+PIN:1+942+#{rand}+1+1+2::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'
     HIRMG:3:2+0010::Nachricht entgegengenommen.+0100::Dialog beendet.'
     HNSHA:6:2+#{rand}'
-  )
+  ]
 
   enveloped_response_message(payload, credentials, dialog_id: dialog_id, rand: rand, message_number: message_number, date: date, time: time)
 end
@@ -168,11 +168,11 @@ def stub_balance_v4_request_message(credentials, iban: 'DE05740900000011111111',
   time = Time.now.strftime('%H%m%S')
   iban = Ibanizator.iban_from_string(iban)
 
-  payload = %W(
+  payload = %W[
     HNSHK:2:4+PIN:1+942+#{rand}+1+1+1::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'
     HKSAL:3:4+#{iban.extended_data.account_number}:280:#{credentials.bank_code}+N'
     HNSHA:4:2+#{rand}++#{credentials.pin}'
-  )
+  ]
 
   enveloped_request_message(payload, credentials, dialog_id: dialog_id, rand: rand, message_number: 2, date: date, time: time)
 end
@@ -182,11 +182,11 @@ def stub_balance_v7_request_message(credentials, iban: 'DE05740900000011111111',
   time = Time.now.strftime('%H%m%S')
   iban = Ibanizator.iban_from_string(iban)
 
-  payload = %W(
+  payload = %W[
     HNSHK:2:4+PIN:1+942+#{rand}+1+1+1::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'
     HKSAL:3:7+#{iban.to_s}:#{iban.extended_data.bic}:#{iban.extended_data.account_number}::280:#{credentials.bank_code}+N'
     HNSHA:4:2+#{rand}++#{credentials.pin}'
-  )
+  ]
 
   enveloped_request_message(payload, credentials, dialog_id: dialog_id, rand: rand, message_number: 2, date: date, time: time)
 end
@@ -195,13 +195,13 @@ def stub_balance_response_message(credentials, account_number: '11111111', dialo
   date = Time.now.strftime('%Y%m%d')
   time = Time.now.strftime('%H%m%S')
 
-  payload = %W(
+  payload = %W[
     HNSHK:2:4+PIN:1+942+#{rand}+1+1+2::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'
     HIRMG:3:2+0010::Nachricht\ entgegengenommen.'
     HIRMS:4:2:3+0020::*Abfrage\ der\ Kontosalden\ erfolgreich.'
     HISAL:5:4:3+#{account_number}:280:#{credentials.bank_code}+Kontokorrent+EUR+C:42028,3:EUR:20160219'
     HNSHA:6:2+#{rand}'
-  )
+  ]
 
   enveloped_response_message(payload, credentials, dialog_id: dialog_id, rand: rand, message_number: 3, date: date, time: time)
 end
@@ -211,11 +211,11 @@ def stub_transactions_v6_request_message(credentials, iban: 'DE05740900000011111
   time = Time.now.strftime('%H%m%S')
   iban = Ibanizator.iban_from_string(iban)
 
-  payload = %W(
+  payload = %W[
     HNSHK:2:4+PIN:1+942+#{rand}+1+1+1::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'
     HKKAZ:3:6+#{iban.extended_data.account_number}::280:#{credentials.bank_code}+N+#{start_date.strftime('%Y%m%d')}+#{end_date.strftime('%Y%m%d')}'
     HNSHA:4:2+#{rand}++#{credentials.pin}'
-  )
+  ]
 
   enveloped_request_message(payload, credentials, dialog_id: dialog_id, rand: rand, message_number: 2, date: date, time: time)
 end
