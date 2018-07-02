@@ -56,14 +56,6 @@ Naming/VariableNumber:
   Exclude:
     - 'spec/support/message_stubs.rb'
 
-# Offense count: 1
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle.
-# SupportedStyles: when_needed, always, never
-Style/FrozenStringLiteralComment:
-  Exclude:
-    - 'spec/support/request_stubs.rb'
-
 # Offense count: 133
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
