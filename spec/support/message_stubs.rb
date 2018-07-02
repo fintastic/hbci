@@ -1,6 +1,6 @@
 # frozen_string_literal: true
-def enveloped_response_message(payload, credentials, dialog_id: 'LM6022214510276', rand: '10999990', message_number: 1, date: Time.now.strftime('%Y%m%d'), time: Time.now.strftime('%H%m%S'))
 
+def enveloped_response_message(payload, credentials, dialog_id: 'LM6022214510276', rand: '10999990', message_number: 1, date: Time.now.strftime('%Y%m%d'), time: Time.now.strftime('%H%m%S'))
   payload_data = payload.join
   last_segment_number = 2 + payload.count
   reference_message_number = message_number
@@ -18,7 +18,6 @@ def enveloped_response_message(payload, credentials, dialog_id: 'LM6022214510276
 end
 
 def enveloped_request_message(payload, credentials, dialog_id: 'LM6022214510276', rand: '10999990', message_number: 0, date: Time.now.strftime('%Y%m%d'), time: Time.now.strftime('%H%m%S'))
-
   payload_data = payload.join
   last_segment_number = 2 + payload.count
 
@@ -184,7 +183,7 @@ def stub_balance_v7_request_message(credentials, iban: 'DE05740900000011111111',
 
   payload = %W[
     HNSHK:2:4+PIN:1+942+#{rand}+1+1+1::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'
-    HKSAL:3:7+#{iban.to_s}:#{iban.extended_data.bic}:#{iban.extended_data.account_number}::280:#{credentials.bank_code}+N'
+    HKSAL:3:7+#{iban}:#{iban.extended_data.bic}:#{iban.extended_data.account_number}::280:#{credentials.bank_code}+N'
     HNSHA:4:2+#{rand}++#{credentials.pin}'
   ]
 
