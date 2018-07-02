@@ -4,7 +4,6 @@ AllCops:
   TargetRubyVersion: 2.5
   Exclude:
     - Guardfile
-    - hbci.gemspec
     - spec/support/message_stubs.rb
     - spec/support/request_stubs.rb
 
