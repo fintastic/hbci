@@ -13,17 +13,13 @@ Metrics/AbcSize:
 
 # Offense count: 1
 Metrics/CyclomaticComplexity:
-  Max: 9
+  Exclude: 
+    - lib/hbci/response.rb
 
 # Offense count: 10
 # Configuration parameters: CountComments.
 Metrics/MethodLength:
   Max: 82
-
-# Offense count: 5
-# Configuration parameters: CountKeywordArgs.
-Metrics/ParameterLists:
-  Max: 8
 
 # Offense count: 133
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.

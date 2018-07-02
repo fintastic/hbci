@@ -19,3 +19,8 @@ Metrics/AbcSize:
   Exclude: 
     - spec/support/message_stubs.rb
 
+Metrics/ParameterLists:
+  Exclude:
+    - spec/support/message_stubs.rb
+    - spec/support/request_stubs.rb
+
