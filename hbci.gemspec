@@ -18,19 +18,19 @@ Gem::Specification.new do |spec|
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
   spec.require_paths = ['lib']
 
-  spec.add_runtime_dependency 'bank_credentials'
-  spec.add_runtime_dependency 'cmxl', '~> 1.1.0'
-  spec.add_runtime_dependency 'httparty'
-  spec.add_runtime_dependency 'ibanizator'
-  spec.add_runtime_dependency 'monetize'
-  spec.add_runtime_dependency 'money'
+  spec.add_runtime_dependency 'bank_credentials', '~> 0.1'
+  spec.add_runtime_dependency 'cmxl', '~> 1.1'
+  spec.add_runtime_dependency 'httparty', '~> 0.16'
+  spec.add_runtime_dependency 'ibanizator', '~> 0.3'
+  spec.add_runtime_dependency 'monetize', '~> 1.8'
+  spec.add_runtime_dependency 'money', '~> 6'
 
-  spec.add_development_dependency 'activesupport'
+  spec.add_development_dependency 'activesupport', '~> 5.2'
   spec.add_development_dependency 'bundler', '~> 1.10'
-  spec.add_development_dependency 'byebug'
+  spec.add_development_dependency 'byebug', '~> 10.0'
   spec.add_development_dependency 'rake', '~> 12.3'
-  spec.add_development_dependency 'rspec'
-  spec.add_development_dependency 'rubocop'
-  spec.add_development_dependency 'timecop'
-  spec.add_development_dependency 'webmock'
+  spec.add_development_dependency 'rspec',  '~> 3.7'
+  spec.add_development_dependency 'rubocop', '~> 0.57'
+  spec.add_development_dependency 'timecop', '~> 0.9'
+  spec.add_development_dependency 'webmock', '~> 3.4'
 end
