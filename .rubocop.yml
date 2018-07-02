@@ -14,14 +14,9 @@ Style/Documentation:
 Style/IndentArray:
   EnforcedStyle: consistent
 
-Style/RescueStandardError:
-  Exclude:
-    - lib/hbci/segment_factory.rb
-
 Metrics/BlockLength:
   Exclude:
     - spec/**/*
-
 
 Metrics/ModuleLength:
   Exclude:
