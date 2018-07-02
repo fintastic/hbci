@@ -42,4 +42,4 @@ Naming/VariableNumber:
 # Configuration parameters: AllowHeredoc, AllowURI, URISchemes, IgnoreCopDirectives, IgnoredPatterns.
 # URISchemes: http, https
 Metrics/LineLength:
-  Max: 5470
+  Max: 120

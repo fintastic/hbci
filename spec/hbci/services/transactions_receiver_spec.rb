@@ -53,9 +53,15 @@ describe Hbci::Services::TransactionsReceiver do
   end
 
   context 'when requested via hkkaz verion 7 with pagination' do
-    let!(:transaction_request_1) { stub_paginated_transaction_v7_request(credentials, iban, start_date, end_date, nil, 2, 2) }
-    let!(:transaction_request_2) { stub_paginated_transaction_v7_request(credentials, iban, start_date, end_date, 2, 3, 3) }
-    let!(:transaction_request_3) { stub_paginated_transaction_v7_request(credentials, iban, start_date, end_date, 3, nil, 4) }
+    let!(:transaction_request_1) do
+      stub_paginated_transaction_v7_request(credentials, iban, start_date, end_date, nil, 2, 2)
+    end
+    let!(:transaction_request_2) do
+      stub_paginated_transaction_v7_request(credentials, iban, start_date, end_date, 2, 3, 3)
+    end
+    let!(:transaction_request_3) do
+      stub_paginated_transaction_v7_request(credentials, iban, start_date, end_date, 3, nil, 4)
+    end
     let!(:dialog_finish_request) { stub_dialog_finish_request(credentials, 5) }
     subject { Hbci::Services::TransactionsReceiver.new(dialog, iban, 7) }
 

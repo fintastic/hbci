@@ -13,3 +13,9 @@ Metrics/BlockLength:
 Metrics/ModuleLength:
   Exclude:
     - lib/hbci/element_groups/generated_element_groups.rb
+
+Metrics/LineLength:
+  Exclude:
+    - spec/support/message_stubs.rb
+    - spec/support/request_stubs.rb
+
