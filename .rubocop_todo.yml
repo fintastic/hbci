@@ -31,12 +31,6 @@ Metrics/MethodLength:
 Metrics/ModuleLength:
   Max: 292
 
-
-# Offense count: 1
-Style/AccessorMethodName:
-  Exclude:
-    - 'lib/hbci/element_group.rb'
-
 # Offense count: 60
 # Cop supports --auto-correct.
 # Configuration parameters: EnforcedStyle, SupportedStyles.

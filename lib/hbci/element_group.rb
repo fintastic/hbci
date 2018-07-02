@@ -24,7 +24,7 @@ module Hbci
 
     def define_element(definition)
       defined_elements << definition
-      set_element_default(definition)
+      apply_element_default(definition)
     end
 
     def to_s
@@ -76,7 +76,7 @@ module Hbci
       index_for_element(potential_element_name) || super
     end
 
-    def set_element_default(definition)
+    def apply_element_default(definition)
       if definition[:default].is_a?(Proc)
         set_element(definition[:name], definition[:default].call(self))
       else
