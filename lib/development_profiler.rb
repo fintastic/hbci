@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'ruby-prof'
 class DevelopmentProfiler
   def self.prof(file_name)

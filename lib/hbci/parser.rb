@@ -1,11 +1,13 @@
+# frozen_string_literal: true
+
 module Hbci
   class Parser
     attr_reader :scanner
     attr_accessor :segments
 
-    ELEMENT_DELIMITER       = ':'.freeze
-    ELEMENT_GROUP_DELIMITER = '+'.freeze
-    SEGMENT_DELIMITER       = '\''.freeze
+    ELEMENT_DELIMITER       = ':'
+    ELEMENT_GROUP_DELIMITER = '+'
+    SEGMENT_DELIMITER       = '\''
 
     # ELEMENT_REGEX matches everything until a a delimiter that is not escaped
     #

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Hbci
   class Response < Message
     attr_reader :dialog

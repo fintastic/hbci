@@ -30,10 +30,3 @@ Metrics/MethodLength:
 # Configuration parameters: CountComments.
 Metrics/ModuleLength:
   Max: 292
-
-# Offense count: 60
-# Cop supports --auto-correct.
-# Configuration parameters: EnforcedStyle, SupportedStyles.
-# SupportedStyles: when_needed, always
-Style/FrozenStringLiteralComment:
-  Enabled: false

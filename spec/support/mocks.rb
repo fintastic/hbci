@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 def build(type, args: {})
   case type
   when :hbci_credentials

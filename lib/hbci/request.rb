@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Hbci
   class Request < Message
     attr_reader :dialog

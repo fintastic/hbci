@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Hbci
   class ElementUnparser
     attr_reader :element

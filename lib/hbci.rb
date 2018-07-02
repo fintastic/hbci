@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # External gems
 require 'httparty'
 require 'money'
