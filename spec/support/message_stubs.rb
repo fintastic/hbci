@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-def enveloped_response_message(payload, credentials, dialog_id: 'LM6022214510276', rand: '10999990', message_number: 1, date: Time.now.strftime('%Y%m%d'), time: Time.now.strftime('%H%m%S'))
+def enveloped_response_message(payload, credentials, dialog_id: 'LM6022214510276', message_number: 1, date: Time.now.strftime('%Y%m%d'), time: Time.now.strftime('%H%m%S'))
   payload_data = payload.join
   last_segment_number = 2 + payload.count
   reference_message_number = message_number
@@ -17,7 +17,7 @@ def enveloped_response_message(payload, credentials, dialog_id: 'LM6022214510276
   msg.gsub('HNHBK:1:3+000000000000', "HNHBK:1:3+#{padded_length}")
 end
 
-def enveloped_request_message(payload, credentials, dialog_id: 'LM6022214510276', rand: '10999990', message_number: 0, date: Time.now.strftime('%Y%m%d'), time: Time.now.strftime('%H%m%S'))
+def enveloped_request_message(payload, credentials, dialog_id: 'LM6022214510276', message_number: 0, date: Time.now.strftime('%Y%m%d'), time: Time.now.strftime('%H%m%S'))
   payload_data = payload.join
   last_segment_number = 2 + payload.count
 
@@ -43,7 +43,7 @@ def stub_dialog_finish_request_message(credentials, dialog_id: 'LM6022214510276'
     HNSHA:4:2+#{rand}++#{credentials.pin}'
   ]
 
-  enveloped_request_message(payload, credentials, dialog_id: dialog_id, rand: rand, message_number: message_number, date: date, time: time)
+  enveloped_request_message(payload, credentials, dialog_id: dialog_id, message_number: message_number, date: date, time: time)
 end
 
 def stub_dialog_init_request_message(credentials, rand: '10999990')
@@ -57,7 +57,7 @@ def stub_dialog_init_request_message(credentials, rand: '10999990')
     HNSHA:5:2+#{rand}++#{credentials.pin}'
   ]
 
-  enveloped_request_message(payload, credentials, dialog_id: 0, rand: rand, date: date, time: time, message_number: 1)
+  enveloped_request_message(payload, credentials, dialog_id: 0, date: date, time: time, message_number: 1)
 end
 
 def stub_dialog_init_response_message(credentials, dialog_id: 'LM6022214510276', rand: '10999990')
@@ -153,7 +153,7 @@ def stub_dialog_finish_response_message(credentials, dialog_id: 'LM6022214510276
     HNSHA:6:2+#{rand}'
   ]
 
-  enveloped_response_message(payload, credentials, dialog_id: dialog_id, rand: rand, message_number: message_number, date: date, time: time)
+  enveloped_response_message(payload, credentials, dialog_id: dialog_id, message_number: message_number, date: date, time: time)
 end
 
 def stub_balance_v4_request_message(credentials, iban: 'DE05740900000011111111', dialog_id: 'LM6022214510276', rand: '10999990')
@@ -167,7 +167,7 @@ def stub_balance_v4_request_message(credentials, iban: 'DE05740900000011111111',
     HNSHA:4:2+#{rand}++#{credentials.pin}'
   ]
 
-  enveloped_request_message(payload, credentials, dialog_id: dialog_id, rand: rand, message_number: 2, date: date, time: time)
+  enveloped_request_message(payload, credentials, dialog_id: dialog_id, message_number: 2, date: date, time: time)
 end
 
 def stub_balance_v7_request_message(credentials, iban: 'DE05740900000011111111', dialog_id: 'LM6022214510276', rand: '10999990')
@@ -181,7 +181,7 @@ def stub_balance_v7_request_message(credentials, iban: 'DE05740900000011111111',
     HNSHA:4:2+#{rand}++#{credentials.pin}'
   ]
 
-  enveloped_request_message(payload, credentials, dialog_id: dialog_id, rand: rand, message_number: 2, date: date, time: time)
+  enveloped_request_message(payload, credentials, dialog_id: dialog_id, message_number: 2, date: date, time: time)
 end
 
 def stub_balance_response_message(credentials, account_number: '11111111', dialog_id: 'LM6022214510276', rand: '10999990')
@@ -196,7 +196,7 @@ def stub_balance_response_message(credentials, account_number: '11111111', dialo
     HNSHA:6:2+#{rand}'
   ]
 
-  enveloped_response_message(payload, credentials, dialog_id: dialog_id, rand: rand, message_number: 3, date: date, time: time)
+  enveloped_response_message(payload, credentials, dialog_id: dialog_id, message_number: 3, date: date, time: time)
 end
 
 def stub_transactions_v6_request_message(credentials, iban: 'DE05740900000011111111', dialog_id: 'LM6022214510276', rand: '10999990', start_date: Date.new(2016, 2, 18), end_date: Date.new(2016, 2, 20))
@@ -210,7 +210,7 @@ def stub_transactions_v6_request_message(credentials, iban: 'DE05740900000011111
     HNSHA:4:2+#{rand}++#{credentials.pin}'
   ]
 
-  enveloped_request_message(payload, credentials, dialog_id: dialog_id, rand: rand, message_number: 2, date: date, time: time)
+  enveloped_request_message(payload, credentials, dialog_id: dialog_id, message_number: 2, date: date, time: time)
 end
 
 def stub_transactions_v7_request_message(credentials, iban: 'DE05740900000011111111', dialog_id: 'LM6022214510276', rand: '10999990', start_date: Date.new(2016, 2, 18), end_date: Date.new(2016, 2, 20), attachment_id: nil, message_number: 2)
