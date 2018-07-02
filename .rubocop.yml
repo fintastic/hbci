@@ -3,7 +3,6 @@ inherit_from: .rubocop_todo.yml
 AllCops:
   TargetRubyVersion: 2.5
   Exclude:
-    - Guardfile
     - spec/support/message_stubs.rb
     - spec/support/request_stubs.rb
 
