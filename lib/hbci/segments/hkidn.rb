@@ -9,13 +9,13 @@ module Hbci
         element :code # blz
       end
       element :user_id # "kunden_id"
-      element :system_id, default: 0
+      element :system_id
       element :state, default: 1
 
-      def after_build
-        head.position = message ? message.payload_index_of(self) + 3 : 'X'
-        bank.code = dialog.credentials.bank_code
-        self.user_id = dialog.credentials.user_id
+      def compile
+        self.bank.code = Connector.instance.credentials.bank_code
+        self.user_id = Connector.instance.credentials.user_id
+        self.system_id = request_message.dialog ? request_message.dialog.system_id : 0
       end
     end
   end

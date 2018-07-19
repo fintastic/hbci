@@ -19,7 +19,7 @@ end
 
 def enveloped_request_message(payload, credentials, dialog_id: 'LM6022214510276', message_number: 0, date: Time.now.strftime('%Y%m%d'), time: Time.now.strftime('%H%m%S'))
   payload_data = payload.join
-  last_segment_number = 2 + payload.count
+  last_segment_number = payload.count + 2
 
   msg = %W[
     HNHBK:1:3+000000000000+300+#{dialog_id}+#{message_number}'
@@ -53,7 +53,7 @@ def stub_dialog_init_request_message(credentials, rand: '10999990')
   payload = %W[
     HNSHK:2:4+PIN:1+999+#{rand}+1+1+1::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'
     HKIDN:3:2+280:#{credentials.bank_code}+#{credentials.user_id}+0+1'
-    HKVVB:4:3+0+0+1+Bankster+#{Hbci::VERSION}'
+    HKVVB:4:3+0+0+1+FintasticHBCI+#{Hbci::VERSION}'
     HNSHA:5:2+#{rand}++#{credentials.pin}'
   ]
 
@@ -170,6 +170,20 @@ def stub_balance_v4_request_message(credentials, iban: 'DE05740900000011111111',
   enveloped_request_message(payload, credentials, dialog_id: dialog_id, message_number: 2, date: date, time: time)
 end
 
+def stub_balance_v6_request_message(credentials, iban: 'DE05740900000011111111', dialog_id: 'LM6022214510276', rand: '10999990')
+  date = Time.now.strftime('%Y%m%d')
+  time = Time.now.strftime('%H%m%S')
+  iban = Ibanizator.iban_from_string(iban)
+
+  payload = %W[
+    HNSHK:2:4+PIN:1+942+#{rand}+1+1+1::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'
+    HKSAL:3:6+#{iban.extended_data.account_number}::280:#{credentials.bank_code}+N'
+    HNSHA:4:2+#{rand}++#{credentials.pin}'
+  ]
+
+  enveloped_request_message(payload, credentials, dialog_id: dialog_id, message_number: 2, date: date, time: time)
+end
+
 def stub_balance_v7_request_message(credentials, iban: 'DE05740900000011111111', dialog_id: 'LM6022214510276', rand: '10999990')
   date = Time.now.strftime('%Y%m%d')
   time = Time.now.strftime('%H%m%S')
@@ -199,7 +213,7 @@ def stub_balance_response_message(credentials, account_number: '11111111', dialo
   enveloped_response_message(payload, credentials, dialog_id: dialog_id, message_number: 3, date: date, time: time)
 end
 
-def stub_transactions_v6_request_message(credentials, iban: 'DE05740900000011111111', dialog_id: 'LM6022214510276', rand: '10999990', start_date: Date.new(2016, 2, 18), end_date: Date.new(2016, 2, 20))
+def stub_transactions_v6_request_message(credentials, iban: 'DE05740900000011111111', dialog_id: 'LM6022214510276', rand: '10999990', start_date: Date.new(2016, 2, 18), end_date: Date.new(2016, 2, 20), message_number: 2)
   date = Time.now.strftime('%Y%m%d')
   time = Time.now.strftime('%H%m%S')
   iban = Ibanizator.iban_from_string(iban)
@@ -210,7 +224,7 @@ def stub_transactions_v6_request_message(credentials, iban: 'DE05740900000011111
     HNSHA:4:2+#{rand}++#{credentials.pin}'
   ]
 
-  enveloped_request_message(payload, credentials, dialog_id: dialog_id, message_number: 2, date: date, time: time)
+  enveloped_request_message(payload, credentials, dialog_id: dialog_id, message_number: message_number, date: date, time: time)
 end
 
 def stub_transactions_v7_request_message(credentials, iban: 'DE05740900000011111111', dialog_id: 'LM6022214510276', rand: '10999990', start_date: Date.new(2016, 2, 18), end_date: Date.new(2016, 2, 20), attachment_id: nil, message_number: 2)
@@ -272,4 +286,33 @@ def stub_transactions_response_message(credentials, account_number: '11111111', 
   padded_length = msg.length.to_s.rjust(12, '0')
 
   msg.gsub('HNHBK:1:3+000000000000', "HNHBK:1:3+#{padded_length}")
+end
+
+def stub_system_id_request_message(credentials, iban: 'DE05740900000011111111', dialog_id: 'LM6022214510276', rand: '10999990')
+  date = Time.now.strftime('%Y%m%d')
+  time = Time.now.strftime('%H%m%S')
+  iban = Ibanizator.iban_from_string(iban)
+
+  payload = %W[
+        HNSHK:2:4+PIN:1+999+#{rand}+1+1+1::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'
+        HKIDN:3:2+280:#{credentials.bank_code}+#{credentials.user_id}+0+1'
+        HKVVB:4:3+0+0+1+FintasticHBCI+#{Hbci::VERSION}'
+        HKSYN:5:3+0'
+        HNSHA:6:2+#{rand}++#{credentials.pin}'
+      ]
+
+  enveloped_request_message(payload, credentials, dialog_id: 0, message_number: 1, date: date, time: time)
+end
+
+def stub_system_id_response_message(credentials, account_number: '11111111', dialog_id: 'LM6022214510276', rand: '10999990')
+  date = Time.now.strftime('%Y%m%d')
+  time = Time.now.strftime('%H%m%S')
+
+  payload = %W[
+        HNSHK:2:4+PIN:1+942+#{rand}+1+1+2::0+1+1:#{date}:#{time}+1:999:1+6:10:16+280:#{credentials.bank_code}:#{credentials.user_id}:S:0:0'
+        HISYN:3:4:5+3709434306917000W15S4440RY65OC'
+        HNSHA:4:2+#{rand}'
+      ]
+
+  enveloped_response_message(payload, credentials, dialog_id: 0, message_number: 1, date: date, time: time)
 end

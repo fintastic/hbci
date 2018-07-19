@@ -2,33 +2,16 @@
 
 require 'spec_helper'
 
-describe Hbci::Services::TransactionsReceiver do
-  let(:credentials)            { build(:hbci_credentials) }
-  let(:start_date)             { Date.new(2016, 2, 18) }
-  let(:end_date)               { Date.new(2016, 2, 20) }
-  let!(:dialog_init_request)   { stub_dialog_init_request(credentials) }
-  let!(:dialog_finish_request) { stub_dialog_finish_request(credentials) }
-  let(:dialog) { Hbci::Dialog.new(credentials) }
-  let(:iban) { 'DE05740900000011111111' }
-
-  before do
-    Timecop.freeze
-    allow(Hbci::Message).to receive(:generate_security_reference).and_return('10999990')
-  end
-
-  before do
-    dialog.initiate
-  end
-
-  after do
-    dialog.finish
-  end
+describe Hbci::Services::TransactionsReceiver, type: :receiver do
+  let(:start_date) { Date.new(2016, 2, 18) }
+  let(:end_date) { Date.new(2016, 2, 20) }
 
   context 'when requested via hkkaz version 6' do
     let!(:transaction_request) { stub_transaction_v6_request(credentials, iban, start_date, end_date) }
+
     subject { Hbci::Services::TransactionsReceiver.new(dialog, iban, 6) }
 
-    it 'returns the transactions when requested with hkkaz v6' do
+    it 'returns the transactions' do
       transactions = subject.perform(start_date, end_date)
 
       expect(transaction_request).to have_been_made.once
@@ -40,6 +23,7 @@ describe Hbci::Services::TransactionsReceiver do
 
   context 'when requested via hkkaz version 7' do
     let!(:transaction_request) { stub_transaction_v7_request(credentials, iban, start_date, end_date) }
+
     subject { Hbci::Services::TransactionsReceiver.new(dialog, iban, 7) }
 
     it 'returns the transactions when requested with hkkaz v7' do

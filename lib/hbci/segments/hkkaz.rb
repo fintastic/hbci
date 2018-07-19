@@ -10,10 +10,6 @@ module Hbci
       element :to
       element :max_entries
       element :attach
-
-      def after_build
-        head.position = '3'
-      end
     end
 
     class HKKAZv7 < Segment
@@ -24,10 +20,6 @@ module Hbci
       element :to
       element :max_entries
       element :attach
-
-      def after_build
-        head.position = '3'
-      end
     end
   end
 end

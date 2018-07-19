@@ -3,13 +3,13 @@
 module Hbci
   class Segment
     extend Forwardable
-    def_delegator :@element_groups, :[]
-    def_delegator :@element_groups, :[]=
 
     attr_reader :element_groups
     attr_reader :defined_element_groups
     attr_accessor :message
     attr_accessor :dialog
+
+    attr_accessor :request_message
 
     def self.element_groups_to_be_defined
       @element_groups_to_be_defined ||= []
@@ -23,30 +23,19 @@ module Hbci
       element_groups_to_be_defined << definition.merge(name: name, block: nil, passthrough: true)
     end
 
-    def self.type
-      name.split('::').last.split('v').first
-    end
+    def build(message)
+      self.request_message = message
 
-    def self.version
-      name.split('::').last.split('v').last
-    end
+      type, version = self.class.name.split('::').last.split('v')
 
-    def self.build(dialog: nil, message: nil, **)
-      segment = new
-      segment.dialog = dialog
-      segment.message = message
-
-      segment.head.version = version
-      segment.head.type = type
-
-      segment.after_build
-      segment
+      head.type = type
+      head.version = version
     end
 
     def self.fill(segment_data)
       segment_data.each_with_object(new).with_index do |(element_group_data, segment), element_group_index|
         element_group_data.each_with_index do |element_data, element_index|
-          segment[element_group_index][element_index] = element_data
+          segment.element_groups[element_group_index][element_index] = element_data
         end
       end
     end
@@ -57,12 +46,11 @@ module Hbci
       define_element_groups
     end
 
-    def to_s
-      element_groups.join('+').gsub(/\+*$/, '') << '\''
+    def compile
     end
 
-    def type
-      self.class.type
+    def to_s
+      element_groups.join('+').gsub(/\+*$/, '') << '\''
     end
 
     private

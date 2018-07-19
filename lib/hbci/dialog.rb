@@ -2,71 +2,76 @@
 
 module Hbci
   class Dialog
-    attr_reader :credentials
+    attr_reader :id
     attr_reader :hbci_version
     attr_reader :system_id
-    attr_reader :sent_messages
     attr_reader :tan_mechanism
-    attr_reader :id
-    attr_reader :accounts
-    attr_reader :hikazs
-    attr_reader :hisals
+    attr_reader :response
+    attr_reader :connector
 
-    def self.open(credentials)
-      dialog = Dialog.new(credentials)
+    def self.open(system_id: 0)
+      dialog = Dialog.new(system_id: system_id)
       dialog.initiate
       yield dialog
       dialog.finish
     end
 
-    def initialize(credentials = nil)
-      unless credentials.is_a?(BankCredentials::Hbci)
-        raise ArgumentError, "#{self.class.name}#initialize expects a BankCredentials::Hbci object"
-      end
-
-      credentials.validate!
-
-      @initiated     = false
-      @credentials   = credentials
-      @hbci_version  = '3.0'
-      @system_id     = 0
-      @sent_messages = []
+    def initialize(system_id: 0)
+      @connector = Connector.instance
+      @initiated = false
+      @hbci_version = '3.0'
+      @system_id = system_id
       @tan_mechanism = nil
-      @id            = 0
+      @id = 0
+      @response = nil
     end
 
-    def next_sent_message_number
-      sent_messages.count + 1
+    def credentials
+      @connector.credentials
     end
 
     def initiated?
       @initiated
     end
 
-    def finish
-      messenger = Messenger.new(dialog: self)
-      dialog_finish_segment = Segments::HKENDv1.build(dialog: self)
-      messenger.add_request_payload(dialog_finish_segment)
-      messenger.request!
+    def initiate
+      request_message = MessageFactory.build(self) do |hnvsd|
+        hnvsd.add_segment(Segments::HKIDNv2.new)
+        hnvsd.add_segment(Segments::HKVVBv3.new)
+      end
+      request_message.compile
+
+      @response = Response.new(@connector.post(request_message))
+
+      raise @response.to_s unless initialization_successful?
+
+      @id            = @response.find('HNHBK').dialog_id
+      @tan_mechanism = @response.find('HNVSD').find('HIRMS').allowed_tan_mechanism
+      @initiated     = true
     end
 
-    def initiate
-      messenger = Messenger.new(dialog: self)
-      identification_seg = Segments::HKIDNv2.build(message: messenger.request, dialog: self)
-      preparation_seg    = Segments::HKVVBv3.build(message: messenger.request)
-      messenger.add_request_payload(identification_seg)
-      messenger.add_request_payload(preparation_seg)
+    def finish
+      request_message = MessageFactory.build(self) do |hnvsd|
+        hnvsd.add_segment(Segments::HKENDv1.new)
+      end
+      request_message.compile
 
-      messenger.request!
+      Response.new(@connector.post(request_message))
 
-      return unless messenger.response&.success?
+      @connector.reset_message_number
+    end
 
-      @tan_mechanism = messenger.response.payload.find { |s| s.type == 'HIRMS' }.allowed_tan_mechanism
-      @accounts      = messenger.response.payload.select { |s| s.type == 'HIUPD' }.map(&:ktv)
-      @id            = messenger.response.head.dialog_id
-      @hikazs        = messenger.response.payload.select { |s| s.type == 'HIKAZS' }
-      @hisals        = messenger.response.payload.select { |s| s.type == 'HISALS' }
-      @initiated     = true
+    private
+
+    def initialization_successful?
+      hirmg = response.find('HIRMG')
+      return false if hirmg && hirmg.ret_val_1.code[0].to_i == 9
+
+      hnvsd = response.find('HNVSD')
+      hirmg = hnvsd.find('HIRMG')
+      return false if hirmg && hirmg.ret_val_1.code[0].to_i == 9
+
+      true
     end
   end
 end

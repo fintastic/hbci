@@ -8,7 +8,8 @@ module Hbci
     # https://www.hbci-zka.de/dokumente/spezifikation_deutsch/fintsv3/FinTS_3.0_Security_Sicherheitsverfahren_HBCI_Rel_20130718_final_version.pdf#page=63
     class HNSHKv4 < Hbci::Segment
       element_group :head, type: ElementGroups::SegmentHead do
-        element :position, default: 2
+        # element :position, default: 2
+        element :position
       end
 
       element_group :security_profile do
@@ -60,18 +61,18 @@ module Hbci
         element :version, default: 0
       end
 
-      def after_build
-        self.security_reference = message.sec_ref
-        security_identification_details.party_identification = dialog.system_id
-        self.tan_mechanism = dialog.tan_mechanism if dialog.tan_mechanism
+      def compile
+        self.security_reference = request_message.sec_ref
+        self.security_identification_details.party_identification = request_message.dialog ? request_message.dialog.system_id : 0
+        self.tan_mechanism = request_message.dialog.tan_mechanism if request_message.dialog && request_message.dialog.tan_mechanism
         set_credentials
       end
 
       private
 
       def set_credentials
-        key.bank_code = dialog.credentials.bank_code
-        key.user_id = dialog.credentials.user_id
+        key.bank_code = Connector.instance.credentials.bank_code
+        key.user_id = Connector.instance.credentials.user_id
       end
     end
   end

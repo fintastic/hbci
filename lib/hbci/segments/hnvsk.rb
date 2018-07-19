@@ -49,10 +49,11 @@ module Hbci
 
       element :compression_method, default: 0
 
-      def after_build
-        security_identification_details.party_identification = dialog.system_id
-        key.bank_code = dialog.credentials.bank_code
-        key.user_id = dialog.credentials.user_id
+      def compile
+        head.position = 998
+        security_identification_details.party_identification = request_message.dialog ? request_message.dialog.system_id : 0
+        key.bank_code = Connector.instance.credentials.bank_code
+        key.user_id = Connector.instance.credentials.user_id
       end
     end
   end

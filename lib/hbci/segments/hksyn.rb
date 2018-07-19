@@ -1,13 +1,11 @@
-# frozen_string_literal: true
-
 module Hbci
   module Segments
-    class HKENDv1 < Segment
+    class HKSYNv3 < Segment
       element_group :head, type: ElementGroups::SegmentHead
-      element :dialog_id
+      element :mode
 
       def compile
-        self.dialog_id = request_message.dialog.id
+        self.mode = 0
       end
     end
   end

@@ -93,6 +93,7 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/fintas
 
 * [FinTS 3.0 Formals](http://www.hbci-zka.de/dokumente/spezifikation_deutsch/fintsv3/FinTS_3.0_Formals_2017-10-06_final_version.pdf)
 * [FinTS 3.0 Messages](https://www.hbci-zka.de/dokumente/spezifikation_deutsch/fintsv3/FinTS_3.0_Messages_Geschaeftsvorfaelle_2015-08-07_final_version.pdf)
+* [FinTS 3.0 Sicherheitsverfahren](https://www.hbci-zka.de/dokumente/spezifikation_deutsch/fintsv3/FinTS_3.0_Security_Sicherheitsverfahren_HBCI_Rel_20130718_final_version.pdf)
 
 ## License
 

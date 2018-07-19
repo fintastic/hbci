@@ -6,9 +6,8 @@ module Hbci
       element_group :head, type: ElementGroups::SegmentHead
       element :message_number
 
-      def after_build
-        head.position = message.payload.size + 4
-        self.message_number = dialog.next_sent_message_number
+      def compile
+        self.message_number = Connector.instance.message_number
       end
     end
   end

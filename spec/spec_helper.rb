@@ -6,11 +6,12 @@ require 'byebug'
 require 'hbci'
 require 'timecop'
 require 'webmock/rspec'
-require 'support/message_stubs'
-require 'support/mocks'
-require 'support/request_stubs'
+
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
 RSpec.configure do |config|
+  config.include_context('segment', type: :segment)
+  config.include_context('receiver', type: :receiver)
   config.after(:each) do
     Timecop.return
   end

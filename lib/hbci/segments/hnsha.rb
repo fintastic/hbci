@@ -22,10 +22,9 @@ module Hbci
         element :tan
       end
 
-      def after_build
-        head.position = message.payload.size + 3
-        self.security_reference = message.sec_ref
-        signature.pin = dialog.credentials.pin
+      def compile
+        self.security_reference = request_message.sec_ref
+        signature.pin = Connector.instance.credentials.pin
       end
     end
   end

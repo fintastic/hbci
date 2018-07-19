@@ -3,7 +3,7 @@
 require_relative '../lib/hbci'
 require_relative 'credentials'
 
-Hbci::Dialog.open(@credentials) do |dialog|
+Hbci::Dialog.open(system_id: @options[:system_id]) do |dialog|
   accounts = Hbci::Services::AccountsReceiver.new(dialog).perform
   accounts.each do |account|
     puts account
