@@ -10,7 +10,7 @@ require 'active_support/core_ext'
   bank_code: nil,
   user_id: nil,
   pin: nil,
-  system_id: nil
+  system_id: 0
 }
 
 OptionParser.new do |opts|

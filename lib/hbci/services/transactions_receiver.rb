@@ -20,7 +20,8 @@ module Hbci
 
           raise @response.to_s unless request_successful?
 
-          transactions.concat(parse_transactions(@response.find('HNVSD').find('HIKAZ').booked))
+          hikaz = @response.find('HNVSD').find('HIKAZ')
+          transactions.concat(parse_transactions(hikaz.booked)) if hikaz
 
           break if @response.find('HNVSD').find('HIRMS').ret_val_1.code != '3040'
 

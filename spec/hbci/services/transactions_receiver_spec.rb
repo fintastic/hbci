@@ -60,4 +60,31 @@ describe Hbci::Services::TransactionsReceiver, type: :receiver do
       expect(transactions[0]['swift_code']).to eql('NMSC')
     end
   end
+
+  describe 'all versions' do
+    context 'when no transactions are available' do
+      let(:response) do
+        msg = String.new
+        msg << "HNHBK:1:3+000000000309+300+000003TU5CTH5TQR8K9HFAJ9CVEJS7+2+000003TU5CTH5TQR8K9HFAJ9CVEJS7:2'"
+        msg << "HNVSK:998:3+PIN:1+998+1+2::0+1+2:2:13:@8@:6:1+280:76030080:910489735001:V:0:0+0'"
+        msg << "HNVSD:999:1+@99@"
+        msg << "HIRMG:2:2:+3060::Teilweise liegen Warnungen/Hinweise vor.'"
+        msg << "HIRMS:3:2:3+3010::Keine Umsatze gefunden''"
+        msg << "HNHBS:4:1+2'"
+        msg
+      end
+
+      subject { Hbci::Services::TransactionsReceiver.new(dialog, iban, 7) }
+
+      before do
+        stub_request(:post, credentials.url).to_return(status: 200, body: Base64.encode64(response))
+      end
+
+      it 'returns nothing' do
+        transactions = subject.perform(start_date, end_date)
+
+        expect(transactions.count).to eql(0)
+      end
+    end
+  end
 end

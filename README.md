@@ -76,7 +76,14 @@ Hbci::Dialog.open(credentials) do |dialog|
   end
 end
 ```
+## Banks tested 
 
+| Bank            | Tested  | HBCI URL                                      |
+| --------------- |:-------:| ----------------------------------------------|
+| VR Bank         | DONE    | https://hbci11.fiducia.de/cgi-bin/hbciservlet |
+| Postbank        | DONE    | https://hbci.postbank.de/banking/hbci.do      |
+| Consorsbank     | DONE    | https://brokerage-hbci.consorsbank.de/hbci    |
+| Hypovereinsbank | OPEN    | -                                             |
 
 ## Development
 
