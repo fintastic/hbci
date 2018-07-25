@@ -12,7 +12,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = 'A Ruby hbci client'
   spec.description   = 'A pure ruby hbci banking client'
-  spec.homepage      = 'http://'
+  spec.homepage      = 'https://github.com/fintastic/hbci'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
