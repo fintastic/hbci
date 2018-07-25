@@ -4,29 +4,65 @@ module Hbci
   module Services
     class BalanceReceiver < BaseReceiver
       def perform
-        messenger = Messenger.new(dialog: dialog)
-
-        if version == 4
-          segment = Segments::HKSALv4.build(dialog: dialog)
-          segment.account.code = iban.extended_data.bank_code
-        elsif version == 7
-          segment = Segments::HKSALv7.build(dialog: dialog)
-          segment.account.iban        = iban.to_s
-          segment.account.bic         = iban.extended_data.bic
-          segment.account.kik_blz     = iban.extended_data.bank_code
-          segment.account.kik_country = 280
+        request_message = MessageFactory.build(dialog) do |hnvsd|
+          hnvsd.add_segment(build_hksal)
         end
-        segment.account.number = iban.extended_data.account_number
+        request_message.compile
 
-        messenger.add_request_payload(segment)
-        messenger.request!
-        messenger.response.payload.select { |seg| seg.head.type == 'HISAL' }.first.booked_amount
+        @response = Response.new(Connector.instance.post(request_message))
+
+        raise @response.to_s unless request_successful?
+
+        @response.find('HNVSD').find('HISAL').booked_amount
       end
 
       private
 
+      def request_successful?
+        hirmg = @response.find('HIRMG')
+        return false if hirmg && hirmg.ret_val_1.code[0].to_i == 9
+
+        hnvsd = @response.find('HNVSD')
+        hirmg = hnvsd.find('HIRMG')
+        return false if hirmg && hirmg.ret_val_1.code[0].to_i == 9
+
+        true
+      end
+
+      def build_hksal
+        case version
+        when 4 then build_hksal_v4
+        when 6 then build_hksal_v6
+        when 7 then build_hksal_v7
+        end
+      end
+
+      def build_hksal_v4
+        hksal = Segments::HKSALv4.new
+        hksal.account.code   = iban.extended_data.bank_code
+        hksal.account.number = iban.extended_data.account_number
+        hksal
+      end
+
+      def build_hksal_v6
+        hksal = Segments::HKSALv6.new
+        hksal.account.number = iban.extended_data.account_number
+        hksal.account.kik_blz = iban.extended_data.bank_code
+        hksal
+      end
+
+      def build_hksal_v7
+        hksal = Segments::HKSALv7.new
+        hksal.account.iban        = iban.to_s
+        hksal.account.bic         = iban.extended_data.bic
+        hksal.account.kik_blz     = iban.extended_data.bank_code
+        hksal.account.kik_country = 280
+        hksal.account.number      = iban.extended_data.account_number
+        hksal
+      end
+
       def supported_versions
-        @supported_versions ||= @dialog.hisals.map { |x| x.head.version.to_i }
+        dialog.response.find('HNVSD').find_all('HISALS').map { |x| x.head.version.to_i }
       end
     end
   end

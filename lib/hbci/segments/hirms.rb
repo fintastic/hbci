@@ -4,7 +4,7 @@ module Hbci
   module Segments
     class HIRMSv2 < Segment
       element_group :head, type: ElementGroups::SegmentHead
-      10.times do |i|
+      1.upto(99) do |i|
         element_group "ret_val_#{i}".to_sym, type: ElementGroups::RetVal
       end
 

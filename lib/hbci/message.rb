@@ -2,44 +2,46 @@
 
 module Hbci
   class Message
-    attr_reader :dialog
-    attr_reader :sec_ref
+    attr_reader :dialog, :segments, :sec_ref
+    attr_accessor :next_position
 
-    def payload_index_of(segment)
-      @payload.index(segment) || 0
+    def initialize(dialog = nil)
+      @dialog = dialog
+      @sec_ref = generate_security_reference
+      @segments = []
+      @next_position = 1
     end
 
-    def raw
-      enveloped.join('')
+    def add_segment(segment)
+      segment.build(self)
+      @segments.push(segment)
     end
 
-    def enveloped
-      [head, enc_head, encrypted_payload, tail]
-    end
-
-    def signed_payload
-      [sig_head, payload, sig_tail].flatten
-    end
-
-    def payload
-      @payload.map do |segment|
-        segment.message = self
-        segment
+    def compile
+      @segments.each_with_index do |segment, index|
+        segment.compile
+        unless segment.head.position
+          segment.head.position = @next_position
+          @next_position += 1
+        end
+      end
+      @segments.each do |segment|
+        segment.after_compile if segment.respond_to?(:after_compile)
       end
     end
 
-    def initialize(dialog:)
-      @sec_ref = self.class.generate_security_reference
-      @dialog = dialog
-      @payload = []
+    def to_s
+      segments.join('')
     end
 
-    def self.generate_security_reference
+    def to_base64
+      Base64.encode64(to_s)
+    end
+
+    private
+
+    def generate_security_reference
       rand(1..23) * 999_999 + 1_000_000
-    end
-
-    def add_payload(segment)
-      @payload << segment
     end
   end
 end

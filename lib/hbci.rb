@@ -14,11 +14,12 @@ require 'hbci/version'
 require 'hbci/parser'
 require 'hbci/segment_factory'
 require 'hbci/dialog'
-require 'hbci/messenger'
 require 'hbci/message'
 require 'hbci/request'
 require 'hbci/response'
 require 'hbci/element_unparser'
+require 'hbci/connector'
+require 'hbci/message_factory'
 
 # Element groups
 require 'hbci/element_group'
@@ -47,6 +48,9 @@ require 'hbci/segments/hikaz'
 require 'hbci/segments/hkend'
 require 'hbci/segments/hikazs'
 require 'hbci/segments/hisals'
+require 'hbci/segments/hirmg'
+require 'hbci/segments/hksyn'
+require 'hbci/segments/hisyn'
 require 'hbci/segments/unknown'
 
 # Services
@@ -54,6 +58,7 @@ require 'hbci/services/base_receiver'
 require 'hbci/services/transactions_receiver'
 require 'hbci/services/balance_receiver'
 require 'hbci/services/accounts_receiver'
+require 'hbci/services/system_id_receiver'
 
 I18n.enforce_available_locales = false if I18n.available_locales.none?
 

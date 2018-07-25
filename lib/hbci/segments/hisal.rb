@@ -64,6 +64,14 @@ module Hbci
       element_group :overdrive, type: ElementGroups::BTG
       element_group :timestamp, type: ElementGroups::Timestamp
       element :duedate
+
+      def booked_amount
+        sign = case booked.credit_debit
+               when 'C' then 1
+               when 'D' then -1
+               end
+        sign * Monetize.parse(booked.value, booked.curr)
+      end
     end
 
     class HISALv7 < Segment

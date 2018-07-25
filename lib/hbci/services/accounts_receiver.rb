@@ -10,8 +10,8 @@ module Hbci
       end
 
       def perform
-        dialog.accounts.map do |eg|
-          { account_number: eg.number, bank_code: eg.kik_blz }
+        dialog.response.find('HNVSD').find_all('HIUPD').map do |hiupd|
+          { account_number: hiupd.ktv.number, bank_code: hiupd.ktv.kik_blz }
         end
       end
     end

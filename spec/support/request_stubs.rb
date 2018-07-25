@@ -44,6 +44,14 @@ def stub_balance_v4_request(credentials, iban)
     .to_return(status: 200, body: Base64.encode64(stub_balance_response_message(credentials, account_number: iban.extended_data.account_number)))
 end
 
+def stub_balance_v6_request(credentials, iban)
+  iban = Ibanizator.iban_from_string(iban)
+
+  stub_request(:post, credentials.url)
+    .with(body: Base64.encode64(stub_balance_v6_request_message(credentials, iban: iban)))
+    .to_return(status: 200, body: Base64.encode64(stub_balance_response_message(credentials, account_number: iban.extended_data.account_number)))
+end
+
 def stub_balance_v7_request(credentials, iban)
   iban = Ibanizator.iban_from_string(iban)
 

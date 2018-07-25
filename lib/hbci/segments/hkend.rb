@@ -6,9 +6,8 @@ module Hbci
       element_group :head, type: ElementGroups::SegmentHead
       element :dialog_id
 
-      def after_build
-        self.dialog_id = dialog.id
-        head.position = '3'
+      def compile
+        self.dialog_id = request_message.dialog.id
       end
     end
   end

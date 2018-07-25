@@ -11,7 +11,7 @@ module Hbci
         @iban = Ibanizator.iban_from_string(iban)
         @version = version
 
-        raise "The version #{@version} is not supported" if version && !supported_versions.include?(@version)
+        # raise "The version #{@version} is not supported" if version && !supported_versions.include?(@version)
       end
 
       def perform
@@ -19,6 +19,17 @@ module Hbci
       end
 
       private
+
+      def request_successful?
+        hirmg = @response.find('HIRMG')
+        return false if hirmg && hirmg.ret_val_1.code[0].to_i == 9
+
+        hnvsd = @response.find('HNVSD')
+        hirmg = hnvsd.find('HIRMG')
+        return false if hirmg && hirmg.ret_val_1.code[0].to_i == 9
+
+        true
+      end
 
       def version
         @version ||= supported_versions.max
