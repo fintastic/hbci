@@ -7,7 +7,7 @@ require 'hbci/version'
 Gem::Specification.new do |spec|
   spec.name          = 'hbci'
   spec.version       = Hbci::VERSION
-  spec.authors       = ['Roman Lehnert']
+  spec.authors       = ['Roman Lehnert', 'Alexander Klaiber']
   spec.email         = ['roman.lehnert@googlemail.com']
 
   spec.summary       = 'A Ruby hbci client'
