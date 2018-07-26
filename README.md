@@ -86,7 +86,7 @@ end
 | VR Bank         | DONE    | https://hbci11.fiducia.de/cgi-bin/hbciservlet |
 | Postbank        | DONE    | https://hbci.postbank.de/banking/hbci.do      |
 | Consorsbank     | DONE    | https://brokerage-hbci.consorsbank.de/hbci    |
-| Hypovereinsbank | OPEN    | -                                             |
+| Hypovereinsbank | OPEN    | https://hbci-01.hypovereinsbank.de/bank/hbci  |                                             |
 
 ## Development
 
