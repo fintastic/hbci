@@ -16,10 +16,6 @@ require 'active_support/core_ext'
 OptionParser.new do |opts|
   opts.banner = 'Usage: example.rb iban [options]'
 
-  opts.on '-url', '--url=URL', 'URL' do |arg|
-    @options[:url] = arg
-  end
-
   opts.on '-v', '--hbci_version=VERSION', 'Version' do |arg|
     @options[:hbci_version] = arg
   end
@@ -51,7 +47,6 @@ raise 'missing iban' unless @iban
 
 @hbci_version = @options[:hbci_version] ? @options[:hbci_version].to_i : nil
 @credentials = BankCredentials::Hbci.new(
-  url: @options[:url],
   bank_code: @options[:bank_code],
   user_id: @options[:user_id],
   pin: @options[:pin]
