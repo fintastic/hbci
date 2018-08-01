@@ -5,12 +5,9 @@ require 'spec_helper'
 describe Hbci::Services::SystemIdReceiver do
   let(:iban) { Ibanizator.iban_from_string('DE05740900000011111111') }
   let(:credentials) { build(:hbci_credentials) }
+  let(:connector) { Hbci::Connector.new(credentials) }
 
-  before do
-    connector = Hbci::Connector.instance
-    connector.credentials = credentials
-    connector.reset_message_number
-  end
+  subject { described_class.new(connector) }
 
   before do
     allow_any_instance_of(Hbci::Message).to receive(:generate_security_reference).and_return('10999990')

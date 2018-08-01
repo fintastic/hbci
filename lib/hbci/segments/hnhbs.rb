@@ -7,7 +7,7 @@ module Hbci
       element :message_number
 
       def compile
-        self.message_number = Connector.instance.message_number
+        self.message_number = request_message.connector.message_number
       end
     end
   end

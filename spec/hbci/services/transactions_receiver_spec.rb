@@ -9,7 +9,7 @@ describe Hbci::Services::TransactionsReceiver, type: :receiver do
   context 'when requested via hkkaz version 6' do
     let!(:transaction_request) { stub_transaction_v6_request(credentials, iban, start_date, end_date) }
 
-    subject { Hbci::Services::TransactionsReceiver.new(dialog, iban, 6) }
+    subject { Hbci::Services::TransactionsReceiver.new(connector, dialog, iban, 6) }
 
     it 'returns the transactions' do
       transactions = subject.perform(start_date, end_date)
@@ -24,7 +24,7 @@ describe Hbci::Services::TransactionsReceiver, type: :receiver do
   context 'when requested via hkkaz version 7' do
     let!(:transaction_request) { stub_transaction_v7_request(credentials, iban, start_date, end_date) }
 
-    subject { Hbci::Services::TransactionsReceiver.new(dialog, iban, 7) }
+    subject { Hbci::Services::TransactionsReceiver.new(connector, dialog, iban, 7) }
 
     it 'returns the transactions when requested with hkkaz v7' do
       transactions = subject.perform(start_date, end_date)
@@ -47,7 +47,7 @@ describe Hbci::Services::TransactionsReceiver, type: :receiver do
       stub_paginated_transaction_v7_request(credentials, iban, start_date, end_date, 3, nil, 4)
     end
     let!(:dialog_finish_request) { stub_dialog_finish_request(credentials, 5) }
-    subject { Hbci::Services::TransactionsReceiver.new(dialog, iban, 7) }
+    subject { Hbci::Services::TransactionsReceiver.new(connector, dialog, iban, 7) }
 
     it 'returns the transactions when requested with hkkaz v7' do
       transactions = subject.perform(start_date, end_date)
@@ -74,7 +74,7 @@ describe Hbci::Services::TransactionsReceiver, type: :receiver do
         msg
       end
 
-      subject { Hbci::Services::TransactionsReceiver.new(dialog, iban, 7) }
+      subject { Hbci::Services::TransactionsReceiver.new(connector, dialog, iban, 7) }
 
       before do
         stub_request(:post, credentials.url).to_return(status: 200, body: Base64.encode64(response))

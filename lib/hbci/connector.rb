@@ -1,15 +1,16 @@
-# frozen_string_literal: true
-
-require 'singleton'
-
 module Hbci
   class Connector
-    include Singleton
-
     attr_accessor :message_number
     attr_reader :credentials
 
-    def initialize
+    def self.open(credentials)
+      connector = new(credentials)
+      yield connector
+      connector.reset_message_number
+    end
+
+    def initialize(credentials)
+      self.credentials = credentials
       reset_message_number
     end
 

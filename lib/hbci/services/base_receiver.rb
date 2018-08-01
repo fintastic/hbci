@@ -3,10 +3,12 @@
 module Hbci
   module Services
     class BaseReceiver
+      attr_reader :connector
       attr_reader :dialog
       attr_reader :iban
 
-      def initialize(dialog, iban, version = nil)
+      def initialize(connector, dialog, iban, version = nil)
+        @connector = connector
         @dialog = dialog
         @iban = Ibanizator.iban_from_string(iban)
         @version = version

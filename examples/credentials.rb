@@ -51,7 +51,3 @@ raise 'missing iban' unless @iban
   user_id: @options[:user_id],
   pin: @options[:pin]
 )
-
-connector = Hbci::Connector.instance
-connector.credentials = @credentials
-

@@ -3,15 +3,21 @@
 module Hbci
   module Services
     class SystemIdReceiver
+      attr_reader :connector
+
+      def initialize(connector)
+        @connector = connector
+      end
+
       def perform
-        request_message = MessageFactory.build(nil) do |hnvsd|
+        request_message = MessageFactory.build(connector, nil) do |hnvsd|
           hnvsd.add_segment(Segments::HKIDNv2.new)
           hnvsd.add_segment(Segments::HKVVBv3.new)
           hnvsd.add_segment(Segments::HKSYNv3.new)
         end
         request_message.compile
 
-        @response = Response.new(Connector.instance.post(request_message))
+        @response = Response.new(connector.post(request_message))
 
         raise @response.to_s unless request_successful?
 

@@ -1,7 +1,7 @@
 module Hbci
   module MessageFactory
-    def self.build(dialog)
-      request_message = Message.new(dialog)
+    def self.build(connector, dialog)
+      request_message = Message.new(connector, dialog)
       request_message.add_segment(Segments::HNHBKv3.new)
       request_message.add_segment(Segments::HNVSKv3.new)
       hnvsd = Segments::HNVSDv1.new do |s|

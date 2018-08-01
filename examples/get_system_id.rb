@@ -3,4 +3,6 @@
 require_relative '../lib/hbci'
 require_relative 'credentials'
 
-puts Hbci::Services::SystemIdReceiver.new.perform
+Hbci::Connector.open(@credentials) do |connector|
+  puts Hbci::Services::SystemIdReceiver.new(connector).perform
+end

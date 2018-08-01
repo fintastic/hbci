@@ -37,9 +37,6 @@ credentials = BankCredentials::Hbci.new({
   user_id:    'user_id',
   pin:        'pin'
 })
-
-connector = Hbci::Connector.instance
-connector.credentials = credentials
 ```
 
 Now, you can receive your balances, accounts and transactions:
@@ -51,10 +48,12 @@ iban = 'DE05740900000011111111'
 start_date = 3.day.ago
 end_date = Time.now
 
-Hbci::Dialog.open do |dialog|
-  transactions = Hbci::Services::TransactionsReceiver.new(dialog, iban).perform(start_date, end_date)
-  transactions.each do |transaction|
-    puts transaction
+Hbci::Connector.open(credentials) do |connector|
+  Hbci::Dialog.open(connector) do |dialog|
+    transactions = Hbci::Services::TransactionsReceiver.new(connector, dialog, iban).perform(start_date, end_date)
+    transactions.each do |transaction|
+      puts transaction
+    end
   end
 end
 ```
@@ -64,20 +63,25 @@ end
 ```ruby
 iban = 'DE05740900000011111111'
 
-Hbci::Dialog.open do |dialog|
-  puts Hbci::Services::BalanceReceiver.new(dialog, iban).perform
+Hbci::Connector.open(credentials) do |connector|
+  Hbci::Dialog.open(connector) do |dialog|
+    puts Hbci::Services::BalanceReceiver.new(connector, dialog, iban).perform
+  end
 end
 ```
 
 ### Receiving the accounts
 
 ```ruby
-Hbci::Dialog.open do |dialog|
-  accounts = Hbci::Services::AccountsReceiver.new(dialog).perform
-  accounts.each do |account|
-    puts account
+Hbci::Connector.open(credentials) do |connector|
+  Hbci::Dialog.open(connector) do |dialog|
+    accounts = Hbci::Services::AccountsReceiver.new(dialog).perform
+    accounts.each do |account|
+      puts account
+    end
   end
 end
+
 ```
 ## Banks tested 
 

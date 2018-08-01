@@ -13,8 +13,8 @@ module Hbci
       element :state, default: 1
 
       def compile
-        self.bank.code = Connector.instance.credentials.bank_code
-        self.user_id = Connector.instance.credentials.user_id
+        self.bank.code = request_message.connector.credentials.bank_code
+        self.user_id = request_message.connector.credentials.user_id
         self.system_id = request_message.dialog ? request_message.dialog.system_id : 0
       end
     end

@@ -24,7 +24,7 @@ module Hbci
 
       def compile
         self.security_reference = request_message.sec_ref
-        signature.pin = Connector.instance.credentials.pin
+        signature.pin = request_message.connector.credentials.pin
       end
     end
   end

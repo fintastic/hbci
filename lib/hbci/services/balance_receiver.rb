@@ -4,12 +4,12 @@ module Hbci
   module Services
     class BalanceReceiver < BaseReceiver
       def perform
-        request_message = MessageFactory.build(dialog) do |hnvsd|
+        request_message = MessageFactory.build(connector, dialog) do |hnvsd|
           hnvsd.add_segment(build_hksal)
         end
         request_message.compile
 
-        @response = Response.new(Connector.instance.post(request_message))
+        @response = Response.new(connector.post(request_message))
 
         raise @response.to_s unless request_successful?
 
