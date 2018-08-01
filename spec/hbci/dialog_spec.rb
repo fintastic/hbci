@@ -4,13 +4,10 @@ require 'spec_helper'
 
 describe Hbci::Dialog do
   let(:credentials) { build(:hbci_credentials) }
+  let(:connector) { Hbci::Connector.new(credentials) }
   let!(:dialog_init_request) { stub_dialog_init_request(credentials) }
 
-  before do
-    connector = Hbci::Connector.instance
-    connector.credentials = credentials
-    connector.message_number = 1
-  end
+  subject { described_class.new(connector) }
 
   around do |example|
     Timecop.freeze { example.run }

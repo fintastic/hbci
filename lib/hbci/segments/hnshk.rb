@@ -71,8 +71,8 @@ module Hbci
       private
 
       def set_credentials
-        key.bank_code = Connector.instance.credentials.bank_code
-        key.user_id = Connector.instance.credentials.user_id
+        key.bank_code = request_message.connector.credentials.bank_code
+        key.user_id = request_message.connector.credentials.user_id
       end
     end
   end

@@ -9,15 +9,15 @@ module Hbci
     attr_reader :response
     attr_reader :connector
 
-    def self.open(system_id: 0)
-      dialog = Dialog.new(system_id: system_id)
+    def self.open(connector, system_id: 0)
+      dialog = Dialog.new(connector, system_id: system_id)
       dialog.initiate
       yield dialog
       dialog.finish
     end
 
-    def initialize(system_id: 0)
-      @connector = Connector.instance
+    def initialize(connector, system_id: 0)
+      @connector = connector
       @initiated = false
       @hbci_version = '3.0'
       @system_id = system_id
@@ -35,7 +35,7 @@ module Hbci
     end
 
     def initiate
-      request_message = MessageFactory.build(self) do |hnvsd|
+      request_message = MessageFactory.build(@connector, self) do |hnvsd|
         hnvsd.add_segment(Segments::HKIDNv2.new)
         hnvsd.add_segment(Segments::HKVVBv3.new)
       end
@@ -51,7 +51,7 @@ module Hbci
     end
 
     def finish
-      request_message = MessageFactory.build(self) do |hnvsd|
+      request_message = MessageFactory.build(@connector, self) do |hnvsd|
         hnvsd.add_segment(Segments::HKENDv1.new)
       end
       request_message.compile

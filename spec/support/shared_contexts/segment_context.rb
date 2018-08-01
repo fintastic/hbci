@@ -1,7 +1,8 @@
 shared_context 'segment' do
   let(:credentials) { build(:hbci_credentials) }
-  let(:dialog) { Hbci::Dialog.new }
-  let(:message) { Hbci::Message.new(dialog) }
+  let(:connector) { Hbci::Connector.new(credentials) }
+  let(:dialog) { Hbci::Dialog.new(connector) }
+  let(:message) { Hbci::Message.new(connector, dialog) }
   let(:iban) { Ibanizator.iban_from_string('DE05740900000011111111') }
 
   around do |example|
@@ -10,12 +11,6 @@ shared_context 'segment' do
 
   before do
     allow_any_instance_of(Hbci::Message).to receive(:generate_security_reference).and_return('10999990')
-  end
-
-  before do
-    connector = Hbci::Connector.instance
-    connector.credentials = credentials
-    connector.reset_message_number
   end
 
   before do

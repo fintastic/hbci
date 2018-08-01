@@ -2,10 +2,11 @@
 
 module Hbci
   class Message
-    attr_reader :dialog, :segments, :sec_ref
+    attr_reader :connector, :dialog, :segments, :sec_ref
     attr_accessor :next_position
 
-    def initialize(dialog = nil)
+    def initialize(connector, dialog = nil)
+      @connector = connector
       @dialog = dialog
       @sec_ref = generate_security_reference
       @segments = []

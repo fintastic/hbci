@@ -52,8 +52,8 @@ module Hbci
       def compile
         head.position = 998
         security_identification_details.party_identification = request_message.dialog ? request_message.dialog.system_id : 0
-        key.bank_code = Connector.instance.credentials.bank_code
-        key.user_id = Connector.instance.credentials.user_id
+        key.bank_code = request_message.connector.credentials.bank_code
+        key.user_id = request_message.connector.credentials.user_id
       end
     end
   end

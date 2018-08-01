@@ -10,7 +10,7 @@ describe Hbci::Services::BalanceReceiver, type: :receiver do
     let!(:balance_request) { stub_balance_v4_request(credentials, iban) }
 
     context 'when given an account number that is accessible' do
-      subject { Hbci::Services::BalanceReceiver.new(dialog, iban, 4) }
+      subject { Hbci::Services::BalanceReceiver.new(connector, dialog, iban, 4) }
 
       it 'requests and returns the balance' do
         balance = subject.perform
@@ -25,7 +25,7 @@ describe Hbci::Services::BalanceReceiver, type: :receiver do
     let!(:balance_request) { stub_balance_v6_request(credentials, iban) }
 
     context 'when given an account number that is accessible' do
-      subject { Hbci::Services::BalanceReceiver.new(dialog, iban, 6) }
+      subject { Hbci::Services::BalanceReceiver.new(connector, dialog, iban, 6) }
 
       it 'requests and returns the balance' do
         balance = subject.perform
@@ -40,7 +40,7 @@ describe Hbci::Services::BalanceReceiver, type: :receiver do
     let!(:balance_request) { stub_balance_v7_request(credentials, iban) }
 
     context 'when given an account number that is accessible' do
-      subject { Hbci::Services::BalanceReceiver.new(dialog, iban, 7) }
+      subject { Hbci::Services::BalanceReceiver.new(connector, dialog, iban, 7) }
 
       it 'requests and returns the balance' do
         balance = subject.perform
