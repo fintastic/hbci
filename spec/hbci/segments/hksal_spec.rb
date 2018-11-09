@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 require 'spec_helper'
 
 describe 'HKSAL' do
-  let(:account_number) { 111111 }
-  let(:account_code) { 222222 }
+  let(:account_number) { 111_111 }
+  let(:account_code) { 222_222 }
 
   describe Hbci::Segments::HKSALv4, type: :segment do
     describe '#compile' do

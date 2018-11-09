@@ -46,8 +46,7 @@ module Hbci
       define_element_groups
     end
 
-    def compile
-    end
+    def compile; end
 
     def to_s
       element_groups.join('+').gsub(/\+*$/, '') << '\''

@@ -10,10 +10,10 @@ describe Hbci::Response do
   subject { described_class.new(raw_response) }
 
   describe '.find' do
-    it { expect(subject.find('HNHBK') ).to be_a(Hbci::Segments::HNHBKv3) }
+    it { expect(subject.find('HNHBK')).to be_a(Hbci::Segments::HNHBKv3) }
   end
 
   describe '.find_all' do
-    it { expect(subject.find_all('HNHBK').size ).to eql(1) }
+    it { expect(subject.find_all('HNHBK').size).to eql(1) }
   end
 end

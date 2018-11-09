@@ -63,8 +63,8 @@ module Hbci
 
       def compile
         self.security_reference = request_message.sec_ref
-        self.security_identification_details.party_identification = request_message.dialog ? request_message.dialog.system_id : 0
-        self.tan_mechanism = request_message.dialog.tan_mechanism if request_message.dialog && request_message.dialog.tan_mechanism
+        security_identification_details.party_identification = request_message.dialog ? request_message.dialog.system_id : 0
+        self.tan_mechanism = request_message.dialog.tan_mechanism if request_message.dialog&.tan_mechanism
         set_credentials
       end
 

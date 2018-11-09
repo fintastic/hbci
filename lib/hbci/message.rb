@@ -19,7 +19,7 @@ module Hbci
     end
 
     def compile
-      @segments.each_with_index do |segment, index|
+      @segments.each_with_index do |segment, _index|
         segment.compile
         unless segment.head.position
           segment.head.position = @next_position

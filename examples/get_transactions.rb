@@ -14,4 +14,3 @@ Hbci::Connector.open(@credentials) do |connector|
     end
   end
 end
-

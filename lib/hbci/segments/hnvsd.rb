@@ -22,7 +22,7 @@ module Hbci
 
       def find_all(segment_type)
         @raw_segments = Parser.parse(content)
-        @raw_segments.select { |sd| sd[0][0] == segment_type }.map{ |sd| Hbci::SegmentFactory.build(sd) }
+        @raw_segments.select { |sd| sd[0][0] == segment_type }.map { |sd| Hbci::SegmentFactory.build(sd) }
       end
 
       def add_segment(segment)

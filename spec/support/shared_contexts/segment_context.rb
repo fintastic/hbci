@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_context 'segment' do
   let(:credentials) { build(:hbci_credentials) }
   let(:connector) { Hbci::Connector.new(credentials) }

@@ -66,6 +66,7 @@ module Hbci
       index = index_for_element(potential_element_name)
       if index
         return set_element(potential_element_name, args.first) if is_writer && args.count == 1
+
         return get_element(potential_element_name)
       end
 
