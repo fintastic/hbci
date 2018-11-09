@@ -52,7 +52,7 @@ describe Hbci::Dialog do
         msg = []
         msg << "HNHBK:1:3+000000000241+300+0+1+0:1'"
         msg << "HNVSK:998:3+PIN:1+998+1+2::0+1:20180716:110611+2:2:13:@8@:5:1+280:76010085:788584857:V:0:0+0'"
-        msg << "HNVSD:999:1+@76@"
+        msg << 'HNVSD:999:1+@76@'
         msg << "HIRMG:2:2+9800::Dialogabbruch.'"
         msg << "HIRMS:3:2:2+9210::Ung?ltige Kundensystem-ID.''"
         msg << "HNHBS:4:1+1'"

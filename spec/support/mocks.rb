@@ -9,9 +9,9 @@ end
 
 def build_hbci_credentials(_args)
   BankCredentials::Hbci.new(
-    url:        'https://hbci11.fiducia.de/cgi-bin/hbciservlet',
-    bank_code:  '74090000',
-    user_id:    '22222222',
-    pin:        '33333'
+    url: 'https://hbci11.fiducia.de/cgi-bin/hbciservlet',
+    bank_code: '74090000',
+    user_id: '22222222',
+    pin: '33333'
   )
 end

@@ -20,7 +20,6 @@ describe Hbci::Services::SystemIdReceiver do
         .to_return(status: 200, body: Base64.encode64(stub_system_id_response_message(credentials)))
     end
 
-
     context 'when given an account number that is accessible' do
       it 'requests and returns the balance' do
         system_id = subject.perform

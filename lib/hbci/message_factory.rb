@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Hbci
   module MessageFactory
     def self.build(connector, dialog)

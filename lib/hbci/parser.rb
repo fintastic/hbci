@@ -31,7 +31,7 @@ module Hbci
     #     )                        end of look-ahead
     # ------------------------------------------------------------------------
     #   )                        end of \1
-    ELEMENT_REGEX           = /(.*?(?=(?<!\?)[:+']))/
+    ELEMENT_REGEX           = /(.*?(?=(?<!\?)[:+']))/.freeze
 
     # Binary Elements may contain unescaped delimiters. Thus they are not
     # terminated by regular delimiters. But their content is preceeded with
@@ -40,7 +40,7 @@ module Hbci
     # '@6@mydata' or '@12@mydatamydata'
     #
     # The BINARY_ELEMENT_LENGTH_REGEx matches only the length.
-    BINARY_ELEMENT_LENGTH_REGEX = /@(\d+)@/
+    BINARY_ELEMENT_LENGTH_REGEX = /@(\d+)@/.freeze
 
     def self.parse(string)
       new(string).parse
@@ -76,6 +76,7 @@ module Hbci
     def parse_delimiter
       delimiter = scanner.getch
       return if scanner.eos?
+
       if delimiter == ELEMENT_GROUP_DELIMITER
         add_element_group
       elsif delimiter == SEGMENT_DELIMITER

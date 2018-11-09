@@ -19,7 +19,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_runtime_dependency 'bank_credentials'
-  spec.add_runtime_dependency 'cmxl', '~> 1.1'
+  spec.add_runtime_dependency 'cmxl', '~> 1.2'
   spec.add_runtime_dependency 'httparty', '~> 0.16'
   spec.add_runtime_dependency 'ibanizator', '~> 0.3'
   spec.add_runtime_dependency 'monetize', ['>=1.8', '<2.0.0']
@@ -29,8 +29,8 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'bundler', '~> 1.10'
   spec.add_development_dependency 'byebug', '~> 10.0'
   spec.add_development_dependency 'rake', '~> 12.3'
-  spec.add_development_dependency 'rspec',  '~> 3.7'
-  spec.add_development_dependency 'rubocop', '~> 0.57'
+  spec.add_development_dependency 'rspec', '~> 3.8'
+  spec.add_development_dependency 'rubocop', '~> 0.60'
   spec.add_development_dependency 'timecop', '~> 0.9'
   spec.add_development_dependency 'webmock', '~> 3.4'
 end
