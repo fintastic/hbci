@@ -49,6 +49,14 @@ module Hbci
       element :timestamp_date
       element :timestamp_time
       element :duedate
+
+      def booked_amount
+        sign = case booked.credit_debit
+               when 'C' then 1
+               when 'D' then -1
+               end
+        sign * Monetize.parse(booked.btg_value, booked.btg_curr)
+      end
     end
 
     class HISALv6 < Segment

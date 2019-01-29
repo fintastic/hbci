@@ -17,6 +17,17 @@ describe 'HKSAL' do
     end
   end
 
+  describe Hbci::Segments::HKSALv5, type: :segment do
+    describe '#compile' do
+      before do
+        subject.account.number = account_number
+        subject.account.kik_blz = account_code
+      end
+
+      it { expect(subject.to_s).to eql("HKSAL:1:5+111111::280:222222+N'") }
+    end
+  end
+
   describe Hbci::Segments::HKSALv6, type: :segment do
     describe '#compile' do
       before do
