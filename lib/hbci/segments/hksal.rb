@@ -12,6 +12,14 @@ module Hbci
       element :all_accounts, default: 'N'
     end
 
+    class HKSALv5 < Segment
+      element_group :head, type: ElementGroups::SegmentHead
+      element_group :account, type: ElementGroups::KTV2
+      element :all_accounts, default: 'N'
+      element :max_entries
+      element :attach
+    end
+
     class HKSALv6 < Segment
       element_group :head, type: ElementGroups::SegmentHead
       element_group :account, type: ElementGroups::KTV2

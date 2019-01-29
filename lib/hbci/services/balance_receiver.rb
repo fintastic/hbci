@@ -16,6 +16,10 @@ module Hbci
         @response.find('HNVSD').find('HISAL').booked_amount
       end
 
+      def supported_versions
+        dialog.response.find('HNVSD').find_all('HISALS').map { |x| x.head.version.to_i }
+      end
+
       private
 
       def request_successful?
@@ -32,6 +36,7 @@ module Hbci
       def build_hksal
         case version
         when 4 then build_hksal_v4
+        when 5 then build_hksal_v5
         when 6 then build_hksal_v6
         when 7 then build_hksal_v7
         end
@@ -41,6 +46,13 @@ module Hbci
         hksal = Segments::HKSALv4.new
         hksal.account.code   = iban.extended_data.bank_code
         hksal.account.number = iban.extended_data.account_number
+        hksal
+      end
+
+      def build_hksal_v5
+        hksal = Segments::HKSALv5.new
+        hksal.account.number = iban.extended_data.account_number
+        hksal.account.kik_blz = iban.extended_data.bank_code
         hksal
       end
 
@@ -59,10 +71,6 @@ module Hbci
         hksal.account.kik_country = 280
         hksal.account.number      = iban.extended_data.account_number
         hksal
-      end
-
-      def supported_versions
-        dialog.response.find('HNVSD').find_all('HISALS').map { |x| x.head.version.to_i }
       end
     end
   end
