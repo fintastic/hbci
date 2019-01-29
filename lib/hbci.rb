@@ -62,5 +62,7 @@ require 'hbci/services/system_id_receiver'
 
 I18n.enforce_available_locales = false if I18n.available_locales.none?
 
+Money.locale_backend = nil
+
 module Hbci
 end
