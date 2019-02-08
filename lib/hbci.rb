@@ -21,6 +21,10 @@ require 'hbci/element_unparser'
 require 'hbci/connector'
 require 'hbci/message_factory'
 
+# Errors
+require 'hbci/errors/hbci_error'
+require 'hbci/errors/hbci_service_unavailable'
+
 # Element groups
 require 'hbci/element_group'
 require 'hbci/element_groups/segment_head'
