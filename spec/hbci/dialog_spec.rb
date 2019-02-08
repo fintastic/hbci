@@ -42,7 +42,7 @@ describe Hbci::Dialog do
       end
 
       it 'raises an error' do
-        expect { subject.initiate }.to raise_error(response.force_encoding('ISO-8859-1'))
+        expect { subject.initiate }.to raise_error(Hbci::DialogError, 'Initialization failed')
         expect(subject).not_to be_initiated
       end
     end
@@ -64,7 +64,7 @@ describe Hbci::Dialog do
       end
 
       it 'raises an error' do
-        expect { subject.initiate }.to raise_error(response.dup.force_encoding('ISO-8859-1'))
+        expect { subject.initiate }.to raise_error(Hbci::DialogError, 'Initialization failed')
         expect(subject).not_to be_initiated
       end
     end

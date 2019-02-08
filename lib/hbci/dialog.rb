@@ -43,7 +43,7 @@ module Hbci
 
       @response = Response.new(@connector.post(request_message))
 
-      raise @response.to_s unless initialization_successful?
+      raise DialogError.new('Initialization failed', @response.to_s) unless initialization_successful?
 
       @id            = @response.find('HNHBK').dialog_id
       @tan_mechanism = @response.find('HNVSD').find('HIRMS').allowed_tan_mechanism

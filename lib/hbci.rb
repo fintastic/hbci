@@ -22,8 +22,9 @@ require 'hbci/connector'
 require 'hbci/message_factory'
 
 # Errors
-require 'hbci/errors/hbci_error'
-require 'hbci/errors/hbci_service_unavailable'
+require 'hbci/errors/hbci/base_error'
+require 'hbci/errors/hbci/dialog_error'
+require 'hbci/errors/hbci/service_unavailable'
 
 # Element groups
 require 'hbci/element_group'
