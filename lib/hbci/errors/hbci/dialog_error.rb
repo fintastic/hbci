@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Hbci
   class DialogError < BaseError
     attr_reader :hbci_response
