@@ -5,7 +5,7 @@ require 'spec_helper'
 describe Hbci::Response do
   let(:dialog)       { double }
   let(:credentials)  { build(:hbci_credentials) }
-  let(:raw_response) { stub_dialog_init_response_message(credentials) }
+  let(:raw_response) { stub_dialog_init_response_message }
 
   subject { described_class.new(raw_response) }
 

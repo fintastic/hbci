@@ -15,11 +15,11 @@ describe 'HNSHK' do
       it 'sets te correct default values' do
         expect(subject.security_profile.security_method).to eql('PIN')
         expect(subject.security_profile.version).to eql(1)
-        expect(subject.tan_mechanism).to eql(999)
+        expect(subject.tan_mechanism).to eql(nil)
         expect(subject.area_of_security_application).to eql(1)
         expect(subject.role_of_security_supplier).to eql(1)
         expect(subject.security_identification_details.type).to eql(1)
-        expect(subject.security_reference_number).to eql(1)
+        expect(subject.security_reference_number).to eql(2)
         expect(subject.secured_at.identifier).to eql(1)
         expect(subject.secured_at.date).to eql(Time.now.strftime('%Y%m%d'))
         expect(subject.secured_at.time).to eql(Time.now.strftime('%H%m%S'))
@@ -40,9 +40,12 @@ describe 'HNSHK' do
     end
 
     describe '#compile' do
-      let(:raw_segment) { "HNSHK:1:4+PIN:1+999+10999990+1+1+1::0+1+1:20180101:000100+1:999:1+6:10:16+280:74090000:22222222:S:0:0'" }
+      before do
+        subject.tan_mechanism = 942
+        subject.security_reference_number = 1
+      end
 
-      it { expect(subject.to_s).to eql(raw_segment) }
+      it { expect(subject.to_s).to eql("HNSHK:1:4+PIN:1+942+10999990+1+1+1::0+1+1:20180101:000100+1:999:1+6:10:16+280:74090000:22222222:S:0:0'") }
     end
   end
 end

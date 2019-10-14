@@ -4,20 +4,31 @@ module Hbci
   module Services
     class BalanceReceiver < BaseReceiver
       def perform
-        request_message = MessageFactory.build(connector, dialog) do |hnvsd|
-          hnvsd.add_segment(build_hksal)
+        Hbci.logger.info("Start #{self.class} request")
+        
+        request_message = Message.new(connector, dialog)
+        request_message.add_segment(Segments::HNHBKv3.new)
+        request_message.add_segment(build_hnvsk)
+        hnvsd = Segments::HNVSDv1.new do |s|
+          s.add_segment(build_hnshk)
+          s.add_segment(build_hksal)
+          s.add_segment(build_hktan) if dialog.tan
+          s.add_segment(Segments::HNSHAv2.new)
         end
+        request_message.add_segment(hnvsd)
+        request_message.add_segment(Segments::HNHBSv1.new)
         request_message.compile
 
         @response = Response.new(connector.post(request_message))
 
         raise @response.to_s unless request_successful?
 
+        Hbci.logger.info("Finish #{self.class} request")
         @response.find('HNVSD').find('HISAL').booked_amount
       end
 
       def supported_versions
-        dialog.response.find('HNVSD').find_all('HISALS').map { |x| x.head.version.to_i }
+        dialog.hisals_versions
       end
 
       private
@@ -31,6 +42,12 @@ module Hbci
         return false if hirmg && hirmg.ret_val_1.code[0].to_i == 9
 
         true
+      end
+
+      def build_hnvsk
+        hnvsk = Hbci::Segments::HNVSKv3.new
+        hnvsk.security_profile.version = 2
+        hnvsk
       end
 
       def build_hksal
@@ -71,6 +88,20 @@ module Hbci
         hksal.account.kik_country = 280
         hksal.account.number      = iban.extended_data.account_number
         hksal
+      end
+
+      def build_hnshk
+        hnshk = Hbci::Segments::HNSHKv4.new
+        hnshk.tan_mechanism = dialog.security_function
+        hnshk.security_profile.version = 2
+        hnshk
+      end
+
+      def build_hktan
+        hktan = Hbci::Segments::HKTANv6.new
+        hktan.tan_mechanism = 4
+        hktan.seg_id = 'HKSAL'
+        hktan
       end
     end
   end

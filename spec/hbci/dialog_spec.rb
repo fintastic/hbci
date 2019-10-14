@@ -5,13 +5,10 @@ require 'spec_helper'
 describe Hbci::Dialog do
   let(:credentials) { build(:hbci_credentials) }
   let(:connector) { Hbci::Connector.new(credentials) }
+  let!(:session_init_request) { stub_session_init_request(credentials) }
   let!(:dialog_init_request) { stub_dialog_init_request(credentials) }
 
   subject { described_class.new(connector) }
-
-  around do |example|
-    Timecop.freeze { example.run }
-  end
 
   before do
     allow_any_instance_of(Hbci::Message).to receive(:generate_security_reference).and_return('10999990')
@@ -38,11 +35,11 @@ describe Hbci::Dialog do
       end
 
       before do
-        stub_request(:post, credentials.url).with(body: Base64.encode64(stub_dialog_init_request_message(credentials))).to_return(status: 200, body: Base64.encode64(response))
+        stub_request(:post, credentials.url).with(body: Base64.encode64(stub_dialog_init_request_message)).to_return(status: 200, body: Base64.encode64(response))
       end
 
       it 'raises an error' do
-        expect { subject.initiate }.to raise_error(Hbci::DialogError, 'Initialization failed')
+        expect { subject.initiate }.to raise_error(Hbci::DialogError, 'Dialog initialization failed')
         expect(subject).not_to be_initiated
       end
     end
@@ -60,11 +57,11 @@ describe Hbci::Dialog do
       end
 
       before do
-        stub_request(:post, credentials.url).with(body: Base64.encode64(stub_dialog_init_request_message(credentials))).to_return(status: 200, body: Base64.encode64(response))
+        stub_request(:post, credentials.url).with(body: Base64.encode64(stub_dialog_init_request_message)).to_return(status: 200, body: Base64.encode64(response))
       end
 
       it 'raises an error' do
-        expect { subject.initiate }.to raise_error(Hbci::DialogError, 'Initialization failed')
+        expect { subject.initiate }.to raise_error(Hbci::DialogError, 'Dialog initialization failed')
         expect(subject).not_to be_initiated
       end
     end
@@ -76,7 +73,7 @@ describe Hbci::Dialog do
     end
 
     before do
-      stub_dialog_finish_request(credentials, 2)
+      stub_dialog_finish_request(credentials)
     end
 
     it 'finishes the dialog' do

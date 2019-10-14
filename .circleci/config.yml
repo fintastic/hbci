@@ -22,9 +22,9 @@ jobs:
           name: install dependencies
           command: bundle check || bundle install
 
-      - run:
-          name: run rubocop
-          command: bundle exec rubocop
+#      - run:
+#          name: run rubocop
+#          command: bundle exec rubocop
 
       - run:
           name: run rspec

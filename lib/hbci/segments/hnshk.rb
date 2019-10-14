@@ -17,7 +17,7 @@ module Hbci
         element :version, default: 1
       end
 
-      element :tan_mechanism, default: 999
+      element :tan_mechanism
 
       # Random security control reference. MUST be the same
       # as in the signature footer
@@ -31,7 +31,7 @@ module Hbci
         element :party_identification # system_id
       end
 
-      element :security_reference_number, default: 1
+      element :security_reference_number, default: 2
 
       element_group :secured_at do
         element :identifier, default: 1
@@ -63,8 +63,8 @@ module Hbci
 
       def compile
         self.security_reference = request_message.sec_ref
-        security_identification_details.party_identification = request_message.dialog ? request_message.dialog.system_id : 0
-        self.tan_mechanism = request_message.dialog.tan_mechanism if request_message.dialog&.tan_mechanism
+        self.security_identification_details.party_identification = request_message.dialog ? request_message.dialog.system_id : 0
+        self.tan_mechanism = dialog.security_function if dialog
         set_credentials
       end
 

@@ -6,14 +6,24 @@ module Hbci
       attr_reader :next_attach
 
       def perform(start_date, end_date)
+        Hbci.logger.info("Start #{self.class} request")
+
         @start_date = start_date
         @end_date = end_date
 
         transactions = []
         loop do
-          request_message = MessageFactory.build(connector, dialog) do |hnvsd|
-            hnvsd.add_segment(build_hkkaz)
+          request_message = Message.new(connector, dialog)
+          request_message.add_segment(Segments::HNHBKv3.new)
+          request_message.add_segment(build_hnvsk)
+          hnvsd = Segments::HNVSDv1.new do |s|
+            s.add_segment(build_hnshk)
+            s.add_segment(build_hkkaz)
+            s.add_segment(build_hktan)
+            s.add_segment(Segments::HNSHAv2.new)
           end
+          request_message.add_segment(hnvsd)
+          request_message.add_segment(Segments::HNHBSv1.new)
           request_message.compile
 
           @response = Response.new(connector.post(request_message))
@@ -27,10 +37,18 @@ module Hbci
 
           @next_attach = @response.find('HNVSD').find('HIRMS').ret_val_1.parm
         end
+
+        Hbci.logger.info("Finish #{self.class} request")
         transactions
       end
 
       private
+
+      def build_hnvsk
+        hnvsk = Hbci::Segments::HNVSKv3.new
+        hnvsk.security_profile.version = 2
+        hnvsk
+      end
 
       def build_hkkaz
         case version
@@ -63,12 +81,26 @@ module Hbci
         hkkaz
       end
 
+      def build_hnshk
+        hnshk = Hbci::Segments::HNSHKv4.new
+        hnshk.tan_mechanism = dialog.security_function
+        hnshk.security_profile.version = 2
+        hnshk
+      end
+
+      def build_hktan
+        hktan = Hbci::Segments::HKTANv6.new
+        hktan.tan_mechanism = 4
+        hktan.seg_id = 'HKKAZ'
+        hktan
+      end
+
       def parse_transactions(mt940)
         Cmxl.parse(mt940.force_encoding('ISO-8859-1').encode('UTF-8')).flat_map(&:transactions).map(&:to_h)
       end
 
       def supported_versions
-        dialog.response.find('HNVSD').find_all('HIKAZS').map { |x| x.head.version.to_i }
+        dialog.hikazs_versions
       end
     end
   end
