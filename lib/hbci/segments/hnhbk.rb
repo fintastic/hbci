@@ -15,7 +15,7 @@ module Hbci
 
       def compile
         self.message_size = '000000000000'
-        self.dialog_id = request_message.dialog ? request_message.dialog.id : 0
+        self.dialog_id =  request_message.dialog ? request_message.dialog.id : 0
         self.message_number = request_message.connector.message_number
       end
 

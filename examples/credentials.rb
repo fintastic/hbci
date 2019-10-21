@@ -10,6 +10,7 @@ require 'active_support/core_ext'
   bank_code: nil,
   user_id: nil,
   pin: nil,
+  tan: nil,
   system_id: 0
 }
 
@@ -30,6 +31,10 @@ OptionParser.new do |opts|
 
   opts.on '-p', '--pin=PIN', 'PIN' do |arg|
     @options[:pin] = arg
+  end
+
+  opts.on '-t', '--tan=TAN', 'TAN' do |arg|
+    @options[:tan] = arg
   end
 
   opts.on '-s', '--system_id=SYSTEM_ID', 'SYSTEM_ID' do |arg|

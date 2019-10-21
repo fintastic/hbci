@@ -16,5 +16,9 @@ describe 'HNHBK' do
         expect(subject.head.reference).to be_nil
       end
     end
+
+    describe '#compile' do
+      it { expect(subject.to_s).to eql("HNHBK:1:3+000000000000+300+0+1'") }
+    end
   end
 end
