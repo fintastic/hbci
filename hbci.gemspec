@@ -25,7 +25,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'monetize', ['>=1.8', '<2.0.0']
   spec.add_runtime_dependency 'money', ['>=6.11', '<7.0.0']
 
-  spec.add_development_dependency 'activesupport', '~> 5.2'
+  spec.add_development_dependency 'activesupport', '~> 6.0'
   spec.add_development_dependency 'byebug', '~> 11.0'
   spec.add_development_dependency 'rake', '~> 13.0'
   spec.add_development_dependency 'rspec', '~> 3.8'
