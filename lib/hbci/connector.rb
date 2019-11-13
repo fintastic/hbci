@@ -28,7 +28,7 @@ module Hbci
     end
 
     def post(request_message, count_messages = true)
-      Hbci.logger.debug("Request: #{request_message}")
+      Hbci.logger.debug("Request: #{request_message.to_hbci}")
       req = HTTParty.post(@credentials.url, body: request_message.to_base64)
       @message_number += 1 if count_messages
       raise "Error in https communication with bank: #{req.response.inspect}" unless req.success?

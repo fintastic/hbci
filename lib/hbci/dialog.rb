@@ -149,8 +149,8 @@ module Hbci
 
     def initiate
       initiate_session
-      initiate_dialog
-      initiate_tan if @tan
+      # initiate_dialog
+      # initiate_tan if @tan
     end
 
     def finish
