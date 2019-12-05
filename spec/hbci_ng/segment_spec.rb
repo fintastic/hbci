@@ -2,51 +2,42 @@
 
 require 'spec_helper_hbci_ng'
 
-module HbciNg
-  module Segments
-    class TESTv11
-      include SegmentSchema
-
-      add('Test-ID')
-    end
-  end
-end
-
 describe HbciNg::Segment do
-  before do
-    subject.fill(sample)
+  subject { described_class.new(sample) }
+
+  let(:sample) { nil }
+
+  it '#head' do
+    subject.head('HTEST', 999,1)
+
+    expect(subject.to_s).to eql("HTEST:999:1'")
   end
 
-  describe '#find_by_name' do
-    let(:sample) { "TEST:1:11:5+3709173969001000X093CQZRUROV04'" }
+  it '#init' do
+    subject.head('HTEST', 999,1)
+    subject.init(['PIN', 1], nil, 300, 0, 1)
 
-    it { expect(subject.find_by_name('Test-ID').value).to eql('3709173969001000X093CQZRUROV04') }
-    it { expect(subject.find_by_name('Segmentkopf/Segmentversion').value).to eql('11') }
+    expect(subject.to_s).to eql("HTEST:999:1+PIN:1++300+0+1'")
   end
 
-  describe '#find_by_index' do
-    let(:sample) { "TEST:1:11:5+3709173969001000X093CQZRUROV04'" }
+  it '#add_data_block' do
+    subject.head('HTEST', 999,1)
+    subject.add_data_block(2, 'TEST')
 
-    it { expect(subject.find_by_index(1).value).to eql('3709173969001000X093CQZRUROV04') }
-    it { expect(subject.find_by_index(0).find_by_index(2).value).to eql('11') }
+    expect(subject.to_s).to eql("HTEST:999:1+@4@TEST'")
   end
 
-  describe '#to_hbci' do
-    let(:sample) { "TEST:1:11:5+3709173969001000X093CQZRUROV04'" }
+  describe 'parse hbci string' do
+    let(:sample) { 'TEST:1:11+3709173969001000X093CQZRUROV04+11:22' }
 
-    it { expect(subject.to_hbci).to eql(sample) }
-
-    describe 'change data' do
-      let(:expected_sample) { "TEST:111:11:5+3709173969001000X093CQZRUROV04'" }
-
-      before do
-        subject.find_by_index(0).find_by_index(1).value = '111'
-      end
-
-      it { expect(subject.to_hbci).to eql(expected_sample) }
+    it 'returns value' do
+      expect(subject[1].to_s).to eql('TEST:1:11')
+      expect(subject[2].to_s).to eql('3709173969001000X093CQZRUROV04')
+      expect(subject[3][1]).to eql('11')
+      expect(subject[3][2]).to eql('22')
     end
 
-    context 'with binary data' do
+    context 'with hbci data block' do
       let(:sample) do
         sample = <<~HBCI
           HNVSD:999:1+@213@
@@ -55,51 +46,13 @@ describe HbciNg::Segment do
             HKVVB:4:3+0+0+1+FintasticHBCI+0.3.5'
             HKSYN:5:3+0'
             HNSHA:6:2+3999997++111111'
-          '
         HBCI
         sample.delete("\n").delete("\s")
       end
 
-      it { expect(subject.to_hbci).to eql(sample) }
-
-      describe 'extract binary data' do
-        let(:sample) do
-          sample = <<~HBCI
-            HNVSD:999:1+@213@
-              HNSHK:2:4+PIN:2+999+3999997+1+1+1::0+2+1:20190926:120916+1:999:1+6:10:16+280:74090000:186486386:S:0:0'
-              HKIDN:3:2+280:74090000+186486386+0+1'
-              HKVVB:4:3+0+0+1+FintasticHBCI+0.3.5'
-              HKSYN:5:3+0'
-              HNSHA:6:2+3999997++111111'
-            '
-          HBCI
-          sample.delete("\n").delete("\s")
-        end
-
-        let(:expected_sample) do
-          sample = <<~HBCI
-            HNVSD:999:1+@216@
-              HNSHK:2:4+SECRET:1+999+3999997+1+1+1::0+2+1:20190926:120916+1:999:1+6:10:16+280:74090000:186486386:S:0:0'
-              HKIDN:3:2+280:74090000+186486386+0+1'
-              HKVVB:4:3+0+0+1+FintasticHBCI+0.3.5'
-              HKSYN:5:3+0'
-              HNSHA:6:2+3999997++111111'
-            '
-          HBCI
-          sample.delete("\n").delete("\s")
-        end
-
-        it 'changes data' do
-          bin_hbci = subject.find_by_index(1).value
-
-          hbci_message = HbciNg::Message.new(bin_hbci)
-          hbci_message.segment(0).find_by_index(1).find_by_index(0).value = 'SECRET'
-          hbci_message.segment(0).find_by_index(1).find_by_index(1).value = '1'
-
-          subject.find_by_index(1).value = hbci_message.to_hbci
-
-          expect(subject.to_hbci).to eql(expected_sample)
-        end
+      it 'returns value' do
+        expect(subject[1].to_s).to eql('HNVSD:999:1')
+        expect(subject[2].to_s).to eql("@213@HNSHK:2:4+PIN:1+999+3999997+1+1+1::0+2+1:20190926:120916+1:999:1+6:10:16+280:74090000:186486386:S:0:0'HKIDN:3:2+280:74090000+186486386+0+1'HKVVB:4:3+0+0+1+FintasticHBCI+0.3.5'HKSYN:5:3+0'HNSHA:6:2+3999997++111111'")
       end
     end
   end

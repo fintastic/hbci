@@ -1,28 +1,3 @@
-# "HNHBK:1:3+000000000372+300+0+1'HNVSK:998:3+PIN:1+998+1+1::0+1:20190926:120916+2:2:13:@5@NOKEY:5:1+280:74090000:186486386:V:1:1+0'HNVSD:999:1+@213@HNSHK:2:4+PIN:1+999+3999997+1+1+1::0+2+1:20190926:120916+1:999:1+6:10:16+280:74090000:186486386:S:0:0'HKIDN:3:2+280:74090000+186486386+0+1'HKVVB:4:3+0+0+1+FintasticHBCI+0.3.5'HKSYN:5:3+0'HNSHA:6:2+3999997++463083''HNHBS:7:1+1'"
-# request = <<~HBCI
-#     HNHBK:1:3+000000000372+300+0+1'
-#     HNVSK:998:3+PIN:1+998+1+1::0+1:20190926:120916+2:2:13:@5@NOKEY:5:1+280:74090000:186486386:V:1:1+0'
-#     HNVSD:999:1+@213@
-#       HNSHK:2:4+PIN:1+999+3999997+1+1+1::0+2+1:20190926:120916+1:999:1+6:10:16+280:74090000:186486386:S:0:0'
-#       HKIDN:3:2+280:74090000+186486386+0+1'
-#       HKVVB:4:3+0+0+1+FintasticHBCI+0.3.5'
-#       HKSYN:5:3+0'
-#       HNSHA:6:2+3999997++463083'
-#     '
-#     HNHBS:7:1+1'
-# HBCI
-
-# HNHBK:1:3+000000000380+300+0+1'
-# HNVSK:998:3+PIN:1+998+1+1::0+1:20191014:161022+2:2:13:@5@NOKEY:5:1+280:74090000:186486386:V:1:1+0'
-# HNVSD:999:1+@215@
-#   HNSHK:2:4+PIN:1+999+22999978+1+1+1::0+2+1:20191014:161022+1:999:1+6:10:16+280:74090000:186486386:S:0:0'
-#   HKIDN:3:2+280:74090000+186486386+0+1'
-#   HKVVB:4:3+0+0+1+FintasticHBCI+0.3.5'
-#   HKSYN:5:3+0'
-#   HNSHA:6:2+22999978++463083'
-# '
-# HNHBS:7:1+1'
-
 module HbciNg
   module Services
     class Session
@@ -35,72 +10,84 @@ module HbciNg
       def perform
         Hbci.logger.info('Start initiating FinTS/HBCI session')
 
-        response = Hbci::Response.new(@connector.post(hbci_message, false))
-        puts response.to_s
+        @response = Hbci::Response.new(@connector.post(hbci_message, false))
 
         Hbci.logger.info('Finish initiating FinTS/HBCI session')
       end
 
-      def hbci_message_template
-        hbci_message_template = <<~HBCI
-          HNHBK:1:3+?Nachrichtengröße?+300+?Dialog-ID?+1'
-          HNVSK:998:3+PIN:1+998+1+1::0+1:?Datum?:?Uhrzeit?+2:2:13:@5@NOKEY:5:1+280:?Kreditinstitutscode?:?Benutzerkennung?:V:1:1+0'
-          HNVSD:999:1+@213@
-            HNSHK:2:4+PIN:1+999+3999997+1+1+1::0+2+1:20190926:120916+1:999:1+6:10:16+280:74090000:186486386:S:0:0'
-            HKIDN:3:2+280:74090000+186486386+0+1'
-            HKVVB:4:3+0+0+1+FintasticHBCI+0.3.5'
-            HKSYN:5:3+0'
-            HNSHA:6:2+3999997++111111'
-          '
-          HNHBS:7:1+1'
-        HBCI
-        hbci_message_template
-      end
-
       def hbci_message
-        hbci_message = Message.new(hbci_message_template)
+        # Nachrichtenkopf
+        hnhbk = Segment.new.head('HNHBK', 1, 3)
+        hnhbk.init(nil, 300, 0, 1)
 
         # Verschlüsselungskopf
-        hnvsk = hbci_message.segments('HNVSK').first
-        hnvsk.find_by_index(5).find_by_index(1).value = @now.strftime('%Y%m%d')
-        hnvsk.find_by_index(5).find_by_index(2).value = @now.strftime('%H%m%S')
-        hnvsk.find_by_index(7).find_by_index(1).value = @connector.credentials.bank_code
-        hnvsk.find_by_index(7).find_by_index(2).value = @connector.credentials.user_id
+        hnvsk = Segment.new.head('HNVSK', 998,3)
+        hnvsk.init(['PIN', 1], 998, 1, [1, nil, 0], [1, nil, nil], [2, 2, 13, '@5@NOKEY', 5, 1], [280, nil, nil, 'V', 1, 1], 0)
+        hnvsk[6][2] = @now.strftime('%Y%m%d')
+        hnvsk[6][3] = @now.strftime('%H%m%S')
+        hnvsk[8][2] = @connector.iban.extended_data.bank_code
+        hnvsk[8][3] = HbciNg.config.user_id
 
         # Verschlüsselte Daten
-        hnvsd = hbci_message.segments('HNVSD').first
-        hnvsd_content = HbciNg::Message.new(hnvsd.find_by_index(1).value)
-
-        # Signaturkopf
-        hnshk = hnvsd_content.segments('HNSHK').first
-        hnshk.find_by_index(3).value = @security_reference
-        hnshk.find_by_index(8).find_by_index(1).value = @now.strftime('%Y%m%d')
-        hnshk.find_by_index(8).find_by_index(2).value = @now.strftime('%H%m%S')
-        hnshk.find_by_index(11).find_by_index(1).value = @connector.credentials.bank_code
-        hnshk.find_by_index(11).find_by_index(2).value = @connector.credentials.user_id
-
-        # Identifikation
-        hkidn = hnvsd_content.segments('HKIDN').first
-        hkidn.find_by_index(1).find_by_index(1).value = @connector.credentials.bank_code
-        hkidn.find_by_index(2).value = @connector.credentials.user_id
+        hnvsd = Segment.new.head('HNVSD', 999,1)
+        hnvsd.add_data_block(2, encrypted_hbci_message.to_s)
 
         # Signaturabschluss
-        hnsha = hnvsd_content.segments('HNSHA').first
-        hnsha.find_by_index(1).value = @security_reference
-        hnsha.find_by_index(3).value = @connector.credentials.pin
+        hnhbs = Segment.new.head('HNHBS', 7,1)
+        hnhbs.init(1)
 
-        # Set Verschlüsselte Daten
-        hnvsd.find_by_index(1).value = hnvsd_content.to_hbci
+        hbci_message = Message.new
+        hbci_message[1] = hnhbk
+        hbci_message[2] = hnvsk
+        hbci_message[3] = hnvsd
+        hbci_message[4] = hnhbs
 
-        # Nachrichtenkopf
-        hnhbk = hbci_message.segments('HNHBK').first
-        hnhbk.find_by_index(3).value = '0'
-        hnhbk.find_by_index(1).value = hbci_message.to_hbci.size.to_s.rjust(12, '0')
+        hnhbk[2] = hbci_message.to_s.size.to_s.rjust(12, '0')
 
         hbci_message
       end
 
       private
+
+      def encrypted_hbci_message
+        # Signaturkopf
+        hnshk = Segment.new.head('HNSHK', 2,4)
+        hnshk.init(['PIN', 1], 999, nil, 1, 1, [1, nil, 0], 2, [1, nil, nil], [1, 999, 1], [6, 10, 16], [280, nil, nil, 'S', 0, 0])
+        hnshk[4] = @security_reference
+        hnshk[9][2] = @now.strftime('%Y%m%d')
+        hnshk[9][3] = @now.strftime('%H%m%S')
+        hnshk[12][2] = @connector.iban.extended_data.bank_code
+        hnshk[12][3] = HbciNg.config.user_id
+
+        # Identifikation
+        hkidn = Segment.new.head('HKIDN', 3,2)
+        hkidn.init([280, nil], nil, 0, 1)
+        hkidn[2][2] = @connector.iban.extended_data.bank_code
+        hkidn[3] = HbciNg.config.user_id
+
+        #  Verarbeitungsvorbereitung
+        hkvvb = Segment.new.head('HKVVB', 4,3)
+        hkvvb.init(0, 0, 1, nil, '0.3.5')
+        hkvvb[5] = HbciNg.config.product_name
+
+        # Synchronisierung
+        hksyn = Segment.new.head('HKSYN', 5,3)
+        hksyn.init(0)
+
+        # Signaturabschluss
+        hnsha = Segment.new.head('HNSHA', 6,2)
+        hnsha.init(nil, nil, nil)
+        hnsha[2] = @security_reference
+        hnsha[4] = HbciNg.config.pin
+
+        encrypted_message = Message.new
+        encrypted_message[1] = hnshk
+        encrypted_message[2] = hkidn
+        encrypted_message[3] = hkvvb
+        encrypted_message[4] = hksyn
+        encrypted_message[5] = hnsha
+        encrypted_message
+      end
 
       def generate_security_reference
         rand(1..23) * 999_999 + 1_000_000
