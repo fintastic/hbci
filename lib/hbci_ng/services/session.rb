@@ -20,7 +20,7 @@ module HbciNg
       def hbci_message
         # Nachrichtenkopf
         hnhbk = Segment.new.head('HNHBK', 1, 3)
-        hnhbk.init(nil, 300, 0, 1)
+        hnhbk.init(nil, 300, 0, @connector.message_number)
 
         # Verschlüsselungskopf
         hnvsk = Segment.new.head('HNVSK', 998,3)
