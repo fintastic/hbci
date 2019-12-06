@@ -1,6 +1,8 @@
 module HbciNg
   module Services
     class Session
+      attr_reader :response
+
       def initialize(connector)
         @now = Time.now
         @connector = connector
@@ -10,7 +12,7 @@ module HbciNg
       def perform
         Hbci.logger.info('Start initiating FinTS/HBCI session')
 
-        @response = Hbci::Response.new(@connector.post(hbci_message, false))
+        @response = HbciNg::Response.new(@connector.post(hbci_message, false))
 
         Hbci.logger.info('Finish initiating FinTS/HBCI session')
       end

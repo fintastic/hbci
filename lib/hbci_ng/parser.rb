@@ -9,6 +9,7 @@ module HbciNg
       @seperator = seperator
       @start_position = nil
       @skip_until_position = nil
+      @ignore_next_char = false
     end
 
     def parse
@@ -30,6 +31,16 @@ module HbciNg
     def skip?(c, index)
       return false if @hbci.size - 1 == index
       return true if @skip_until_position && index <= @skip_until_position
+
+      if @ignore_next_char
+        @ignore_next_char = false
+        return true
+      end
+
+      if c == '?'
+        @ignore_next_char = true
+        return true
+      end
 
       @skip_until_position = nil
       if c == '@'

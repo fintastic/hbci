@@ -5,38 +5,44 @@ module HbciNg
         @now = Time.now
         @connector = connector
         @security_reference = generate_security_reference.to_s
+
+        @hnvsd = @connector.session_service_response.find_segments('HNVSD').first
+        @hnvsd_data_block = Message.new(@hnvsd[2].to_s.sub(/@[0-9]+@/, ''))
       end
 
       def perform
         Hbci.logger.info('Start initiating dialog')
 
-        response = Hbci::Response.new(@connector.post(hbci_message, false))
-        puts response.to_s
+        @response = HbciNg::Response.new(@connector.post(hbci_message, false))
 
         Hbci.logger.info('Finish initiating dialog')
       end
 
-      private
-
       def hbci_message
         # Nachrichtenkopf
-        hnhbk = Segment.new('HNHBK', 1, 3)
-        hnhbk.init(nil, 300, 0, 1)
+        hnhbk = Segment.new
+        hnhbk.head('HNHBK', 1, 3)
+        hnhbk.init(nil, 300, 0, @connector.message_number)
 
         # Verschlüsselungskopf
-        hnvsk = Segment.new('HNVSK', 998,3)
+        hnvsk = Segment.new
+        hnvsk.head('HNVSK', 998, 3)
         hnvsk.init(['PIN', 2], 998, 1, [1, nil, 0], [1, nil, nil], [2, 2, 13, '@5@NOKEY', 5, 1], [280, nil, nil, 'V', 1, 1], 0)
+        hnvsk[5][3] = @hnvsd_data_block.find_segments('HISYN').first[2]
+
         hnvsk[6][2] = @now.strftime('%Y%m%d')
         hnvsk[6][3] = @now.strftime('%H%m%S')
         hnvsk[8][2] = @connector.iban.extended_data.bank_code
         hnvsk[8][3] = HbciNg.config.user_id
 
         # Verschlüsselte Daten
-        hnvsd = Segment.new('HNVSD', 999,1)
-        hnvsd.add_bin(2, encrypted_hbci__message)
+        hnvsd = Segment.new
+        hnvsd.head('HNVSD', 999,1)
+        hnvsd.add_data_block(2, encrypted_hbci__message)
 
         # Signaturabschluss
-        hnhbs = Segment.new('HNHBS', 7,1)
+        hnhbs = Segment.new
+        hnhbs.head('HNHBS', 7,1)
         hnhbs.init(1)
 
         hbci_message = Message.new
@@ -50,11 +56,14 @@ module HbciNg
         hbci_message
       end
 
+      private
+
       def encrypted_hbci__message
         # Signaturkopf
-        hnshk = Segment.new('HNSHK', 2,4)
+        hnshk = Segment.new
+        hnshk.head('HNSHK', 2,4)
         hnshk.init(['PIN', 2], nil, nil, 1, 1, [1, nil, 0], 2, [1, nil, nil], [1, 999, 1], [6, 10, 16], [280, nil, nil, 'S', 0, 0])
-        hnshk[3] = 999 #TODO from session init old : response.find('HNVSD').find('HITANS').second_factor_params.tan_mechanism
+        hnshk[3] = @hnvsd_data_block.find_segments('HITANS').first[5][4]
         hnshk[4] = @security_reference
         hnshk[9][2] = @now.strftime('%Y%m%d')
         hnshk[9][3] = @now.strftime('%H%m%S')
@@ -62,22 +71,26 @@ module HbciNg
         hnshk[12][3] = HbciNg.config.user_id
 
         # Identifikation
-        hkidn = Segment.new('HKIDN', 3,2)
+        hkidn = Segment.new
+        hkidn.head('HKIDN', 3,2)
         hkidn.init([280, nil], nil, 0, 1)
         hkidn[2][2] = @connector.iban.extended_data.bank_code
         hkidn[3] = HbciNg.config.user_id
 
         #  Verarbeitungsvorbereitung
-        hkvvb = Segment.new('HKVVB', 4,3)
+        hkvvb = Segment.new
+        hkvvb.head('HKVVB', 4,3)
         hkvvb.init(0, 0, 1, nil, '0.3.5')
         hkvvb[5] = HbciNg.config.product_name
 
         # Zwei-Schritt-TAN-Einreichung
-        hktan = Segment.new('HKTAN', 5,6)
+        hktan = Segment.new
+        hktan.head('HKTAN', 5,6)
         hktan.init(4, 'HKIDN')
 
         # Signaturabschluss
-        hnsha = Segment.new('HNSHA', 6,2)
+        hnsha = Segment.new
+        hnsha.head('HNSHA', 6,2)
         hnsha.init(nil, nil, nil)
         hnsha[2] = @security_reference
         hnsha[4] = HbciNg.config.pin

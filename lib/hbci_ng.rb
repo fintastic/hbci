@@ -4,6 +4,7 @@ require 'active_support/concern'
 
 require 'hbci_ng/config'
 require 'hbci_ng/connector'
+require 'hbci_ng/response'
 
 require 'hbci_ng/parser'
 require 'hbci_ng/message'

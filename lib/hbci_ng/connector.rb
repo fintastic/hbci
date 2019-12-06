@@ -5,6 +5,7 @@ module HbciNg
     BANK_LIST = File.join(File.dirname(__FILE__), '../../config/bank_list.json')
 
     attr_accessor :message_number
+    attr_writer :session_service_response
     attr_reader :iban
 
     def self.open(iban)
@@ -16,6 +17,10 @@ module HbciNg
     def initialize(iban)
       @iban = Ibanizator.iban_from_string(iban)
       reset_message_number
+    end
+
+    def session_service_response
+      Message.new(@session_service_response.to_s)
     end
 
     def reset_message_number

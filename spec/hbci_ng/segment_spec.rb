@@ -27,6 +27,15 @@ describe HbciNg::Segment do
     expect(subject.to_s).to eql("HTEST:999:1+@4@TEST'")
   end
 
+  context 'with ter' do
+    let(:sample) { 'HISYN:80:4:5+3g?+npy1a1m4BAAD26akuhm?+owAQA' }
+
+    it 'returns value' do
+      expect(subject[1].to_s).to eql('HISYN:80:4:5')
+      expect(subject[2].to_s).to eql('3g?+npy1a1m4BAAD26akuhm?+owAQA')
+    end
+  end
+
   describe 'parse hbci string' do
     let(:sample) { 'TEST:1:11+3709173969001000X093CQZRUROV04+11:22' }
 

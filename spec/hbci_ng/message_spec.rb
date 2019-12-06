@@ -18,6 +18,17 @@ describe HbciNg::Message do
     expect(subject.to_s).to eql("HTEST1:999:2'HTEST2:999:2+@15@TEST-DATA-BLOCK'")
   end
 
+  describe '#find_segments' do
+    before do
+      subject[1] = segment_1
+      subject[2] = segment_2
+    end
+
+    it 'returns segment' do
+      expect(subject.find_segments('HTEST1')).to contain_exactly(segment_1)
+    end
+  end
+
   describe 'parse hbci string' do
     let(:sample) do
       sample = <<~HBCI
@@ -42,16 +53,4 @@ describe HbciNg::Message do
       expect(subject[4].to_s).to eql("HNHBS:7:1+1'")
     end
   end
-
-  #it 'test' do
-  #  bin_data = subject[3][2]
-  #
-  #  msg = HbciNg::Message.new(bin_data.to_s[5..bin_data.to_s.size])
-  #
-  #  puts msg[1]
-  #  puts msg[2]
-  #  puts msg[3]
-  #  puts msg[4]
-  #  puts msg[5]
-  #end
 end

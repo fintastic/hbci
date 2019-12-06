@@ -17,12 +17,22 @@ module HbciNg
       @segments << Segment.new(segment)
     end
 
+    def each(&block)
+      @segments.each(&block)
+    end
+
     def to_base64
       Base64.encode64(to_s)
     end
 
     def to_s
       @segments.map(&:to_s).join
+    end
+
+    def find_segments(name)
+      @segments.select do |segment|
+        segment[1][1] == name
+      end
     end
 
     private
