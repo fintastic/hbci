@@ -56,7 +56,7 @@ end.parse!
 raise 'missing iban' unless @iban
 
 @hbci_version = @options[:hbci_version] ? @options[:hbci_version].to_i : nil
-HbciNg.configure do |config|
+Hbci.configure do |config|
   config.product_name = @options[:product_name]
   config.user_id = @options[:user_id]
   config.pin = @options[:pin]

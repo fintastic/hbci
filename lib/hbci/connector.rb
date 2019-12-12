@@ -2,40 +2,67 @@
 
 module Hbci
   class Connector
-    attr_accessor :message_number
-    attr_reader :credentials
+    BANK_LIST = File.join(File.dirname(__FILE__), '../../config/bank_list.json')
 
-    def self.open(credentials)
-      connector = new(credentials)
+    attr_accessor :message_number
+    attr_reader :iban
+    attr_writer :session_service_response
+    attr_writer :dialog_service_response
+
+    def self.open(iban)
+      connector = new(iban)
       yield connector
       connector.reset_message_number
     end
 
-    def initialize(credentials)
-      self.credentials = credentials
+    def initialize(iban)
+      @iban = Ibanizator.iban_from_string(iban)
       reset_message_number
     end
 
-    def credentials=(credentials)
-      raise ArgumentError, "#{self.class.name}#initialize expects a BankCredentials::Hbci object" unless credentials.is_a?(BankCredentials::Hbci)
+    def session_service_response
+      Message.new(@session_service_response.to_s)
+    end
 
-      credentials.validate!
-      @credentials = credentials
+    def dialog_service_response
+      Message.new(@dialog_service_response.to_s)
     end
 
     def reset_message_number
       @message_number = 1
     end
 
+    def url
+      @url ||= bank['pinTanURL']
+    end
+
     def post(request_message, count_messages = true)
-      Hbci.logger.debug("Request: #{request_message.to_hbci}")
-      req = HTTParty.post(@credentials.url, body: request_message.to_base64)
+      Hbci.logger.debug("Request: #{request_message}")
+      req = HTTParty.post(url, body: request_message.to_base64)
       @message_number += 1 if count_messages
       raise "Error in https communication with bank: #{req.response.inspect}" unless req.success?
 
       decode_response = Base64.decode64(req.response.body)
       Hbci.logger.debug("Response: #{decode_response}")
       decode_response
+    end
+
+    private
+
+    def bank
+      bank = bank_list.find { |b| b['blz'] == @iban.extended_data.bank_code }
+      raise Errors::Config, "Bank \"#{bank_code}\" not found in bank list" unless bank
+
+      bank
+    end
+
+    def bank_list
+      File.open(BANK_LIST, 'r') { |f| @bank_list = JSON.parse(f.read) } unless @bank_list
+      raise Errors::Config, 'Bank list is empty' if @bank_list.empty?
+
+      @bank_list
+    rescue OpenURI::HTTPError
+      raise Errors::Config, 'Bank list not loadable'
     end
   end
 end

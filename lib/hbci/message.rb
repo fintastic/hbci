@@ -1,48 +1,46 @@
-# frozen_string_literal: true
-
 module Hbci
   class Message
-    attr_reader :connector, :dialog, :segments, :sec_ref
-    attr_accessor :next_position
-
-    def initialize(connector, dialog = nil)
-      @connector = connector
-      @dialog = dialog
-      @sec_ref = generate_security_reference
+    def initialize(hbci = nil)
       @segments = []
-      @next_position = 1
+      build(hbci) if hbci
     end
 
-    def add_segment(segment)
-      segment.build(self)
-      @segments.push(segment)
+    def []=(idx, segment)
+      @segments[idx - 1] = segment.is_a?(Segment) ? segment : Segment.new(segment)
     end
 
-    def compile
-      @segments.each_with_index do |segment, _index|
-        segment.compile
-        unless segment.head.position
-          segment.head.position = @next_position
-          @next_position += 1
-        end
-      end
-      @segments.each do |segment|
-        segment.after_compile if segment.respond_to?(:after_compile)
-      end
+    def [](idx)
+      @segments[idx - 1]
     end
 
-    def to_s
-      segments.join('')
+    def <<(segment)
+      @segments << Segment.new(segment)
+    end
+
+    def each(&block)
+      @segments.each(&block)
     end
 
     def to_base64
       Base64.encode64(to_s)
     end
 
+    def to_s
+      @segments.map(&:to_s).join
+    end
+
+    def find_segments(name)
+      @segments.select do |segment|
+        segment[1][1] == name
+      end
+    end
+
     private
 
-    def generate_security_reference
-      rand(1..23) * 999_999 + 1_000_000
+    def build(hbci)
+      Parser.parse(hbci, "'") do |data|
+        self << data
+      end
     end
   end
 end

@@ -3,200 +3,65 @@
 require 'spec_helper'
 
 describe Hbci::Segment do
-  describe '.element' do
-    context 'given one element without args' do
-      subject do
-        clazz = Class.new(described_class)
-        clazz.element(:my_element)
-        clazz.element_groups_to_be_defined
-      end
+  subject { described_class.new(sample) }
 
-      it 'adds the element group to the definition list' do
-        expect(subject).to be_a(Array)
-      end
+  let(:sample) { nil }
 
-      it 'adds the element group to the definition list' do
-        expect(subject).to be_a(Array)
-        expect(subject.count).to eql(1)
-        expect(subject.first[:name]).to eql(:my_element)
-        expect(subject.first[:passthrough]).to be_truthy
-      end
-    end
+  it '#head' do
+    subject.head('HTEST', 999,1)
 
-    describe 'accessing the single element in the element group' do
-      subject do
-        clazz = Class.new(described_class)
-        clazz.element(:my_element)
-        clazz.new
-      end
+    expect(subject.to_s).to eql("HTEST:999:1'")
+  end
 
-      it 'enables a direct reader for the element in the element group' do
-        subject.element_groups[0].elements[0] = 'asdasd'
-        expect(subject.my_element).to eql('asdasd')
-      end
-    end
+  it '#init' do
+    subject.head('HTEST', 999,1)
+    subject.init(['PIN', 1], nil, 300, 0, 1)
 
-    context 'given one element with a default value' do
-      subject do
-        clazz = Class.new(described_class)
-        clazz.element(:my_element, default: 'asd')
-        clazz.element_groups_to_be_defined
-      end
+    expect(subject.to_s).to eql("HTEST:999:1+PIN:1++300+0+1'")
+  end
 
-      it 'adds the element group to the definition list' do
-        expect(subject).to be_a(Array)
-        expect(subject.count).to eql(1)
-        expect(subject).to eql([{ block: nil, name: :my_element, default: 'asd', passthrough: true }])
-      end
+  it '#add_data_block' do
+    subject.head('HTEST', 999,1)
+    subject.add_data_block(2, 'TEST')
+
+    expect(subject.to_s).to eql("HTEST:999:1+@4@TEST'")
+  end
+
+  context 'with ter' do
+    let(:sample) { 'HISYN:80:4:5+3g?+npy1a1m4BAAD26akuhm?+owAQA' }
+
+    it 'returns value' do
+      expect(subject[1].to_s).to eql('HISYN:80:4:5')
+      expect(subject[2].to_s).to eql('3g?+npy1a1m4BAAD26akuhm?+owAQA')
     end
   end
 
-  describe '.element_group' do
-    context 'given one element group with a specified type' do
-      subject do
-        element_group_class = Class.new(Hbci::ElementGroup) do
-          element :a
-          element :b
-        end
+  describe 'parse hbci string' do
+    let(:sample) { 'TEST:1:11+3709173969001000X093CQZRUROV04+11:22' }
 
-        Class.new(described_class) do
-          element_group :head, type: element_group_class
-        end.new
-      end
-
-      it 'has a defined head with accessors' do
-        expect(subject).to respond_to(:head)
-        expect(subject.element_groups[0]).to respond_to(:a)
-        expect(subject.element_groups[0]).to respond_to(:b)
-        expect(subject.head).to respond_to(:a)
-        expect(subject.head).to respond_to(:b)
-      end
-
-      it 'has working accessors for the elements' do
-        subject.head.a = 'test'
-        expect(subject.head.a).to eql('test')
-      end
+    it 'returns value' do
+      expect(subject[1].to_s).to eql('TEST:1:11')
+      expect(subject[2].to_s).to eql('3709173969001000X093CQZRUROV04')
+      expect(subject[3][1]).to eql('11')
+      expect(subject[3][2]).to eql('22')
     end
 
-    context 'given one element group with elements' do
-      let(:block) do
-        proc do
-          element :a
-          element :b
-        end
-      end
-      let(:clazz) do
-        clazz = Class.new(described_class)
-        clazz.element_group(:my_group, &block)
-        clazz
-      end
-
-      subject { clazz.element_groups_to_be_defined }
-
-      it 'adds the element group to the definition list' do
-        expect(subject).to be_a(Array)
-        expect(subject.count).to eql(1)
-        expect(subject.first[:name]).to eql(:my_group)
-        expect(subject.first[:block]).to eql(block)
-      end
-    end
-
-    context 'given multiple element groups with elements' do
-      subject do
-        clazz = Class.new(described_class)
-        clazz.element_group(:my_group_1, elements: %i[a b])
-        clazz.element_group(:my_group_2, elements: %i[c d])
-        clazz.element_groups_to_be_defined
+    context 'with hbci data block' do
+      let(:sample) do
+        sample = <<~HBCI
+          HNVSD:999:1+@213@
+            HNSHK:2:4+PIN:1+999+3999997+1+1+1::0+2+1:20190926:120916+1:999:1+6:10:16+280:74090000:186486386:S:0:0'
+            HKIDN:3:2+280:74090000+186486386+0+1'
+            HKVVB:4:3+0+0+1+FintasticHBCI+0.3.5'
+            HKSYN:5:3+0'
+            HNSHA:6:2+3999997++111111'
+        HBCI
+        sample.delete("\n").delete("\s")
       end
 
-      it 'adds the element groups to the definition list' do
-        expect(subject).to be_a(Array)
-        expect(subject.count).to eql(2)
-        expect(subject.first[:name]).to eql(:my_group_1)
-        expect(subject.first[:elements]).to eql(%i[a b])
-        expect(subject.last[:name]).to eql(:my_group_2)
-        expect(subject.last[:elements]).to eql(%i[c d])
-      end
-    end
-
-    context 'given an element group with a block of elements' do
-      subject do
-        segment_class = Class.new(Hbci::Segment) do
-          element_group :asd do
-            element :x
-            element :y
-          end
-          element_group :my_test1 do
-            element :a
-            element :b
-          end
-          element_group :my_test2 do
-            element :c
-          end
-          element :test, type: :binary
-        end
-        segment_class.new
-      end
-
-      it 'creates the element groups' do
-        expect(subject.element_groups[0]).to be_a(Hbci::ElementGroup)
-        expect(subject.defined_element_groups).to eql(%i[asd my_test1 my_test2 test])
-        expect(subject.my_test1).to respond_to(:a)
-        expect(subject.my_test1).to respond_to(:b)
-        expect(subject.my_test2).to respond_to(:c)
-      end
-
-      it 'enables the accessors' do
-        expect(subject.defined_element_groups).to eql(%i[asd my_test1 my_test2 test])
-        expect(subject.element_groups[0]).to be_a(Hbci::ElementGroup)
-        expect(subject.my_test1).to be_a(Hbci::ElementGroup)
-      end
-    end
-  end
-
-  describe '.fill(string)' do
-    let(:segment_class) do
-      Class.new(described_class) do
-        element_group :head do
-          element :element_1
-          element :element_2
-        end
-        element_group :body do
-          element :element_3
-        end
-      end
-    end
-
-    context 'given valid elements' do
-      let(:string) { [%w[element_1 element_2], ['element_3']] }
-      it 'fills the elements' do
-        segment = segment_class.fill(string)
-
-        expect(segment.head.element_1).to eql('element_1')
-        expect(segment.head.element_2).to eql('element_2')
-        expect(segment.body.element_3).to eql('element_3')
-      end
-    end
-
-    context 'given a valid string with special characters' do
-      let(:segment_class) do
-        Class.new(described_class) do
-          element_group :head do
-            element :element_1
-            element :element_2, type: :binary
-            element :element_3
-          end
-        end
-      end
-
-      let(:string) { [['e?\'le?+m?:ent_1??', 'e232@l+eme:nt_2\'', 'element_3']] }
-
-      it 'fills the elements' do
-        segment = segment_class.fill(string)
-
-        expect(segment.head.element_1).to eql('e?\'le?+m?:ent_1??')
-        expect(segment.head.element_2).to eql('e232@l+eme:nt_2\'')
-        expect(segment.head.element_3).to eql('element_3')
+      it 'returns value' do
+        expect(subject[1].to_s).to eql('HNVSD:999:1')
+        expect(subject[2].to_s).to eql("@213@HNSHK:2:4+PIN:1+999+3999997+1+1+1::0+2+1:20190926:120916+1:999:1+6:10:16+280:74090000:186486386:S:0:0'HKIDN:3:2+280:74090000+186486386+0+1'HKVVB:4:3+0+0+1+FintasticHBCI+0.3.5'HKSYN:5:3+0'HNSHA:6:2+3999997++111111'")
       end
     end
   end
