@@ -11,11 +11,12 @@ require 'active_support/core_ext'
   user_id: nil,
   pin: nil,
   tan: nil,
-  system_id: 0
+  system_id: 0,
+  product_name: nil
 }
 
 OptionParser.new do |opts|
-  opts.banner = 'Usage: example.rb iban [options]'
+  opts.banner = 'Usage: example.rb IBAN [options]'
 
   opts.on '-v', '--hbci_version=VERSION', 'Version' do |arg|
     @options[:hbci_version] = arg
@@ -41,6 +42,10 @@ OptionParser.new do |opts|
     @options[:system_id] = arg
   end
 
+  opts.on '-pn', '--product_name=PRODUCT_NAME', 'PIN' do |arg|
+    @options[:product_name] = arg
+  end
+
   opts.on('-h', '--help', 'Prints this help') do
     puts opts
     exit
@@ -51,8 +56,11 @@ end.parse!
 raise 'missing iban' unless @iban
 
 @hbci_version = @options[:hbci_version] ? @options[:hbci_version].to_i : nil
-@credentials = BankCredentials::Hbci.new(
-  bank_code: @options[:bank_code],
-  user_id: @options[:user_id],
-  pin: @options[:pin]
-)
+HbciNg.configure do |config|
+  config.product_name = @options[:product_name]
+  config.user_id = @options[:user_id]
+  config.pin = @options[:pin]
+end
+
+
+

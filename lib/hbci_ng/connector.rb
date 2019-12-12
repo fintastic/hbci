@@ -37,13 +37,13 @@ module HbciNg
     end
 
     def post(request_message, count_messages = true)
-      Hbci.logger.debug("Request: #{request_message}")
+      HbciNg.logger.debug("Request: #{request_message}")
       req = HTTParty.post(url, body: request_message.to_base64)
       @message_number += 1 if count_messages
       raise "Error in https communication with bank: #{req.response.inspect}" unless req.success?
 
       decode_response = Base64.decode64(req.response.body)
-      Hbci.logger.debug("Response: #{decode_response}")
+      HbciNg.logger.debug("Response: #{decode_response}")
       decode_response
     end
 

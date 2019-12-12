@@ -1,26 +1,52 @@
 module HbciNg
   module Services
-    class Dialog < Base
+    class BaseReceiver < Base
+      attr_reader :response
+
       def initialize(connector)
-        super
+        @now = Time.now
+        @connector = connector
+        @security_reference = generate_security_reference.to_s
+
         @hnvsd_data_block = Message.new(hnvsd[2].to_s.sub(/@[0-9]+@/, ''))
       end
 
       def perform
-        HbciNg.logger.info('Start initiating dialog')
+        HbciNg.logger.info("Start #{self.class}")
         @response = HbciNg::Response.new(@connector.post(hbci_message))
-        HbciNg.logger.info('Finish initiating dialog')
+        HbciNg.logger.info("Finish #{self.class}")
         @response
       end
 
+      def hbci_message
+        hbci_message = Message.new
+        hbci_message[1] = build_hnhbk_version_3(1)
+        hbci_message[2] = build_hnvsk_version_3(998)
+        hbci_message[3] = build_hnvsd_version_1(999)
+        hbci_message[4] = build_hnhbs_version_1(7)
+
+        hbci_message[1][2] = hbci_message.to_s.size.to_s.rjust(12, '0')
+
+        hbci_message
+      end
+
       private
+
+      def hnvsd
+        @connector.session_service_response.find_segments('HNVSD').first
+      end
 
       def hnhbk
         @connector.dialog_service_response.find_segments('HNHBK').first
       end
 
-      def hnvsd
-        @connector.session_service_response.find_segments('HNVSD').first
+      def hikazs
+        @hnvsd_data_block.find_segments('HIKAZS')
+      end
+
+      # Nachrichtenkopf version 3
+      def build_hnhbk_version_3(posistion)
+        Segment.new.head('HNHBK', posistion, 3).init(nil, 300, hnhbk[4].to_s, @connector.message_number)
       end
 
       # Verschlüsselungskopf version 3
@@ -42,43 +68,12 @@ module HbciNg
         hnshk.init(['PIN', 2], nil, nil, 1, 1, [1, nil, 0], 2, [1, nil, nil], [1, 999, 1], [6, 10, 16], [280, nil, nil, 'S', 0, 0])
         hnshk[3] = @hnvsd_data_block.find_segments('HITANS').first[5][4]
         hnshk[4] = @security_reference
+        hnshk[7][3] = @hnvsd_data_block.find_segments('HISYN').first[2]
         hnshk[9][2] = @now.strftime('%Y%m%d')
         hnshk[9][3] = @now.strftime('%H%m%S')
         hnshk[12][2] = @connector.iban.extended_data.bank_code
         hnshk[12][3] = HbciNg.config.user_id
         hnshk
-      end
-
-      # Identifikation version 2
-      def build_hkidn_version_2(position)
-        hkidn = Segment.new.head('HKIDN', position, 2)
-        hkidn.init([280, nil], nil, 0, 1)
-        hkidn[2][2] = @connector.iban.extended_data.bank_code
-        hkidn[3] = HbciNg.config.user_id
-        hkidn
-      end
-
-      #  Verarbeitungsvorbereitung version 3
-      def build_hkvvb_version_3(position)
-        hkvvb = Segment.new.head('HKVVB', position,3)
-        hkvvb.init(0, 0, 1, nil, '0.3.5')
-        hkvvb[5] = HbciNg.config.product_name
-        hkvvb
-      end
-
-      # Zwei-Schritt-TANEinreichung version 6
-      def build_hktan_version_6(position)
-        Segment.new.head('HKTAN', position,6).init(4, 'HKIDN')
-      end
-
-      def hnvsd_data
-        message = Message.new
-        message[1] = build_hnshk_version_4(2)
-        message[2] = build_hkidn_version_2(3)
-        message[3] = build_hkvvb_version_3(4)
-        message[4] = build_hktan_version_6(5)
-        message[5] = build_hnsha_version_2(6)
-        message
       end
     end
   end
