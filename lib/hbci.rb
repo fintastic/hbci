@@ -1,17 +1,12 @@
 # frozen_string_literal: true
 
 require 'httparty'
-require 'money'
-require 'monetize'
 require 'cmxl'
 require 'ibanizator'
-
-require 'active_support/concern'
 
 require 'hbci/config'
 require 'hbci/connector'
 require 'hbci/response'
-
 require 'hbci/parser'
 require 'hbci/message'
 require 'hbci/segment'

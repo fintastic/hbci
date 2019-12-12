@@ -2,11 +2,11 @@
 
 $LOAD_PATH.unshift File.expand_path('../lib', __dir__)
 
-require 'byebug'
+require 'hbci'
+
 require 'timecop'
 require 'webmock/rspec'
 
-require 'hbci'
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
