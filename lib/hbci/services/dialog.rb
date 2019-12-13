@@ -13,15 +13,11 @@ module Hbci
         @response
       end
 
-      private
-
-      def hnhbk
-        @connector.dialog_service_response.find_segments('HNHBK').first
-      end
-
       def hnvsd
         @connector.session_service_response.find_segments('HNVSD').first
       end
+
+      private
 
       # Verschlüsselungskopf version 3
       def build_hnvsk_version_3(posistion)

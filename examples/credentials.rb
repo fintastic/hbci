@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 require 'optparse'
-require 'active_support'
-require 'active_support/core_ext'
 
 @options = {
   url: nil,
