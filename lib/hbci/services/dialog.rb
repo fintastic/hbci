@@ -1,20 +1,16 @@
 module Hbci
   module Services
     class Dialog < Base
-      def initialize(connector)
-        super
-        @hnvsd_data_block = Message.new(hnvsd[2].to_s.sub(/@[0-9]+@/, ''))
-      end
-
       def perform
         Hbci.logger.info('Start initiating dialog')
-        @response = Hbci::Response.new(@connector.post(hbci_message))
-        Hbci.logger.info('Finish initiating dialog')
-        @response
-      end
 
-      def hnvsd
-        @connector.session_service_response.find_segments('HNVSD').first
+        @response = Hbci::DialogResponse.new(@connector.post(hbci_message))
+
+        check_response_status!
+
+        Hbci.logger.info('Finish initiating dialog')
+
+        @response
       end
 
       private
@@ -24,7 +20,7 @@ module Hbci
         hnvsk = Segment.new
         hnvsk.head('HNVSK', posistion, 3)
         hnvsk.init(['PIN', 2], 998, 1, [1, nil, 0], [1, nil, nil], [2, 2, 13, '@5@NOKEY', 5, 1], [280, nil, nil, 'V', 1, 1], 0)
-        hnvsk[5][3] = @hnvsd_data_block.find_segments('HISYN').first[2]
+        hnvsk[5][3] = @connector.session_service_response.hnvsd_data_block.find_segments('HISYN').first[2]
         hnvsk[6][2] = @now.strftime('%Y%m%d')
         hnvsk[6][3] = @now.strftime('%H%m%S')
         hnvsk[8][2] = @connector.iban.extended_data.bank_code
@@ -36,7 +32,7 @@ module Hbci
       def build_hnshk_version_4(posistion)
         hnshk = Segment.new.head('HNSHK', posistion, 4)
         hnshk.init(['PIN', 2], nil, nil, 1, 1, [1, nil, 0], 2, [1, nil, nil], [1, 999, 1], [6, 10, 16], [280, nil, nil, 'S', 0, 0])
-        hnshk[3] = @hnvsd_data_block.find_segments('HITANS').first[5][4]
+        hnshk[3] = @connector.session_service_response.hnvsd_data_block.find_segments('HITANS').first[5][4]
         hnshk[4] = @security_reference
         hnshk[9][2] = @now.strftime('%Y%m%d')
         hnshk[9][3] = @now.strftime('%H%m%S')

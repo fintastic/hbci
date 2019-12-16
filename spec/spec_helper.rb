@@ -11,6 +11,8 @@ require 'webmock/rspec'
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| require f }
 
 RSpec.configure do |config|
+  config.backtrace_exclusion_patterns = []
+
   config.include_context('shared context for service', type: :service)
 
   config.around do |example|

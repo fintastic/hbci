@@ -6,8 +6,8 @@ module Hbci
 
     attr_accessor :message_number
     attr_reader :iban
-    attr_writer :session_service_response
-    attr_writer :dialog_service_response
+    attr_accessor :session_service_response
+    attr_accessor :dialog_service_response
 
     def self.open(iban)
       connector = new(iban)
@@ -20,14 +20,6 @@ module Hbci
       reset_message_number
     end
 
-    def session_service_response
-      Message.new(@session_service_response.to_s)
-    end
-
-    def dialog_service_response
-      Message.new(@dialog_service_response.to_s)
-    end
-
     def reset_message_number
       @message_number = 1
     end
@@ -37,10 +29,10 @@ module Hbci
     end
 
     def post(request_message, count_messages = true)
-      Hbci.logger.debug("Request: #{request_message}")
+      Hbci.logger.debug("Request to #{url}: #{request_message}")
       req = HTTParty.post(url, body: request_message.to_base64)
       @message_number += 1 if count_messages
-      raise "Error in https communication with bank: #{req.response.inspect}" unless req.success?
+      raise "Error in https #{url} communication with bank: #{req.response.inspect}" unless req.success?
 
       decode_response = Base64.decode64(req.response.body)
       Hbci.logger.debug("Response: #{decode_response}")

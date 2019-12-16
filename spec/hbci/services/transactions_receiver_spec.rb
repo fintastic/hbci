@@ -5,8 +5,8 @@ describe Hbci::Services::TransactionsReceiver, type: :service do
   let(:to) { Time.now }
   subject { described_class.new(connector, from, to) }
 
-  let(:session_response_sample) { response_sample('spec/fixtures/vr_session_init_response.hbci') }
-  let(:dialog_response_sample) { response_sample('spec/fixtures/vr_dialog_init_response.hbci') }
+  let(:session_response_sample) { Hbci::SessionResponse.new(response_sample('spec/fixtures/vr_session_init_response.hbci')) }
+  let(:dialog_response_sample) { Hbci::DialogResponse.new(response_sample('spec/fixtures/vr_dialog_init_response.hbci')) }
 
   before do
     connector.session_service_response = session_response_sample

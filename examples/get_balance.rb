@@ -18,4 +18,3 @@ Hbci::Connector.open(@iban) do |connector|
   balance_receiver.perform
 end
 
-

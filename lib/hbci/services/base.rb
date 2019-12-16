@@ -27,6 +27,16 @@ module Hbci
 
       private
 
+      def check_response_status!
+        @response.hbci.find_segments('HIRMG').each do |segment|
+          raise Hbci::Error, 'Initialization failed' if segment[2][1].to_i > 9000
+        end
+
+        @response.hnvsd_data_block.find_segments('HIRMG').each do |segment|
+          raise Hbci::Error, 'Initialization failed' if segment[2][1].to_i > 9000
+        end
+      end
+
       # Nachrichtenkopf version 3
       def build_hnhbk_version_3(posistion)
         Segment.new.head('HNHBK', posistion, 3).init(nil, 300, 0, @connector.message_number)

@@ -6,7 +6,7 @@ shared_context 'shared context for service' do
   let(:session) { Hbci::Services::Session.new(connector) }
 
   def response_sample(path)
-    Hbci::Response.new(File.read(path).delete("\n").delete("\s"))
+    File.read(path).delete("\n").delete("\s")
   end
 
   before do

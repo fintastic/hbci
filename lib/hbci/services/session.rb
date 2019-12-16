@@ -4,7 +4,9 @@ module Hbci
       def perform
         Hbci.logger.info('Start initiating FinTS/HBCI session')
 
-        @response = Hbci::Response.new(@connector.post(hbci_message, false))
+        @response = Hbci::SessionResponse.new(@connector.post(hbci_message, false))
+
+        check_response_status!
 
         Hbci.logger.info('Finish initiating FinTS/HBCI session')
 

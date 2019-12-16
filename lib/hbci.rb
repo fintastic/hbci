@@ -4,6 +4,8 @@ require 'httparty'
 require 'cmxl'
 require 'ibanizator'
 
+require 'hbci/errors/error'
+
 require 'hbci/config'
 require 'hbci/connector'
 require 'hbci/response'

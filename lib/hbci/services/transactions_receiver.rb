@@ -10,10 +10,6 @@ module Hbci
 
       private
 
-      def hikazs
-        @hnvsd_data_block.find_segments('HIKAZS')
-      end
-
       def build_hkkaz_version_7(position)
         hksal = Segment.new.head('HKKAZ', position, 7)
         hksal.init([@connector.iban.to_s, @connector.iban.extended_data.bic, @connector.iban.extended_data.account_number, nil, 280, @connector.iban.extended_data.bank_code], 'N', @from, @to)

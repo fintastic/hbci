@@ -3,8 +3,8 @@ require 'spec_helper'
 describe Hbci::Services::BalanceReceiver, type: :service do
   subject { described_class.new(connector) }
 
-  let(:session_response_sample) { response_sample('spec/fixtures/vr_session_init_response.hbci') }
-  let(:dialog_response_sample) { response_sample('spec/fixtures/vr_dialog_init_response.hbci') }
+  let(:session_response_sample) { Hbci::SessionResponse.new(response_sample('spec/fixtures/vr_session_init_response.hbci')) }
+  let(:dialog_response_sample) { Hbci::DialogResponse.new(response_sample('spec/fixtures/vr_dialog_init_response.hbci')) }
 
   before do
     connector.session_service_response = session_response_sample

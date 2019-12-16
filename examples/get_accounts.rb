@@ -14,7 +14,7 @@ Hbci::Connector.open(@iban) do |connector|
 
   connector.dialog_service_response = dialog_service.response
 
-  hnvsd = connector.dialog_service_response.find_segments('HNVSD').first
+  hnvsd = connector.dialog_service_response.hbci.find_segments('HNVSD').first
   hnvsd_data_block = Hbci::Message.new(hnvsd[2].to_s.sub(/@[0-9]+@/, ''))
 
   hnvsd_data_block.find_segments('HIUPD').each do |segment|
