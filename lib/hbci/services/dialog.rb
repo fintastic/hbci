@@ -34,6 +34,7 @@ module Hbci
         hnshk.init(['PIN', 2], nil, nil, 1, 1, [1, nil, 0], 2, [1, nil, nil], [1, 999, 1], [6, 10, 16], [280, nil, nil, 'S', 0, 0])
         hnshk[3] = @connector.session_service_response.hnvsd_data_block.find_segments('HITANS').first[5][4]
         hnshk[4] = @security_reference
+        hnshk[7][3] = @connector.session_service_response.hnvsd_data_block.find_segments('HISYN').first[2]
         hnshk[9][2] = @now.strftime('%Y%m%d')
         hnshk[9][3] = @now.strftime('%H%m%S')
         hnshk[12][2] = @connector.iban.extended_data.bank_code
@@ -47,6 +48,7 @@ module Hbci
         hkidn.init([280, nil], nil, 0, 1)
         hkidn[2][2] = @connector.iban.extended_data.bank_code
         hkidn[3] = Hbci.config.user_id
+        hkidn[4] = @connector.session_service_response.hnvsd_data_block.find_segments('HISYN').first[2]
         hkidn
       end
 
@@ -60,7 +62,9 @@ module Hbci
 
       # Zwei-Schritt-TANEinreichung version 6
       def build_hktan_version_6(position)
-        Segment.new.head('HKTAN', position,6).init(4, 'HKIDN')
+        hktan = Segment.new.head('HKTAN', position,6)
+        hktan.init(4, 'HKIDN')
+        hktan
       end
 
       def hnvsd_data

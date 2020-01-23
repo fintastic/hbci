@@ -1,12 +1,19 @@
 module Hbci
   class Message
-    def initialize(hbci = nil)
+    def self.parse(hbci)
+      message = Message.new
+      Parser.parse(hbci, "'") do |data|
+        message << Segment.parse(data)
+      end
+      message
+    end
+
+    def initialize
       @segments = []
-      build(hbci) if hbci
     end
 
     def []=(idx, segment)
-      @segments[idx - 1] = segment.is_a?(Segment) ? segment : Segment.new(segment)
+      @segments[idx - 1] = segment.is_a?(Segment) ? segment : Segment.parse(segment)
     end
 
     def [](idx)
@@ -14,7 +21,7 @@ module Hbci
     end
 
     def <<(segment)
-      @segments << Segment.new(segment)
+      @segments << (segment.is_a?(Segment) ? segment : Segment.parse(segment))
     end
 
     def each(&block)
@@ -32,14 +39,6 @@ module Hbci
     def find_segments(name)
       @segments.select do |segment|
         segment[1][1] == name
-      end
-    end
-
-    private
-
-    def build(hbci)
-      Parser.parse(hbci, "'") do |data|
-        self << data
       end
     end
   end

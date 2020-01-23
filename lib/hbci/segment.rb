@@ -1,12 +1,19 @@
 module Hbci
   class Segment
-    def initialize(hbci = nil)
+    def self.parse(hbci)
+      segment = Segment.new
+      Parser.parse(hbci, '+') do |data|
+        segment << SegmentElement.parse(data)
+      end
+      segment
+    end
+
+    def initialize
       @elements = []
-      build(hbci) if hbci
     end
 
     def head(name, position, version)
-      self[1] = "#{name}:#{position}:#{version}"
+      self[1] = [name, position, version]
       self
     end
 
@@ -16,7 +23,7 @@ module Hbci
     end
 
     def []=(idx, value)
-      @elements[idx - 1] = SegmentElement.new(value)
+      @elements[idx - 1] = (value.is_a?(SegmentElement) ? value : SegmentElement.new(*value))
     end
 
     def [](idx)
@@ -25,23 +32,15 @@ module Hbci
     end
 
     def <<(value)
-      @elements << SegmentElement.new(value)
+      @elements << (value.is_a?(SegmentElement) ? value : SegmentElement.new(*value))
     end
 
     def add_data_block(idx, value)
-      @elements[idx - 1] = SegmentElement.new(value, data_block: true)
+      @elements[idx - 1] = SegmentElement.new.init_data_block(value)
     end
 
     def to_s
       @elements.join('+') + "'"
-    end
-
-    private
-
-    def build(hbci)
-      Parser.parse(hbci, '+') do |data|
-        self << data
-      end
     end
   end
 end

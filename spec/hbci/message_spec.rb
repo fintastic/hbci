@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 describe Hbci::Message do
-  subject { described_class.new(sample) }
-
   let(:sample) { nil }
   let(:segment_1) { Hbci::Segment.new.head('HTEST1', 999, 2) }
   let(:segment_2) { Hbci::Segment.new.head('HTEST2', 999, 2) }
@@ -29,7 +27,7 @@ describe Hbci::Message do
     end
   end
 
-  describe 'parse hbci string' do
+  describe '#parse' do
     let(:sample) do
       sample = <<~HBCI
         HNHBK:1:3+000000000372+300+0+1'
@@ -45,6 +43,8 @@ describe Hbci::Message do
       HBCI
       sample.delete("\n").delete("\s")
     end
+
+    subject { described_class.parse(sample) }
 
     it 'returns value' do
       expect(subject[1].to_s).to eql("HNHBK:1:3+000000000372+300+0+1'")

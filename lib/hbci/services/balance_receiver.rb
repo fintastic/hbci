@@ -11,11 +11,20 @@ module Hbci
         hksal
       end
 
+      # Saldenabfrage version 6
+      def build_hksal_version_6(posistion)
+        hksal = Segment.new
+        hksal.head('HKSAL', posistion, 6)
+        hksal.init([@connector.iban.to_s, @connector.iban.extended_data.bic, @connector.iban.extended_data.account_number, nil, 280, @connector.iban.extended_data.bank_code], 'N')
+        hksal
+      end
+
       # Saldenabfrage
       def build_hksal(posistion)
         version = hikazs.map { |s| s[1][3].to_i }.max
         case version
         when 7 then build_hksal_version_7(posistion)
+        when 6 then build_hksal_version_6(posistion)
         else
           raise "HKKAZ #{version} is not supported"
         end

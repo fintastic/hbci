@@ -3,8 +3,6 @@
 require 'spec_helper'
 
 describe Hbci::Segment do
-  subject { described_class.new(sample) }
-
   let(:sample) { nil }
 
   it '#head' do
@@ -15,9 +13,9 @@ describe Hbci::Segment do
 
   it '#init' do
     subject.head('HTEST', 999,1)
-    subject.init(['PIN', 1], nil, 300, 0, 1)
+    subject.init(['PIN', 1], nil, 300, 'D:V+', 1)
 
-    expect(subject.to_s).to eql("HTEST:999:1+PIN:1++300+0+1'")
+    expect(subject.to_s).to eql("HTEST:999:1+PIN:1++300+D?:V?++1'")
   end
 
   it '#add_data_block' do
@@ -27,17 +25,10 @@ describe Hbci::Segment do
     expect(subject.to_s).to eql("HTEST:999:1+@4@TEST'")
   end
 
-  context 'with ter' do
-    let(:sample) { 'HISYN:80:4:5+3g?+npy1a1m4BAAD26akuhm?+owAQA' }
-
-    it 'returns value' do
-      expect(subject[1].to_s).to eql('HISYN:80:4:5')
-      expect(subject[2].to_s).to eql('3g?+npy1a1m4BAAD26akuhm?+owAQA')
-    end
-  end
-
-  describe 'parse hbci string' do
+  describe '#parse' do
     let(:sample) { 'TEST:1:11+3709173969001000X093CQZRUROV04+11:22' }
+
+    subject { described_class.parse(sample) }
 
     it 'returns value' do
       expect(subject[1].to_s).to eql('TEST:1:11')

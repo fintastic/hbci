@@ -14,7 +14,7 @@ module Hbci
   class SessionResponse < Response
     def initialize(raw_response)
       super
-      @hbci_message = Message.new(@raw_response)
+      @hbci_message = Message.parse(@raw_response)
     end
 
     def hbci
@@ -26,14 +26,14 @@ module Hbci
     end
 
     def hnvsd_data_block
-      Hbci::Message.new(hnvsd[2].to_s.sub(/@[0-9]+@/, ''))
+      Hbci::Message.parse(hnvsd[2].to_s.sub(/@[0-9]+@/, ''))
     end
   end
 
   class DialogResponse < Response
     def initialize(raw_response)
       super
-      @hbci_message = Message.new(@raw_response)
+      @hbci_message = Message.parse(@raw_response)
     end
 
     def hbci
@@ -49,7 +49,7 @@ module Hbci
     end
 
     def hnvsd_data_block
-      Hbci::Message.new(hnvsd[2].to_s.sub(/@[0-9]+@/, ''))
+      Hbci::Message.parse(hnvsd[2].to_s.sub(/@[0-9]+@/, ''))
     end
   end
 end
